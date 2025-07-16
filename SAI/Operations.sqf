@@ -14,6 +14,7 @@ SAI_EAST_ENEMIES = [];
 SAI_EAST_REC = [];
 SAI_EAST_DEF = [];
 SAI_EAST_QRF = [];
+
 {
 	if ((SAI_WEST knowsAbout _x) == 4 && (side _x == SAI_EAST)) then {
 		SAI_WEST_ENEMIES append [_x];
@@ -24,31 +25,27 @@ SAI_EAST_QRF = [];
 	};
 }forEach allUnits;
 
-{
-	_mod = (count SAI_WEST_ALL) / 3;
-	if (_x in SAI_WEST_INF) then {_srt = "WEST_INF"};
-	if (_x in SAI_WEST_VEH) then {_srt = "WEST_VEH"};
-	if (_x in SAI_WEST_ARM) then {_srt = "WEST_ARM"};
-	
-	if (_x in SAI_WEST_INF) then {_srt = "EAST_INF"};
-	if (_x in SAI_WEST_VEH) then {_srt = "EAST_VEH"};
-	if (_x in SAI_WEST_ARM) then {_srt = "WEST_ARM"};
-	
-	if (count SAI_WEST_REC < _mod && _srt == "INF") then {_srt = "DEF"};
-	if (count SAI_WEST_REC < _mod && _srt == "VEH") then {_srt = "REC"};
-	if (count SAI_WEST_QRF < _mod && _srt == "ARM") then {_srt = "QRF"};
-	
-	switch (_srt) do {
-		case "REC": {SAI_WEST_REC append [_x]; SAI_WEST_ALL = SAI_WEST_ALL - [_x]};	
-		case "QRF": {SAI_WEST_QRF append [_x]; SAI_WEST_ALL = SAI_WEST_ALL - [_x]};	
-		case "DEF": {SAI_WEST_DEF append [_x]; SAI_WEST_ALL = SAI_WEST_ALL - [_x]};
-	}
-}forEach SAI_ALL;
+_west = SAI_WEST_INF + SAI_WEST_VEH + SAI_WEST_ARM;
+_east = SAI_EAST_INF + SAI_EAST_VEH + SAI_EAST_ARM;
 
 {
-	_mod = (count SAI_WEST_ALL) / 3;
-	if (count SAI_WEST_DEF < _mod) then {SAI_WEST_DEF append [_x]};
-	if (count SAI_WEST_QRF < _mod) then {SAI_WEST_QRF append [_x]};
-	if (count SAI_WEST_REC < _mod) then {SAI_WEST_REC append [_x]};
-}forEach SAI_WEST_ALL;
+	_modw = (count _west)/3;
+	_mode = (count _east)/3;
+	if (count SAI_WEST_DEF < _modw && _x in SAI_WEST_INF) then {SAI_WEST_DEF append [_x]; _west = _west - [_x]};
+	if (count SAI_WEST_REC < _modw && _x in SAI_WEST_VEH) then {SAI_WEST_REC append [_x]; _west = _west - [_x]};
+	if (count SAI_WEST_QRF < _modw && _x in SAI_WEST_ARM) then {SAI_WEST_QRF append [_x]; _west = _west - [_x]};
+	if (count SAI_EAST_DEF < _mode && _x in SAI_EAST_INF) then {SAI_EAST_DEF append [_x]; _east = _east - [_x]};
+	if (count SAI_EAST_REC < _mode && _x in SAI_EAST_VEH) then {SAI_EAST_REC append [_x]; _east = _east - [_x]};
+	if (count SAI_EAST_QRF < _mode && _x in SAI_EAST_ARM) then {SAI_EAST_QRF append [_x]; _east = _east - [_x]};
+}forEach (SAI_WEST_ALL + SAI_EAST_ALL);
 
+{
+	_modw = (count _west)/3;
+	_mode = (count _east)/3;
+	if (count SAI_WEST_DEF < _modw && _x in SAI_WEST_INF) then {SAI_WEST_DEF append [_x]; _west = _west - [_x]};
+	if (count SAI_WEST_REC < _modw && _x in SAI_WEST_VEH) then {SAI_WEST_REC append [_x]; _west = _west - [_x]};
+	if (count SAI_WEST_QRF < _modw && _x in SAI_WEST_ARM) then {SAI_WEST_QRF append [_x]; _west = _west - [_x]};
+	if (count SAI_EAST_DEF < _mode && _x in SAI_EAST_INF) then {SAI_EAST_DEF append [_x]; _east = _east - [_x]};
+	if (count SAI_EAST_REC < _mode && _x in SAI_EAST_VEH) then {SAI_EAST_REC append [_x]; _east = _east - [_x]};
+	if (count SAI_EAST_QRF < _mode && _x in SAI_EAST_ARM) then {SAI_EAST_QRF append [_x]; _east = _east - [_x]};
+}forEach (SAI_WEST_ALL + SAI_EAST_ALL);

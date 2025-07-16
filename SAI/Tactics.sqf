@@ -30,7 +30,7 @@
 	if (isPlayer _ldr) then {_ord = "PLAYER"};
 	if (behaviour _ldr == "COMBAT") then {_ord = "COMBAT"};
 	if (count _eny == 0 && _ord == "ART") then {_ord = "NONE"};
-	if (count _eny == 0 && _ord == "QRF") then {_ord = "NONE"};
+	if (count _eny == 0 && _ord == "QRF") then {_ord = "RTB"};
 	switch (_ord) do {
 		case "REC": {[_x, _obj] call SAI_WP_REC};	
 		case "QRF": {[_x, _eny] call SAI_WP_QRF};
