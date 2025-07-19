@@ -39,8 +39,8 @@ _force_east =
 SAI_MODE_WEST = "GAMBIT";
 SAI_MODE_EAST = "GAMBIT";
 
-if (_force_west > _force_east * 1.25) then {SAI_MODE_WEST = "ATTACK", SAI_MODE_EAST = "DEFEND"};
-if (_force_west < _force_east * 1.25) then {SAI_MODE_WEST = "DEFEND", SAI_MODE_EAST = "ATTACK"};
+if (_force_west > _force_east * 1.5) then {SAI_MODE_WEST = "ATTACK", SAI_MODE_EAST = "DEFEND"};
+if (_force_east > _force_west * 1.5) then {SAI_MODE_EAST = "ATTACK", SAI_MODE_WEST = "DEFEND"};
 
 _westX = _westX / _westG;
 _westY = _westY / _westG;
@@ -49,13 +49,39 @@ _eastY = _eastY / _eastG;
 _centX = (_westX + _eastX) / 2;
 _centY = (_westY + _eastY) / 2;
 
+SAI_DISTANCE = ([_westX, _westY] distance [_eastX, _eastY]) / 2;
+
+_dirX = _eastX - _westX;
+_dirY = _eastY - _westY;
+
+_length = sqrt (_dirX^2 + _dirY^2);
+_unitX = _dirX / _length;
+_unitY = _dirY / _length;
+
+_righX = _unitY;
+_righY = -_unitX;
+_leftX = -_unitY;
+_leftY = _unitX;
+
 "SAI_WEST" setMarkerPos [_westX, _westY];
 "SAI_EAST" setMarkerPos [_eastX, _eastY];
 "SAI_CENT" setMarkerPos [_centX, _centY];
+"SAI_RIGH" setMarkerPos [_centX + (_righX * SAI_DISTANCE), _centY + (_righY * SAI_DISTANCE)];
+"SAI_LEFT" setMarkerPos [_centX + (_leftX * SAI_DISTANCE), _centY + (_leftY * SAI_DISTANCE)];
 
-SAI_DISTANCE = ([_westX, _westY] distance [_eastX, _eastY]) / 2;
+_west_loc = position nearestLocation [getMarkerPos "SAI_WEST", ""];
+_east_loc = position nearestLocation [getMarkerPos "SAI_EAST", ""];
+_cent_loc = position nearestLocation [getMarkerPos "SAI_CENT", ""];
+_righ_loc = position nearestLocation [getMarkerPos "SAI_RIGH", ""];
+_left_loc = position nearestLocation [getMarkerPos "SAI_LEFT", ""];
+
+if (_west_loc in [_east_loc, _cent_loc, _righ_loc, _left_loc] == false) then {"SAI_WEST" setMarkerPos _west_loc};
+if (_east_loc in [_west_loc, _cent_loc, _righ_loc, _left_loc] == false) then {"SAI_EAST" setMarkerPos _east_loc};
+if (_cent_loc in [_west_loc, _east_loc, _righ_loc, _left_loc] == false) then {"SAI_CENT" setMarkerPos _cent_loc};
+if (_righ_loc in [_west_loc, _east_loc, _cent_loc, _left_loc] == false) then {"SAI_RIGH" setMarkerPos _righ_loc};
+if (_left_loc in [_west_loc, _east_loc, _cent_loc, _righ_loc] == false) then {"SAI_LEFT" setMarkerPos _left_loc};
 
 if (SAI_DEBUG) then {
-	"SAI_WEST" setMarkerText SAI_MODE_WEST + str _force_west;
-	"SAI_EAST" setMarkerText SAI_MODE_EAST + str _force_east;
+	"SAI_WEST" setMarkerText SAI_MODE_WEST + " " + str _force_west;
+	"SAI_EAST" setMarkerText SAI_MODE_EAST + " " + str _force_east;
 };

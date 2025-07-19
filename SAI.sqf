@@ -7,12 +7,15 @@ SAI_DEBUG = true;
 SAI_ACTIVE = true;
 SAI_BLACKLIST = [];
 
+SAI_FNC_SPAWNING = compile preprocessFileLineNumbers "SAI\Spawning.sqf";
 SAI_FNC_WAYPOINTS = compile preprocessFileLineNumbers "SAI\Waypoints.sqf";
 SAI_FNC_SORTING = compile preprocessFileLineNumbers "SAI\Sorting.sqf";
 SAI_FNC_STRATEGIC = compile preprocessFileLineNumbers "SAI\Strategic.sqf";
 SAI_FNC_OPERATIONS = compile preprocessFileLineNumbers "SAI\Operations.sqf";
 SAI_FNC_TACTICS = compile preprocessFileLineNumbers "SAI\Tactics.sqf";
 
+_spawn = 0 spawn SAI_FNC_SPAWNING;
+waitUntil {scriptDone _spawn};
 execVM "SAI\Markers.sqf";
 execVM "SAI\Waypoints.sqf";
 

@@ -1,25 +1,36 @@
 SAI_FORMATIONS = ["COLUMN","WEDGE","WEDGE","LINE"];
 
-SAI_WP_INF = {
+SAI_WP_DEF = {
 	_grp = _this select 0;
-	_obj = _this select 1;
-	_side = side leader _grp;
-	_grp setFormation (SAI_FORMATIONS select floor random 3);
-	_wp = _grp addWaypoint [_obj, SAI_DISTANCE];
+	_base = _this select 1;
+	_nbl = nearestBuilding leader _grp;
+	_wp = _grp addWaypoint [position _nbl, 0];	
 	
-	_nbl = nearestBuilding getWPPos _wp;
-	if (_obj distance _nbl < SAI_DISTANCE/4) then {
-		_wp setWaypointPosition [position _nbl, 0];
+	if (_base distance leader _grp > SAI_DISTANCE) then {
+		_grp setFormation (SAI_FORMATIONS select floor random 3);
+		_wp = _grp addWaypoint [_obj, SAI_DISTANCE];
+	
+		_nbl = nearestBuilding getWPPos _wp;
+		if (_obj distance _nbl < SAI_DISTANCE/2) then {
+			_wp setWaypointPosition [position _nbl, 0];
+		}
 	}
 };
 
-SAI_WP_VEH = {
+SAI_WP_REC = {
 	_grp = _this select 0;
 	_obj = _this select 1;
-	_side = side leader _grp;
 	_grp setFormation (SAI_FORMATIONS select floor random 3);
 	_wp = _grp addWaypoint [_obj, SAI_DISTANCE];
-	_wp setWaypointSpeed "LIMITED";
+};
+
+SAI_WP_QRF = {
+	_grp = _this select 0;
+	_enys = _this select 1;
+	_eny = _enys select floor random count _enys;
+	_enypos = getPos _eny;
+	_wp = _grp addWaypoint [_enypos, SAI_DISTANCE/2];
+	_wp setWaypointType "SAD";
 };
 
 SAI_WP_AIR = {
@@ -54,32 +65,36 @@ SAI_WP_ART = {
 		_ldr doArtilleryFire [_enypos, _ammo, 3];
 	}
 };
+
 SAI_WP_LOG = {
-	_grp = _this select 0;
+	_tra = _this select 0;
 	_inf = _this select 1;
-	_obj = _this select 2;
-	_base = _this select 3;
-	_veh = vehicle leader _grp;
+	_base = _this select 2;
+	_veh = vehicle leader _tra;
 	_seats = _veh emptyPositions "";
 	_found = false;
-{
+	{
 		_count = count units _x;
-		_wp0 = [_x, currentWaypoint _x];
+		_index = currentWaypoint _x;
+		_obj = getWPPos [_x, currentWaypoint _x];
+		_pos = getPos leader _x;
 		_ldr = leader _x;
+		_crg = _x;
+		if (_obj isEqualTo [0,0,0]) then {_obj = _pos};
+		if (_seats >= _count && _pos distance _obj > SAI_DISTANCE && !_found && alive _ldr) then {
+			_wpT = _tra addWaypoint [_pos, 10];
+			_wpT setWaypointType "LOAD";
 
-		if (_seats >= _count && _ldr distance getWPPos _wp0 > SAI_DISTANCE && !_found && alive _ldr) then {
-			_pos = getPos _ldr;
-			_wp0 setWPPos _pos;
-			_wp0 setWaypointType "GETIN";
-			
-			_wp1 = _grp addWaypoint [_pos, 0];
-			_wp1 setWaypointType "LOAD";
-			_wp0 synchronizeWaypoint [_wp1];
-			
-			_wp2 = _grp addWaypoint [_obj, SAI_DISTANCE];
-			_wp2 setWaypointType "TR UNLOAD";
-			_wp3 = _grp addWaypoint [_base, SAI_DISTANCE];
+			_wpC = _crg addWaypoint [_pos, 10];
+			_wpC setWaypointType "GETIN";
+			_wpC synchronizeWaypoint [_wpT];
+			_crg setCurrentWaypoint _wpC;
+
+			_wpO = _tra addWaypoint [_obj, 0];
+			_wpO setWaypointType "TR UNLOAD";
+			_wpR = _tra addWaypoint [_base, SAI_DISTANCE];
 			_found = true;
 		};
 	}forEach _inf;
 };
+/// https://youtu.be/24iqQ5SOfvc?si=C-A5DJQ2Pwq5NOiv

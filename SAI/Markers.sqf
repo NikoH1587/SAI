@@ -9,7 +9,9 @@ if (SAI_DEBUG) then {
 	"SAI_EAST" setMarkerType "hd_flag";
 	"SAI_CENT" setMarkerType "hd_flag";
 	"SAI_RIGH" setMarkerType "hd_flag";
+	"SAI_RIGH" setMarkerDir 90;
 	"SAI_LEFT" setMarkerType "hd_flag";
+	"SAI_LEFT" setMarkerDir 270;
 	"SAI_WEST" setMarkerColor "ColorWEST";
 	"SAI_EAST" setMarkerColor "ColorEAST";
 };

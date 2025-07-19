@@ -24,8 +24,9 @@ SAI_EAST_ART = [];
 {
 	_ldr = leader _x;
 	_type = "INF";
-	if (count assignedVehicles _x != 0) then {
+	if (count assignedVehicles _x != 0 or vehicle _ldr != _ldr) then {
 		_veh = (assignedVehicles _x) select 0;
+		if (vehicle _ldr != _ldr) then {_veh = vehicle _ldr};
 		_cfg = configFile >> "CfgVehicles" >> typeOf _veh;
 		_cls = getText (_cfg >> "vehicleClass");
 		if (_cls == "Car") then {_type = "VEH"};

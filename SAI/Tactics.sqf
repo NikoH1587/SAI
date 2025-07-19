@@ -21,22 +21,28 @@
 	if (_x in (SAI_WEST_DEF + SAI_EAST_DEF)) then {_ord = "DEF"};
 	if (_x in (SAI_WEST_AIR + SAI_EAST_AIR)) then {_ord = "AIR"};
 	if (_x in (SAI_WEST_LOG + SAI_EAST_LOG)) then {_ord = "LOG"};
-	if (_x in (SAI_WEST_SUP + SAI_EAST_SUP)) then {_ord = "RTB"};
+	if (_x in (SAI_WEST_SUP + SAI_EAST_SUP)) then {_ord = "NONE"};
 	
 	if (_srv findIf {_x > 0.50} > -1) then {_ord = "RTB"};
 	if (fleeing _ldr) then {_ord = "RTB"};
 	if (_x in (SAI_WEST_ART + SAI_EAST_ART)) then {_ord = "ART"};
 	if (_sta != "WAIT" && _sta != "OK") then {_ord = "BUSY"};
+	if (!unitReady _ldr) then {_ord = "BUSY"};
+	if (!unitReady commander _veh) then {_ord = "BUSY"};
+	if (!unitReady gunner _veh) then {_ord = "BUSY"};
+	if (!unitReady driver _veh) then {_ord = "BUSY"};
 	if (isPlayer _ldr) then {_ord = "PLAYER"};
 	if (behaviour _ldr == "COMBAT") then {_ord = "COMBAT"};
 	if (count _eny == 0 && _ord == "ART") then {_ord = "NONE"};
-	if (count _eny == 0 && _ord == "QRF") then {_ord = "RTB"};
+	if (count _eny == 0 && _ord == "QRF") then {_ord = "LOG"};
+	if (count _eny == 0 && _ord == "AIR") then {_ord = "LOG"};
+
 	switch (_ord) do {
 		case "REC": {[_x, _obj] call SAI_WP_REC};	
 		case "QRF": {[_x, _eny] call SAI_WP_QRF};
 		case "DEF": {[_x, _base] call SAI_WP_DEF};
 		case "AIR": {[_x, _obj, _base] call SAI_WP_AIR};
-		case "LOG": {[_x, _inf, _obj, _base] call SAI_WP_LOG};
+		case "LOG": {[_x, _inf, _base] call SAI_WP_LOG};
 		case "RTB": {[_x, _base] call SAI_WP_RTB};
 		case "ART": {[_x, _eny] call SAI_WP_ART};
 	}
