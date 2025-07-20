@@ -23,8 +23,8 @@
 	if (_x in (SAI_WEST_LOG + SAI_EAST_LOG)) then {_ord = "LOG"};
 	if (_x in (SAI_WEST_SUP + SAI_EAST_SUP)) then {_ord = "NONE"};
 	
-	if (_srv findIf {_x > 0.50} > -1) then {_ord = "RTB"};
-	if (fleeing _ldr) then {_ord = "RTB"};
+	if (_srv findIf {_x > 0.50} > -1) then {_ord = "DEF"};
+	if (fleeing _ldr) then {_ord = "DEF"};
 	if (_x in (SAI_WEST_ART + SAI_EAST_ART)) then {_ord = "ART"};
 	if (_sta != "WAIT" && _sta != "OK") then {_ord = "BUSY"};
 	if (!unitReady _ldr) then {_ord = "BUSY"};
@@ -43,7 +43,6 @@
 		case "DEF": {[_x, _base] call SAI_WP_DEF};
 		case "AIR": {[_x, _obj, _base] call SAI_WP_AIR};
 		case "LOG": {[_x, _inf, _base] call SAI_WP_LOG};
-		case "RTB": {[_x, _base] call SAI_WP_RTB};
 		case "ART": {[_x, _eny] call SAI_WP_ART};
 	}
 }forEach (SAI_ALL);

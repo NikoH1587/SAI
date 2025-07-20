@@ -16,6 +16,7 @@ SAI_FNC_TACTICS = compile preprocessFileLineNumbers "SAI\Tactics.sqf";
 
 _spawn = 0 spawn SAI_FNC_SPAWNING;
 waitUntil {scriptDone _spawn};
+execVM "SAI\Spawning.sqf";
 execVM "SAI\Markers.sqf";
 execVM "SAI\Waypoints.sqf";
 

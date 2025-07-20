@@ -1,13 +1,16 @@
 SAI_FNC_SPAWN = {
 	_marker = _this select 0;
 	_faction = _this select 1;
-	_infantry = _this select 2;
+	_cfg = _this select 2;
+	_inf = _this select 3;
 	_position = getMarkerPos _marker;
 	_type = "NONE";
 	_side = ["East", east];
 	_amount = 7;
 	if (markerSize _marker select 1 > 1) then {_amount = 9};
 	if (markerSize _marker select 1 < 1) then {_amount = 5};
+	
+	if (markerAlpha _marker == 1) exitWith {};
 	
 	switch (getMarkerType _marker) do {
 		case "b_inf": {_type = "INF"; _side = ["West", west]};
@@ -32,7 +35,7 @@ SAI_FNC_SPAWN = {
 		case "n_art": {_type = "ART"; _side = ["Indep", resistance]};	
 	};
 	
-	_cfgGroups = (configFile >> "CfgGroups" >> _side select 0 >> _faction >> _infantry);
+	_cfgGroups = (configFile >> "CfgGroups" >> _side select 0 >> _cfg >> _inf);
 	_cfgVehicles = configFile >> "CfgVehicles";
 	_infantry = [];
 	_vehicles = [];
@@ -54,38 +57,44 @@ SAI_FNC_SPAWN = {
 			_fac = getText (_entry >> "faction");
 			_cls = getText (_entry >> "vehicleClass");
 			_art = getNumber (_entry >> "artilleryScanner");
+			_med = getNumber (_entry >> "attendant");
+			_eng = getNumber (_entry >> "engineer");
+			_amo = getNumber (_entry >> "transportAmmo");
+			_plo = getNumber (_entry >> "transportFuel");
+			_rep = getNumber (_entry >> "transportRepair");			
 			
-			if (_sco == 2 && _fac == _faction && _cls == "Car" && _art == 0) then {_vehicles append [configName _entry]};
-			if (_sco == 2 && _fac == _faction && _cls == "Armored" && _art == 0) then {_armor append [configName _entry]};
+			_sup = false;
+			if ((_art + _med + _eng + _amo + _plo + _rep) > 0) then {_sup = true};
+			
+			if (_sco == 2 && _fac == _faction && _cls == "Car" && _sup == false) then {_vehicles append [configName _entry]};
+			if (_sco == 2 && _fac == _faction && _cls == "Armored" && _sup == false) then {_armor append [configName _entry]};
 			if (_sco == 2 && _fac == _faction && _cls == "Support") then {_support append [configName _entry]};
-			if (_sco == 2 && _fac == _faction && _cls == "Air") then {_air append [configName _entry]};
+			if (_sco == 2 && _fac == _faction && _cls == "Air" && _sup == false) then {_air append [configName _entry]};
 			if (_sco == 2 && _fac == _faction && _art == 1) then {_artillery append [configName _entry]};
-			if (_sco == 2 && _fac == _faction && _cls == "Autonomous" && _art == 0) then {_drones append [configName _entry]};
-			if (_sco == 2 && _fac == _faction && _cls == "Static" && _art == 0) then {_statics append [configName _entry]};	
+			if (_sco == 2 && _fac == _faction && _cls == "Autonomous" && _sup == false) then {_drones append [configName _entry]};
+			if (_sco == 2 && _fac == _faction && _cls == "Static" && _sup == false) then {_statics append [configName _entry]};	
 		}
 	};
 
 	for "_i" from 1 to _amount do {
 		_spawn = _infantry;
-		_brackets = true;
+		_infs = false;
 		switch (_type) do {
-			case "VEH": {_spawn = _vehicles; if (_i > _amount/2) then {_spawn = _infantry; _brackets = false}};
-			case "ARM": {_spawn = _armor;  if (_i > _amount/2) then {_spawn = _infantry; _brackets = false}};
-			case "AIR": {_spawn = _air; if (_i > _amount/2) then {_spawn = _infantry; _brackets = false}};
+			case "VEH": {_spawn = _vehicles; if (_i > _amount/2) then {_spawn = _infantry; _infs = true}};
+			case "ARM": {_spawn = _armor;  if (_i > _amount/2) then {_spawn = _infantry; _infs = true}};
+			case "AIR": {_spawn = _air; if (_i > _amount/2) then {_spawn = _infantry; _infs = true}};
 			case "SUP": {_spawn = _support; if (_i > _amount/2) then {_spawn = _statics}};
 			case "ART": {_spawn = _artillery; if (_i > _amount/2) then {_spawn = _drones}};
-			default {_brackets = false}
+			default {_infs = true}
 		};
-		_spawn = _spawn select floor random count _spawn;
-		if (_brackets) then {_spawn = [_spawn]};
+		_tospawn = _spawn select floor random count _spawn;
 		_pos = [_position, 0, 50*_i, 5, 0, 0.5, 0, [], [_position]] call BIS_fnc_findSafePos;
-		_spawned = [_pos, _side select 1, _spawn] call BIS_fnc_spawnGroup;
+		if (_infs) then {_spawned = [_pos, _side select 1, _tospawn] call BIS_fnc_spawnGroup};
+		if (_infs == false) then {_spawned = [_pos, random 360, _tospawn, _side select 1] call BIS_fnc_spawnVehicle};
 	};
+	_marker setMarkerAlpha 1;
 };
 
-["SAI_1", "BLU_F", "Infantry"] call SAI_FNC_SPAWN;
-["SAI_2", "BLU_F", "Infantry"] call SAI_FNC_SPAWN;
-["SAI_3", "BLU_F", "Infantry"] call SAI_FNC_SPAWN;
-["SAI_4", "OPF_F", "Infantry"] call SAI_FNC_SPAWN;
-["SAI_5", "OPF_F", "Infantry"] call SAI_FNC_SPAWN;
-["SAI_6", "OPF_F", "Infantry"] call SAI_FNC_SPAWN;
+["SAI_1", "BLU_F", "BLU_F", "Infantry"] call SAI_FNC_SPAWN;
+["SAI_2", "BLU_F", "BLU_F", "Infantry"] call SAI_FNC_SPAWN;
+["SAI_3", "OPF_F", "OPF_F", "Infantry"] call SAI_FNC_SPAWN;

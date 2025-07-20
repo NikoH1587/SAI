@@ -3,16 +3,18 @@ SAI_FORMATIONS = ["COLUMN","WEDGE","WEDGE","LINE"];
 SAI_WP_DEF = {
 	_grp = _this select 0;
 	_base = _this select 1;
+	_inf = true;
+	if (vehicle leader _grp != leader _grp) then {_inf = false};
 	_nbl = nearestBuilding leader _grp;
-	_wp = _grp addWaypoint [position _nbl, 0];	
+	if (_inf) then {_wp = _grp addWaypoint [position _nbl, 0]};	
 	
 	if (_base distance leader _grp > SAI_DISTANCE) then {
 		_grp setFormation (SAI_FORMATIONS select floor random 3);
-		_wp = _grp addWaypoint [_obj, SAI_DISTANCE];
+		_wp = _grp addWaypoint [_base, SAI_DISTANCE];
 	
 		_nbl = nearestBuilding getWPPos _wp;
-		if (_obj distance _nbl < SAI_DISTANCE/2) then {
-			_wp setWaypointPosition [position _nbl, 0];
+		if (getWPPos _wp distance _nbl < SAI_DISTANCE/2) then {
+		if (_inf) then {_wp setWaypointPosition [position _nbl, 0]};
 		}
 	}
 };
@@ -40,15 +42,6 @@ SAI_WP_AIR = {
 	_wp = _grp addWaypoint [_obj, SAI_DISTANCE];
 	_wp setWaypointType "SAD";
 	_wp2 = _grp addWaypoint [_base, SAI_DISTANCE];
-};
-
-
-SAI_WP_RTB = {
-	_grp = _this select 0;
-	_base = _this select 1;
-	if (_base distance leader _grp > SAI_DISTANCE) then {
-		_wp = _grp addWaypoint [_base, SAI_DISTANCE];
-	}
 };
 
 SAI_WP_ART = {
@@ -96,5 +89,8 @@ SAI_WP_LOG = {
 			_found = true;
 		};
 	}forEach _inf;
+	
+	if (!_found) then {[_tra, _base] call SAI_WP_DEF};
 };
+
 /// https://youtu.be/24iqQ5SOfvc?si=C-A5DJQ2Pwq5NOiv
