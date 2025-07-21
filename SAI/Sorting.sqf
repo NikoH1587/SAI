@@ -10,6 +10,7 @@ SAI_WEST_ARM = [];
 SAI_WEST_AIR = [];
 SAI_WEST_LOG = [];
 SAI_WEST_SUP = [];
+SAI_WEST_STA = [];
 SAI_WEST_ART = [];
 
 SAI_EAST_ALL = [];
@@ -19,6 +20,7 @@ SAI_EAST_ARM = [];
 SAI_EAST_AIR = [];
 SAI_EAST_LOG = [];
 SAI_EAST_SUP = [];
+SAI_EAST_STA = [];
 SAI_EAST_ART = [];
 
 {
@@ -31,9 +33,10 @@ SAI_EAST_ART = [];
 		_cls = getText (_cfg >> "vehicleClass");
 		if (_cls == "Car") then {_type = "VEH"};
 		if (_cls == "Armored") then {_type = "ARM"};
-		if (_cls in ["Air", "Autonomous"]) then {_type = "AIR"};
+		if (_cls == "Air") then {_type = "AIR"};
 		if (count units _x == 1) then {_type = "LOG"};
 		if (_cls == "Support") then {_type = "SUP"};
+		if (_cls == "Static") then {_type = "STA"};
 		if (getNumber (_cfg >> "artilleryScanner") > 0) then {_type = "ART"};
 	};
 	
@@ -47,6 +50,7 @@ SAI_EAST_ART = [];
 		case "AIR_WEST": {SAI_WEST_AIR append [_x]};
 		case "LOG_WEST": {SAI_WEST_LOG append [_x]};
 		case "SUP_WEST": {SAI_WEST_SUP append [_x]};
+		case "STA_WEST": {SAI_WEST_STA append [_x]};
 		case "ART_WEST": {SAI_WEST_ART append [_x]};
 		
 		case "INF_EAST": {SAI_EAST_INF append [_x]};
@@ -55,6 +59,7 @@ SAI_EAST_ART = [];
 		case "AIR_EAST": {SAI_EAST_AIR append [_x]};
 		case "LOG_EAST": {SAI_EAST_LOG append [_x]};
 		case "SUP_EAST": {SAI_EAST_SUP append [_x]};
+		case "STA_EAST": {SAI_EAST_STA append [_x]};
 		case "ART_EAST": {SAI_EAST_ART append [_x]};		
 	}
 }forEach SAI_ALL;

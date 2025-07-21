@@ -25,6 +25,7 @@ _force_west =
 (count SAI_WEST_ARM * 4) +
 (count SAI_WEST_ART * 5) +
 (count SAI_WEST_LOG * 1) +
+(count SAI_WEST_STA * 1) +
 (count SAI_WEST_SUP * 1);
 
 _force_east = 
@@ -34,6 +35,7 @@ _force_east =
 (count SAI_EAST_ARM * 4) +
 (count SAI_EAST_ART * 5) +
 (count SAI_EAST_LOG * 1) +
+(count SAI_EAST_STA * 1) +
 (count SAI_EAST_SUP * 1);
 
 SAI_MODE_WEST = "GAMBIT";

@@ -66,30 +66,31 @@ SAI_WP_LOG = {
 	_veh = vehicle leader _tra;
 	_seats = _veh emptyPositions "";
 	_found = false;
-	{
-		_count = count units _x;
-		_index = currentWaypoint _x;
-		_obj = getWPPos [_x, currentWaypoint _x];
-		_pos = getPos leader _x;
-		_ldr = leader _x;
-		_crg = _x;
-		if (_obj isEqualTo [0,0,0]) then {_obj = _pos};
-		if (_seats >= _count && _pos distance _obj > SAI_DISTANCE && !_found && alive _ldr) then {
-			_wpT = _tra addWaypoint [_pos, 10];
-			_wpT setWaypointType "LOAD";
+	if (_veh != leader _tra) then {
+		{
+			_count = count units _x;
+			_index = currentWaypoint _x;
+			_obj = getWPPos [_x, currentWaypoint _x];
+			_pos = getPos leader _x;
+			_ldr = leader _x;
+			_crg = _x;
+			if (_obj isEqualTo [0,0,0]) then {_obj = _pos};
+			if (_seats >= _count && _pos distance _obj > SAI_DISTANCE && !_found && alive _ldr) then {
+				_wpT = _tra addWaypoint [_pos, 10];
+				_wpT setWaypointType "LOAD";
 
-			_wpC = _crg addWaypoint [_pos, 10];
-			_wpC setWaypointType "GETIN";
-			_wpC synchronizeWaypoint [_wpT];
-			_crg setCurrentWaypoint _wpC;
+				_wpC = _crg addWaypoint [_pos, 10];
+				_wpC setWaypointType "GETIN";
+				_wpC synchronizeWaypoint [_wpT];
+				_crg setCurrentWaypoint _wpC;
 
-			_wpO = _tra addWaypoint [_obj, 0];
-			_wpO setWaypointType "TR UNLOAD";
-			_wpR = _tra addWaypoint [_base, SAI_DISTANCE];
-			_found = true;
-		};
-	}forEach _inf;
-	
+				_wpO = _tra addWaypoint [_obj, 0];
+				_wpO setWaypointType "TR UNLOAD";
+				_wpR = _tra addWaypoint [_base, SAI_DISTANCE];
+				_found = true;
+			};
+		}forEach _inf;
+	};
 	if (!_found) then {[_tra, _base] call SAI_WP_DEF};
 };
 
