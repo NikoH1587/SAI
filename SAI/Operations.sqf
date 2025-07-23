@@ -1,10 +1,3 @@
-SAI_WEST_OBJECTIVE = ["SAI_CENT", "SAI_RIGH", "SAI_LEFT"] select floor random 3;
-SAI_EAST_OBJECTIVE = ["SAI_CENT", "SAI_RIGH", "SAI_LEFT"] select floor random 3;
-if (SAI_MODE_WEST == "ATTACK") then {SAI_WEST_OBJECTIVE = "SAI_EAST"};
-if (SAI_MODE_WEST == "DEFEND") then {SAI_WEST_OBJECTIVE = "SAI_WEST"};
-if (SAI_MODE_EAST == "ATTACK") then {SAI_EAST_OBJECTIVE = "SAI_WEST"};
-if (SAI_MODE_EAST == "DEFEND") then {SAI_EAST_OBJECTIVE = "SAI_EAST"};
-
 SAI_WEST_ENEMIES = [];
 SAI_WEST_REC = [];
 SAI_WEST_DEF = [];
@@ -24,8 +17,9 @@ SAI_EAST_QRF = [];
 		SAI_EAST_ENEMIES append [_x];
 	};
 }forEach allUnits;
-_west = SAI_WEST_VEH + SAI_WEST_ARM + SAI_WEST_INF;
-_east = SAI_EAST_VEH + SAI_EAST_ARM + SAI_EAST_INF;
+
+_west = SAI_WEST_AIR + SAI_WEST_VEH + SAI_WEST_ARM + SAI_WEST_INF;
+_east = SAI_EAST_AIR + SAI_EAST_VEH + SAI_EAST_ARM + SAI_EAST_INF;
 
 _modw = ceil (count _west)/3;
 _mode = ceil (count _east)/3;

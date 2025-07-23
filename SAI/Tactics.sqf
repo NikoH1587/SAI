@@ -2,48 +2,43 @@
 	_ldr = leader _x;
 	_veh = vehicle leader _x;
 	_ord = "NONE";
-	_sta = getUnitState _ldr;
 	_srv = needService _veh;
-	_obj = getMarkerPos SAI_WEST_OBJECTIVE;
-	_base = getMarkerPos "SAI_WEST";
+	_obj = getMarkerPos SAI_OBJECTIVE;
+	_rtb = "SAI_WEST";
 	_eny = SAI_WEST_ENEMIES;
 	_inf = SAI_WEST_INF;
-	_side = side _ldr;
+	_side = side _x;
+	
 	if (_side == SAI_EAST) then {
-		_obj = getMarkerPos SAI_EAST_OBJECTIVE;
-		_base = getMarkerPos "SAI_EAST";
+		_rtb = "SAI_EAST";
 		_eny = SAI_EAST_ENEMIES;
 		_inf = SAI_EAST_INF;
 	};
 	
-	if (_x in (SAI_WEST_REC + SAI_EAST_REC)) then {_ord = "REC"};
-	if (_x in (SAI_WEST_QRF + SAI_EAST_QRF)) then {_ord = "QRF"};
-	if (_x in (SAI_WEST_DEF + SAI_EAST_DEF)) then {_ord = "LOG"};
-	if (_x in (SAI_WEST_AIR + SAI_EAST_AIR)) then {_ord = "AIR"};
-	if (_x in (SAI_WEST_LOG + SAI_EAST_LOG)) then {_ord = "LOG"};
-	if (_x in (SAI_WEST_STA + SAI_EAST_STA)) then {_ord = "NONE"};
-	if (_x in (SAI_WEST_SUP + SAI_EAST_SUP)) then {_ord = "NONE"};
+	_busy = [_ldr, _veh] call SAI_WP_CHK;
+	_tran = false;
+	_comb = (behaviour _ldr == "COMBAT");
+	_flee = fleeing _ldr;
 	
-	if (_srv findIf {_x > 0.50} > -1) then {_ord = "DEF"};
-	if (fleeing _ldr) then {_ord = "DEF"};
-	if (_x in (SAI_WEST_ART + SAI_EAST_ART)) then {_ord = "ART"};
-	if (_sta != "WAIT" && _sta != "OK") then {_ord = "BUSY"};
-	if (!unitReady _ldr) then {_ord = "BUSY"};
-	if (!unitReady commander _veh) then {_ord = "BUSY"};
-	if (!unitReady gunner _veh) then {_ord = "BUSY"};
-	if (!unitReady driver _veh) then {_ord = "BUSY"};
-	if (isPlayer _ldr) then {_ord = "PLAYER"};
-	if (behaviour _ldr == "COMBAT") then {_ord = "COMBAT"};
-	if (count _eny == 0 && _ord == "ART") then {_ord = "NONE"};
-	if (count _eny == 0 && _ord == "QRF") then {_ord = "LOG"};
-	if (count _eny == 0 && _ord == "AIR") then {_ord = "LOG"};
+	
+	if (_busy == false && _comb == false && _flee == false) then {
+		_tran = [_x, _inf] call SAI_WP_LOG;
+	};
+	
+	if (_busy == false && _tran == false && _comb == false && _flee == false) then {
+		if (_x in (SAI_WEST_REC + SAI_EAST_REC)) then {_ord = "REC"};
+		if (_x in (SAI_WEST_QRF + SAI_EAST_QRF)) then {_ord = "QRF"};
+		if (_x in (SAI_WEST_DEF + SAI_EAST_DEF)) then {_ord = "DEF"};
+		if (_x in (SAI_WEST_ART + SAI_EAST_ART)) then {_ord = "ART"};
+		if (_x in (SAI_WEST_LOG + SAI_EAST_LOG)) then {_ord = "DEF"};
+		if (_x in (SAI_WEST_SUP + SAI_EAST_SUP)) then {_ord = "DEF"};
+		if (_x in (SAI_WEST_STA + SAI_EAST_STA)) then {_ord = "NONE"};
 
-	switch (_ord) do {
-		case "REC": {[_x, _obj] call SAI_WP_REC};	
-		case "QRF": {[_x, _eny] call SAI_WP_QRF};
-		case "DEF": {[_x, _base] call SAI_WP_DEF};
-		case "AIR": {[_x, _obj, _base] call SAI_WP_AIR};
-		case "LOG": {[_x, _inf, _base] call SAI_WP_LOG};
-		case "ART": {[_x, _eny] call SAI_WP_ART};
+		switch (_ord) do {
+			case "REC": {[_x, _obj] call SAI_WP_REC};	
+			case "QRF": {[_x, _eny] call SAI_WP_QRF};
+			case "DEF": {[_x, _rtb] call SAI_WP_DEF};
+			case "ART": {[_x, _eny] call SAI_WP_ART};
+		}
 	}
 }forEach (SAI_ALL);

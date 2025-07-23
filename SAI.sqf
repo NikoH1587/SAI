@@ -6,6 +6,8 @@ SAI_EAST = east;
 SAI_DEBUG = true;
 SAI_ACTIVE = true;
 SAI_BLACKLIST = [];
+SAI_FORCE_WEST = 0;
+SAI_FORCE_EAST = 0;
 
 SAI_FNC_WAYPOINTS = compile preprocessFileLineNumbers "SAI\Waypoints.sqf";
 SAI_FNC_SORTING = compile preprocessFileLineNumbers "SAI\Sorting.sqf";
