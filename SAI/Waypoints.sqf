@@ -54,9 +54,6 @@ SAI_WP_DEF = {
 	_veh = vehicle _ldr;
 	_inf = true;
 	if (_veh != _ldr) then {_inf = false};
-	_nbD = nearestBuilding _ldr;
-	if (_inf) then {
-		_wpn = _grpD addWaypoint [position _nbD, 0]};	
 	
 	if (_rtbD distance _ldr > SAI_DISTANCE or _rtbD distance _veh > SAI_DISTANCE) then {
 		_grpD setFormation (SAI_FORMATIONS select floor random 4);
@@ -66,6 +63,10 @@ SAI_WP_DEF = {
 		if (getWPPos _wpn distance _nbD < SAI_DISTANCE/2) then {
 		if (_inf) then {_wpn setWaypointPosition [position _nbD, 0]};
 		}
+	} else {
+		if (_inf) then {
+		_nbD = nearestBuilding _ldr;
+		_wpn = _grpD addWaypoint [position _nbD, 0]};	
 	}
 };
 

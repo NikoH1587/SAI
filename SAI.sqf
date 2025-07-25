@@ -9,15 +9,23 @@ SAI_BLACKLIST = [];
 SAI_FORCE_WEST = 0;
 SAI_FORCE_EAST = 0;
 
+SAI_FNC_CONFIG = compile preprocessFileLineNumbers "SAI\Config.sqf";
+SAI_FNC_SPAWNING = compile preprocessFileLineNumbers "SAI\Spawning.sqf";
+SAI_FNC_MARKERS = compile preprocessFileLineNumbers "SAI\Markers.sqf";
 SAI_FNC_WAYPOINTS = compile preprocessFileLineNumbers "SAI\Waypoints.sqf";
 SAI_FNC_SORTING = compile preprocessFileLineNumbers "SAI\Sorting.sqf";
 SAI_FNC_STRATEGIC = compile preprocessFileLineNumbers "SAI\Strategic.sqf";
 SAI_FNC_OPERATIONS = compile preprocessFileLineNumbers "SAI\Operations.sqf";
 SAI_FNC_TACTICS = compile preprocessFileLineNumbers "SAI\Tactics.sqf";
 
-execVM "SAI\Spawning.sqf";
-execVM "SAI\Markers.sqf";
-execVM "SAI\Waypoints.sqf";
+_config = 0 spawn SAI_FNC_CONFIG;
+waituntil {scriptDone _config};
+_spawning = 0 spawn SAI_FNC_SPAWNING;
+waituntil {scriptDone _spawning};
+_markers = 0 spawn SAI_FNC_MARKERS;
+waituntil {scriptDone _markers};
+_waypoints = 0 spawn SAI_FNC_WAYPOINTS;
+waituntil {scriptDone _waypoints};
 
 0 spawn {while {SAI_ACTIVE} do {
 	_sorting = 0 spawn SAI_FNC_SORTING;

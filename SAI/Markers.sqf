@@ -5,8 +5,8 @@ _alleast = [];
 
 {
 	_type = getMarkerType _x;
-	if (_type in ["b_inf", "b_motor_inf", "b_mech_inf", "b_recon"]) then {_allwest append [_x]};
-	if (_type in ["o_inf", "o_motor_inf", "o_mech_inf", "o_recon"]) then {_alleast append [_x]};
+	if (_type in ["b_motor_inf", "b_mech_inf", "b_recon", "b_support", "b_unknown"]) then {_allwest append [_x]};
+	if (_type in ["o_motor_inf", "o_mech_inf", "o_recon", "o_support", "o_unknown"]) then {_alleast append [_x]};
 }forEach SAI_SPAWNS;
 
 _west = _allwest select floor random count _allwest;
