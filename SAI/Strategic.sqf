@@ -7,20 +7,20 @@ _force_west =
 (count SAI_WEST_INF * 1) +
 (count SAI_WEST_LOG * 1) +
 (count SAI_WEST_CAR * 2) +
-(count SAI_WEST_HEL * 3) +
-(count SAI_WEST_PLA * 4) +
-(count SAI_WEST_ARM * 5) +
+(count SAI_WEST_AIR * 3) +
+(count SAI_WEST_ARM * 4) +
 (count SAI_WEST_ART * 5) +
+(count SAI_WEST_STA * 1) +
 (count SAI_WEST_SUP * 1);
 
 _force_east = 
 (count SAI_EAST_INF * 1) +
 (count SAI_EAST_LOG * 1) +
 (count SAI_EAST_CAR * 2) +
-(count SAI_EAST_HEL * 3) +
-(count SAI_EAST_PLA * 4) +
-(count SAI_EAST_ARM * 5) +
+(count SAI_EAST_AIR * 3) +
+(count SAI_EAST_ARM * 4) +
 (count SAI_EAST_ART * 5) +
+(count SAI_EAST_STA * 1) +
 (count SAI_EAST_SUP * 1);
 
 SAI_OBJECTIVE = "SAI_CENT";

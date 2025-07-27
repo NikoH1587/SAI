@@ -85,12 +85,12 @@ SAI_WP_QRF = {
 		_eny = _enys select floor random count _enys;
 		_enypos = getPos _eny;
 		_posQ = [[[_enypos, SAI_DISTANCE / 2]], ["water"]] call BIS_fnc_randomPos;
-		_wpq = _grpQ addWaypoint [_posQ, 0];
-		_wpq setWaypointType "SAD";
+		_wpQ = _grpQ addWaypoint [_posQ, 0];
+		_wpQ setWaypointType "SAD";
 	} else {
 		if (vehicle leader _grpQ == leader _grpQ) then {
 			_nbQ = nearestBuilding leader _grpQ;
-			_wpq = _grpQ addWaypoint [position _nbQ, 0];
+			_wpQ = _grpQ addWaypoint [position _nbQ, 0];
 		}
 	}
 };
@@ -110,6 +110,13 @@ SAI_WP_ART = {
 			_ldrA doArtilleryFire [_enypos, _ammo, 3];
 		}
 	}
+};
+
+SAI_WP_SUP = {
+	_grpS = _this select 0;
+	_wpS = _grpS addWaypoint [getPos leader _grpS, 0];
+	_wpS setWaypointType "SUPPORT";
+	SAI_BLACKLIST append [_grpS];
 };
 
 /// https://youtu.be/24iqQ5SOfvc?si=C-A5DJQ2Pwq5NOiv

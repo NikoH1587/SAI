@@ -18,8 +18,8 @@ SAI_EAST_QRF = [];
 	};
 }forEach allUnits;
 
-_west = SAI_WEST_CAR + SAI_WEST_ARM + SAI_WEST_INF + SAI_WEST_PLA + SAI_WEST_HEL;
-_east = SAI_EAST_CAR + SAI_EAST_ARM + SAI_EAST_INF + SAI_EAST_PLA + SAI_EAST_HEL;
+_west = SAI_WEST_CAR + SAI_WEST_ARM + SAI_WEST_INF + SAI_WEST_AIR;
+_east = SAI_EAST_CAR + SAI_EAST_ARM + SAI_EAST_INF + SAI_EAST_AIR;
 
 _modw = ceil (count _west)/3;
 _mode = ceil (count _east)/3;
