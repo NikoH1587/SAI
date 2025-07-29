@@ -31,6 +31,8 @@ if (_force_west > _force_east * 1.5) then {SAI_OBJECTIVE = "SAI_EAST"};
 if (_force_east > _force_west * 1.5) then {SAI_OBJECTIVE = "SAI_WEST"};
 
 if (SAI_DEBUG) then {
-	"SAI_WEST" setMarkerText SAI_OBJECTIVE + " " + str _force_west + "/" + str SAI_FORCE_WEST;
-	"SAI_EAST" setMarkerText SAI_OBJECTIVE + " " + str _force_east + "/" + str SAI_FORCE_EAST;
+	private _percentWest = floor ((_force_west / SAI_FORCE_WEST) * 100);
+	private _percentEast = floor ((_force_east / SAI_FORCE_EAST) * 100);
+	"SAI_WEST" setMarkerText (str _percentWest + "%");
+	"SAI_EAST" setMarkerText (str _percentEast + "%");
 };

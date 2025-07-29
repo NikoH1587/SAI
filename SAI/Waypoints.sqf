@@ -39,6 +39,7 @@ SAI_WP_LOG = {
 
 				_wpO = _tra addWaypoint [_objL, 0];
 				_wpO setWaypointType "TR UNLOAD";
+				_wpU = _crg addWaypoint [_objL, 10];
 				_found = true;
 			};
 		}forEach _inf;
@@ -60,7 +61,7 @@ SAI_WP_DEF = {
 		_wpn = _grpD addWaypoint [_posD, 0];
 	
 		_nbD = nearestBuilding getWPPos _wpn;
-		if (getWPPos _wpn distance _nbD < SAI_DISTANCE/2) then {
+		if (getWPPos _wpn distance _nbD < SAI_DISTANCE/4) then {
 		if (_inf) then {_wpn setWaypointPosition [position _nbD, 0]};
 		}
 	} else {
@@ -90,7 +91,9 @@ SAI_WP_QRF = {
 	} else {
 		if (vehicle leader _grpQ == leader _grpQ) then {
 			_nbQ = nearestBuilding leader _grpQ;
-			_wpQ = _grpQ addWaypoint [position _nbQ, 0];
+			if (leader _grpQ distance _nbQ < SAI_DISTANCE/4) then {
+				_wpQ = _grpQ addWaypoint [position _nbQ, 0];
+			}
 		}
 	}
 };

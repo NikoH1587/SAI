@@ -8,7 +8,10 @@ SAI_ACTIVE = true;
 SAI_BLACKLIST = [];
 SAI_FORCE_WEST = 0;
 SAI_FORCE_EAST = 0;
-SAI_GROUPCAP = 20;
+SAI_MORALE_WEST = 1;
+SAI_SUPPLY_WEST = 1;
+SAI_MORALE_EAST = 1;
+SAI_SUPPLY_EAST = 1;
 
 SAI_FNC_MARKERS = compile preprocessFileLineNumbers "SAI\Markers.sqf";
 SAI_FNC_CONFIG = compile preprocessFileLineNumbers "SAI\Config.sqf";
