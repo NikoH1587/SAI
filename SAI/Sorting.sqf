@@ -30,7 +30,7 @@ SAI_EAST_ART = [];
 	_sim = getText (_cfg >> "simulation");
 	if (_sim == "carx") then {_type = "CAR"};
 	if (_sim == "tankx") then {_type = "ARM"};
-	if (_sim in ["helicopterrtd", "planex"]) then {_type = "AIR"};
+	if (_sim in ["helicopterrtd", "airplanex"]) then {_type = "AIR"};
 		
 	if (count units _x == 1) then {_type = "LOG"};
 	_med = getNumber (_cfg >> "attendant");

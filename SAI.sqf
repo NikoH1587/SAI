@@ -40,14 +40,10 @@ waituntil {scriptDone _waypoints};
 	sleep 60;
 }};
 
-/// how to pull infantry groups cfg??
-/// go throught every config and only pull out ones that have solely infantry?
-/// [_faction, _name, cfg]
-/// make array with all possible factions
-/// array format in [Name, Cfg];
-/// verify that faction has vehicles (stupid GLOBMOB)
-/// also pull out flag icon? would be cool :>
-/// vehicle side doesn't matter? (lol)
-/// preload previous settings when opening menu (saved in missionProfileNamespace);
-/// war type (CONTINUE PREVIOUS, WEST INVASION, EAST INVASION, WEST INSURGENCY, EAST INSURGENCY)
 /// for future: getUnitLoadout, setUnitLoadout
+/// force composition:
+/// CONVENTIONAL
+/// ASYMETRICAL
+/// Irregulars
+/// Airborne?
+/// Cavalry?

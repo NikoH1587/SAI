@@ -1,13 +1,9 @@
-SAI_CFG_WEST_INF = configfile >> "CfgGroups" >> "West" >> "BLU_F" >> "Infantry";
-SAI_CFG_WEST_VEH = "BLU_F";
-SAI_CFG_EAST_INF = configfile >> "CfgGroups" >> "East" >> "OPF_F" >> "Infantry";
-SAI_CFG_EAST_VEH = "OPF_F";
-
 SAI_SPAWN_WEST_INF = [];
 SAI_SPAWN_WEST_MOT = [];
 SAI_SPAWN_WEST_MEC = [];
 SAI_SPAWN_WEST_ARM = [];
-SAI_SPAWN_WEST_AIR = [];
+SAI_SPAWN_WEST_PLA = [];
+SAI_SPAWN_WEST_HEL = [];
 SAI_SPAWN_WEST_ART = [];
 SAI_SPAWN_WEST_SUP = [];
 SAI_SPAWN_WEST_STA = [];
@@ -16,7 +12,8 @@ SAI_SPAWN_EAST_INF = [];
 SAI_SPAWN_EAST_MOT = [];
 SAI_SPAWN_EAST_MEC = [];
 SAI_SPAWN_EAST_ARM = [];
-SAI_SPAWN_EAST_AIR = [];
+SAI_SPAWN_EAST_PLA = [];
+SAI_SPAWN_EAST_HEL = [];
 SAI_SPAWN_EAST_ART = [];
 SAI_SPAWN_EAST_SUP = [];
 SAI_SPAWN_EAST_STA = [];
@@ -102,11 +99,18 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_STA append [configName _entry]};
 				};
 			if (
-				_sim in ["airplanex", "helicopterrtd"] && 
+				_sim == "helicopterrtd" && 
 				_sup == 0
 				) then {
-					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_AIR append [configName _entry]};
-					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_AIR append [configName _entry]};
+					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_HEL append [configName _entry]};
+					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_HEL append [configName _entry]};
+				};
+			if (
+				_sim == "airplanex" && 
+				_sup == 0
+				) then {
+					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_PLA append [configName _entry]};
+					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_PLA append [configName _entry]};
 				};
 			if (
 				_art != 0
@@ -124,3 +128,5 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 		}
 	}
 };
+
+/// IF MISSING PULL FROM AUX!
