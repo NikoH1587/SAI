@@ -44,9 +44,3 @@ waituntil {scriptDone _waypoints};
 }};
 
 /// for future: getUnitLoadout, setUnitLoadout
-/// force composition:
-/// CONVENTIONAL
-/// ASYMETRICAL
-/// Irregulars
-/// Airborne?
-/// Cavalry?

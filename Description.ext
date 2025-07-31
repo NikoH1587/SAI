@@ -1,3 +1,4 @@
 #include "\a3\ui_f\hpp\defineCommonGrids.inc"
 #include "UI\Import.hpp"
 #include "UI\SettingsGUI.hpp"
+#include "UI\VehiclesGUI.hpp"

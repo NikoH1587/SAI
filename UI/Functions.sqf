@@ -18,11 +18,11 @@ SAI_FNC_SET_TIME = {
 	_hour = 0;
 
 	switch (_this select 0) do {
-		case 0: {_hour = random 23};
-		case 1: {_hour = _sunrise};
-		case 2: {_hour = 12};
-		case 3: {_hour = _sunset};
-		case 4: {0};
+		case 0: {_hour = random [0, 11.5, 23]};
+		case 1: {_hour = _sunrise + 1};
+		case 2: {_hour = random [9, 12, 15]};
+		case 3: {_hour = _sunset - 1};
+		case 4: {random 4};
 	};
 
 	_newDate = [_date select 0, _date select 1, _date select 2, _hour, random 59];
@@ -74,6 +74,7 @@ SAI_FNC_COM_WEST = {
 		case 2: {SAI_CFG_WEST_COM = 2};
 		case 3: {SAI_CFG_WEST_COM = 3};
 		case 4: {SAI_CFG_WEST_COM = 4};
+		case 5: {SAI_CFG_WEST_COM = 5};
 	};
 };
 
@@ -94,5 +95,49 @@ SAI_FNC_COM_EAST = {
 		case 2: {SAI_CFG_EAST_COM = 2};
 		case 3: {SAI_CFG_EAST_COM = 3};
 		case 4: {SAI_CFG_EAST_COM = 4};
+		case 5: {SAI_CFG_EAST_COM = 5};
 	};
+};
+
+SAI_FNC_SET_VEH = {
+	_select = _this select 0;
+	SAI_CFG_SET_VEH = SAI_CFG_CFGVEHICLES select _select;
+};
+
+SAI_FNC_SET_VEH_WEST = {
+	SAI_CFG_CUSTOM_WEST append [SAI_CFG_SET_VEH];
+	call SAI_FNC_NEW_VEH_LIST;
+};
+
+SAI_FNC_SET_VEH_EAST = {
+	SAI_CFG_CUSTOM_EAST append [SAI_CFG_SET_VEH];
+	call SAI_FNC_NEW_VEH_LIST;
+};
+
+SAI_FNC_NEW_VEH_LIST = {
+	_display = findDisplay 2000;
+	if (isNull _display) exitWith {};
+	
+	_list_west = _display displayCtrl 2002;
+	_list_east = _display displayCtrl 2003;
+	
+	lbClear _list_west;
+	lbClear _list_east;
+	
+	{_list_west lbAdd _x}forEach SAI_CFG_CUSTOM_WEST;
+	{_list_east lbAdd _x}forEach SAI_CFG_CUSTOM_EAST;
+};
+
+SAI_FNC_RST_VEH_LIST = {
+	_display = findDisplay 2000;
+	if (isNull _display) exitWith {};
+	
+	_list_west = _display displayCtrl 2002;
+	_list_east = _display displayCtrl 2003;
+	
+	lbClear _list_west;
+	lbClear _list_east;
+	
+	SAI_CFG_CUSTOM_WEST = [];
+	SAI_CFG_CUSTOM_EAST = [];
 };

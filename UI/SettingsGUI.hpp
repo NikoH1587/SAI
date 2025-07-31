@@ -85,7 +85,7 @@ class SAI_GUI_SETTINGS
 			y = GUI_GRID_CENTER_Y + 4 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
-			tooltip = "Select type of units to spawn on player side.";
+			tooltip = "Select player side vehicles. Select CUSTOM to manually configure.";
 			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_COM_WEST;";
 		};
 
@@ -95,7 +95,7 @@ class SAI_GUI_SETTINGS
 			text = "SELECT ENEMY FACTION";
 			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 8 * GUI_GRID_CENTER_H;
-			w = 40 * GUI_GRID_CENTER_W;
+			w = 30 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
 			colorBackground[] = {1,1,0,0.1};
 		};
@@ -105,7 +105,7 @@ class SAI_GUI_SETTINGS
 			idc = 1003;
 			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 10 * GUI_GRID_CENTER_H;
-			w = 40 * GUI_GRID_CENTER_W;
+			w = 30 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
 			tooltip = "Select faction to spawn on enemy side.";
 			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_SET_EAST;";
@@ -129,7 +129,7 @@ class SAI_GUI_SETTINGS
 			y = GUI_GRID_CENTER_Y + 10 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
-			tooltip = "Select type of units to spawn on enemy side.";
+			tooltip = "Select enemy side vehicles. Select CUSTOM to manually configure.";
 			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_COM_EAST;";
 		};
 
@@ -268,16 +268,16 @@ class SAI_GUI_SETTINGS
 			h = 2 * GUI_GRID_CENTER_H;
 		};	
 		
-		class SAI_GUI_PLAY : RscButtonMenuOK
+		class SAI_GUI_PLAY : RscButtonMenu
 		{
 			idc = 1024;
 			text = "";
-			onButtonClick = "closeDialog 0; execVM 'SAI.sqf';";
 			x = GUI_GRID_CENTER_X + 30 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
 			colorBackground[] = {0,1,0.5,0.1};
+			onButtonClick = "closeDialog 0; if (SAI_CFG_WEST_COM != 5 && SAI_CFG_EAST_COM != 5) then {execVM 'SAI.sqf'} else {call compile preprocessFile 'UI\Vehicles.sqf';}";
 		};
 	};
 };

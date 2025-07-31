@@ -64,6 +64,7 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 			_fac = getText (_entry >> "faction");
 			_drv = getNumber (_entry >> "hasDriver");
 			_gun = count (_entry >> "turrets");
+			_arm = getNumber (_entry >> "armor");
 			_art = getNumber (_entry >> "artilleryScanner");
 			_med = getNumber (_entry >> "attendant");
 			_eng = getNumber (_entry >> "engineer");
@@ -85,7 +86,7 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 	
 			if (
 				_sim == "carx" && 
-				(_gun > 0 && _tra > 6) &&
+				(_gun > 0 && _tra > 6 && _arm > 100) &&
 				_sup == 0 && 
 				_art == 0
 				) then {
@@ -115,7 +116,8 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 				};
 			if (
 				_sim == "tankx" && 
-				_drv == 0 && 
+				_drv == 0 &&
+				_cls != "Autonomous" && 
 				_art == 0
 				) then {
 					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_STA append [configName _entry]};
@@ -129,7 +131,8 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_AIR append [configName _entry]};
 				};
 			if (
-				_art != 0
+				_art != 0 &&
+				_cls != "Autonomous"
 				) then {
 					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_ART append [configName _entry]};
 					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_ART append [configName _entry]};
@@ -145,16 +148,19 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 	}
 };
 
-for "_i" from 1 to (count SAI_SPAWN_WEST_ARM) do {
-	_rando = SAI_SPAWN_WEST_MEC select floor random count SAI_SPAWN_WEST_MEC;
-	SAI_SPAWN_WEST_ARM append [_rando];
+if (count SAI_SPAWN_WEST_MEC > 0) then {
+	for "_i" from 1 to (count SAI_SPAWN_WEST_ARM) do {
+		_rando = SAI_SPAWN_WEST_MEC select floor random count SAI_SPAWN_WEST_MEC;
+		SAI_SPAWN_WEST_ARM append [_rando];
+	};
 };
 
-for "_i" from 1 to (count SAI_SPAWN_EAST_ARM) do {
-	_rando = SAI_SPAWN_EAST_MEC select floor random count SAI_SPAWN_EAST_MEC;
-	SAI_SPAWN_EAST_ARM append [_rando];
+if (count SAI_SPAWN_EAST_MEC > 0) then {
+	for "_i" from 1 to (count SAI_SPAWN_WEST_ARM) do {
+		_rando = SAI_SPAWN_EAST_MEC select floor random count SAI_SPAWN_EAST_MEC;
+		SAI_SPAWN_EAST_ARM append [_rando];
+	};
 };
-
 
 if (count SAI_SPAWN_WEST_AIR == 0) then {SAI_SPAWN_WEST_AIR = SAI_SPAWN_WEST_MOT};
 if (count SAI_SPAWN_WEST_ARM == 0) then {SAI_SPAWN_WEST_ARM = SAI_SPAWN_WEST_MOT};
@@ -166,6 +172,7 @@ switch (SAI_CFG_WEST_COM) do {
 	case 2: {SAI_SPAWN_WEST = [SAI_SPAWN_WEST_MOT]};
 	case 3: {SAI_SPAWN_WEST = [SAI_SPAWN_WEST_ARM]};
 	case 4: {SAI_SPAWN_WEST = [SAI_SPAWN_WEST_AIR]};
+	case 5: {SAI_SPAWN_WEST = [SAI_CFG_CUSTOM_WEST]; SAI_SPAWN_WEST_ART = []; SAI_SPAWN_WEST_SUP = []};
 };
 
 if (count SAI_SPAWN_EAST_AIR == 0) then {SAI_SPAWN_EAST_AIR = SAI_SPAWN_EAST_MOT};
@@ -178,4 +185,5 @@ switch (SAI_CFG_EAST_COM) do {
 	case 2: {SAI_SPAWN_EAST = [SAI_SPAWN_EAST_MOT]};
 	case 3: {SAI_SPAWN_EAST = [SAI_SPAWN_EAST_ARM]};
 	case 4: {SAI_SPAWN_EAST = [SAI_SPAWN_EAST_AIR]};
+	case 5: {SAI_SPAWN_EAST = [SAI_CFG_CUSTOM_EAST]; SAI_SPAWN_EAST_ART = []; SAI_SPAWN_EAST_SUP = []};
 };
