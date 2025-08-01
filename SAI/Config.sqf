@@ -117,7 +117,8 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 			if (
 				_sim == "tankx" && 
 				_drv == 0 &&
-				_cls != "Autonomous" && 
+				_cls != "Autonomous" &&
+				_cls != "Support" &&
 				_art == 0
 				) then {
 					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_STA append [configName _entry]};
