@@ -1,17 +1,37 @@
-SAI_POS_WEST = getMarkerPos "SAI_WEST";
-SAI_POS_EAST = getMarkerPos "SAI_EAST";
-SAI_POS_CENT = getMarkerPos "SAI_CENT";
+SAI_MARKERS = allMapmarkers select {_x find "SAI_OBJ_" == 0};
+SAI_MARKERS_WEST = [];
+SAI_MARKERS_EAST = [];
 
-private _respawn_west = createMarker ["respawn_west", SAI_POS_WEST];
+private _count = 0;
+private _centX = 0;
+private _centY = 0;
 
-SAI_DISTANCE = (SAI_POS_WEST distance SAI_POS_EAST) / 4;
+{
+	private _mrk = _x;
+	private _pos = getMarkerPos _x;
+	private _mrkX = _pos select 0;
+	private _mrkY = _pos select 1;
+	_count = _count + 1;
+	_centX = _centX + _mrkX;
+	_centY = _centY + _mrkY;
+	if (markerColor _mrk == "ColorWEST") then {SAI_MARKERS_WEST append [_mrk]};
+	if (markerColor _mrk == "ColorEAST") then {SAI_MARKERS_EAST append [_mrk]};
+}forEach SAI_MARKERS;
+
+_centX = _centX / _count;
+_centY = _centY / _count;
+
+SAI_CENTER = [_centX, _centY];
+///private _respawn_west = createMarker ["respawn_west", SAI_POS_WEST];
+
+SAI_DISTANCE = 500;
 
 private _sizeOut = 50000;
-private _sizeX = SAI_DISTANCE*3;
-private _sizeY = SAI_DISTANCE*3;
+private _sizeX = SAI_DISTANCE * _count;
+private _sizeY = SAI_DISTANCE * _count;
 private _dir = 0;
-private _posY = SAI_POS_CENT select 1;
-private _posX = SAI_POS_CENT select 0;
+private _posX = _centX;
+private _posY = _centY;
 
 for "_i" from 0 to 270 step 90 do {
 	private _size1 = [_sizeX,_sizeY] select (abs cos _i);

@@ -44,7 +44,7 @@ SAI_EAST_ART = [];
 	if (_sim == "helicopterrtd") then {_type = "HEL"};
 	if (_sim == "airplanex") then {_type = "PLA"};
 		
-	if (count units _x == 1) then {_type = "LOG"};
+	if (count units _x == 1 && _sim == "carx") then {_type = "LOG"};
 	private _med = getNumber (_cfg >> "attendant");
 	private _eng = getNumber (_cfg >> "engineer");
 	private _amo = getNumber (_cfg >> "transportAmmo");

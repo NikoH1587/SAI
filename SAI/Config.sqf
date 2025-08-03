@@ -2,7 +2,8 @@ SAI_SPAWN_WEST_INF = [];
 SAI_SPAWN_WEST_MOT = [];
 SAI_SPAWN_WEST_ARM = [];
 SAI_SPAWN_WEST_MEC = [];
-SAI_SPAWN_WEST_AIR = [];
+SAI_SPAWN_WEST_HEL = [];
+SAI_SPAWN_WEST_PLA = [];
 SAI_SPAWN_WEST_ART = [];
 SAI_SPAWN_WEST_SUP = [];
 SAI_SPAWN_WEST_STA = [];
@@ -11,7 +12,8 @@ SAI_SPAWN_EAST_INF = [];
 SAI_SPAWN_EAST_MOT = [];
 SAI_SPAWN_EAST_ARM = [];
 SAI_SPAWN_EAST_MEC = [];
-SAI_SPAWN_EAST_AIR = [];
+SAI_SPAWN_EAST_HEL = [];
+SAI_SPAWN_EAST_PLA = [];
 SAI_SPAWN_EAST_ART = [];
 SAI_SPAWN_EAST_SUP = [];
 SAI_SPAWN_EAST_STA = [];
@@ -125,11 +127,18 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_STA append [configName _entry]};
 				};
 			if (
-				_sim in ["helicopterrtd", "airplanex"] &&
+				_sim == "helicopterrtd" &&
 				_sup == 0
 				) then {
-					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_AIR append [configName _entry]};
-					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_AIR append [configName _entry]};
+					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_HEL append [configName _entry]};
+					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_HEL append [configName _entry]};
+				};
+			if (
+				_sim == "airplanex" &&
+				_sup == 0
+				) then {
+					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_PLA append [configName _entry]};
+					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_PLA append [configName _entry]};
 				};
 			if (
 				_art != 0 &&
@@ -149,42 +158,20 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 	}
 };
 
-if (count SAI_SPAWN_WEST_MEC > 0) then {
-	for "_i" from 1 to (count SAI_SPAWN_WEST_ARM) do {
-		_rando = SAI_SPAWN_WEST_MEC select floor random count SAI_SPAWN_WEST_MEC;
-		SAI_SPAWN_WEST_ARM append [_rando];
-	};
-};
-
-if (count SAI_SPAWN_EAST_MEC > 0) then {
-	for "_i" from 1 to (count SAI_SPAWN_WEST_ARM) do {
-		_rando = SAI_SPAWN_EAST_MEC select floor random count SAI_SPAWN_EAST_MEC;
-		SAI_SPAWN_EAST_ARM append [_rando];
-	};
-};
-
-if (count SAI_SPAWN_WEST_AIR == 0) then {SAI_SPAWN_WEST_AIR = SAI_SPAWN_WEST_MOT};
-if (count SAI_SPAWN_WEST_ARM == 0) then {SAI_SPAWN_WEST_ARM = SAI_SPAWN_WEST_MOT};
-
-SAI_SPAWN_WEST = [SAI_SPAWN_WEST_MOT, SAI_SPAWN_WEST_ARM, SAI_SPAWN_WEST_AIR];
+SAI_SPAWN_WEST = [SAI_SPAWN_WEST_STA, SAI_SPAWN_WEST_MOT, SAI_SPAWN_WEST_MEC, SAI_SPAWN_WEST_ARM, SAI_SPAWN_WEST_HEL];
 switch (SAI_CFG_WEST_COM) do {
-	case 0: {SAI_SPAWN_WEST = [SAI_SPAWN_WEST_MOT, SAI_SPAWN_WEST_ARM, SAI_SPAWN_WEST_AIR]};
 	case 1: {SAI_SPAWN_WEST = [SAI_SPAWN_WEST_STA]};
 	case 2: {SAI_SPAWN_WEST = [SAI_SPAWN_WEST_MOT]};
-	case 3: {SAI_SPAWN_WEST = [SAI_SPAWN_WEST_ARM]};
-	case 4: {SAI_SPAWN_WEST = [SAI_SPAWN_WEST_AIR]};
-	case 5: {SAI_SPAWN_WEST = [SAI_CFG_CUSTOM_WEST]; SAI_SPAWN_WEST_ART = []; SAI_SPAWN_WEST_SUP = []};
+	case 3: {SAI_SPAWN_WEST = [SAI_SPAWN_WEST_MEC, SAI_SPAWN_WEST_ARM]};
+	case 4: {SAI_SPAWN_WEST = [SAI_SPAWN_WEST_HEL, SAI_SPAWN_WEST_HEL, SAI_SPAWN_WEST_PLA]};
+	case 5: {SAI_SPAWN_WEST = [SAI_CFG_CUSTOM_WEST]};
 };
 
-if (count SAI_SPAWN_EAST_AIR == 0) then {SAI_SPAWN_EAST_AIR = SAI_SPAWN_EAST_MOT};
-if (count SAI_SPAWN_EAST_ARM == 0) then {SAI_SPAWN_EAST_ARM = SAI_SPAWN_EAST_MOT};
-
-SAI_SPAWN_EAST = [SAI_SPAWN_EAST_MOT, SAI_SPAWN_EAST_ARM, SAI_SPAWN_EAST_AIR];
+SAI_SPAWN_EAST = [SAI_SPAWN_EAST_STA, SAI_SPAWN_EAST_MOT, SAI_SPAWN_EAST_MEC, SAI_SPAWN_EAST_ARM, SAI_SPAWN_EAST_HEL];
 switch (SAI_CFG_EAST_COM) do {
-	case 0: {SAI_SPAWN_EAST = [SAI_SPAWN_EAST_MOT, SAI_SPAWN_EAST_ARM, SAI_SPAWN_EAST_AIR]};
 	case 1: {SAI_SPAWN_EAST = [SAI_SPAWN_EAST_STA]};
 	case 2: {SAI_SPAWN_EAST = [SAI_SPAWN_EAST_MOT]};
-	case 3: {SAI_SPAWN_EAST = [SAI_SPAWN_EAST_ARM]};
-	case 4: {SAI_SPAWN_EAST = [SAI_SPAWN_EAST_AIR]};
-	case 5: {SAI_SPAWN_EAST = [SAI_CFG_CUSTOM_EAST]; SAI_SPAWN_EAST_ART = []; SAI_SPAWN_EAST_SUP = []};
+	case 3: {SAI_SPAWN_EAST = [SAI_SPAWN_EAST_MEC, SAI_SPAWN_EAST_ARM]};
+	case 4: {SAI_SPAWN_EAST = [SAI_SPAWN_EAST_HEL, SAI_SPAWN_EAST_HEL, SAI_SPAWN_EAST_PLA]};
+	case 5: {SAI_SPAWN_EAST = [SAI_CFG_CUSTOM_EAST]};
 };

@@ -6,8 +6,6 @@ SAI_CFG_CUSTOM_WEST = [];
 SAI_CFG_CUSTOM_EAST = [];
 
 _cfg = configFile >> "CfgGroups";
-SAI_CFG_GROUPS = [];
-SAI_CFG_FILTER = [];
 
 for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 	_entry = (configFile >> "CfgVehicles") select _i;
@@ -21,12 +19,6 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 			_name = getText (_entry >> "displayName");
 			
 			if (_sim in ["carx", "tankx", "helicopterrtd", "airplanex"] && _side in [0, 1, 2]) then {SAI_CFG_CFGVEHICLES append [_conf]; SAI_CFG_CFGVEHNAMES append [_name + " - " + _conf]};
-			
-			if (_sim == "carx") then {
-				if (_fac in SAI_CFG_FILTER == false) then {
-					SAI_CFG_FILTER append [_fac];
-				}
-			}
 		}
 	}
 };
@@ -61,7 +53,7 @@ for "_s" from 0 to count _cfg - 1 do {
 								};
 							};
 						};
-						if (_isInfantry && _vehfac in SAI_CFG_FILTER && _catname != "Support") then {
+						if (_isInfantry && _catname != "Support") then {
 							SAI_CFG_FACTIONS append [[_sidename, _facname, _catname, _vehfac]];
 							SAI_CFG_FACNAMES append [getText (configFile >> "CfgGroups" >> _sidename >> "name") + " - " + getText (configFile >> "CfgGroups" >> _sidename >> _facname >> "name") + " - " + getText (configFile >> "CfgGroups" >> _sidename >> _facname >> _catname >> "name") + " - " + _vehfac];
 						};
