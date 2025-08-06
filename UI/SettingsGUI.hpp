@@ -238,25 +238,25 @@ class SAI_GUI_SETTINGS
 			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_SET_ROLE;";
 		};		
 	
-		class SAI_GUI_TEXT_RESET: RscText
-		{
-			idc = -1;
-			text = "RESET SAVE";
-			x = GUI_GRID_CENTER_X + 20 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;
-			w = 10 * GUI_GRID_CENTER_W;
-			h = 2 * GUI_GRID_CENTER_H;
-		};	
+///		class SAI_GUI_TEXT_RESET: RscText
+///		{
+///			idc = -1;
+///			text = "RESET SAVE";
+///			x = GUI_GRID_CENTER_X + 20 * GUI_GRID_CENTER_W;
+///			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;
+///			w = 10 * GUI_GRID_CENTER_W;
+///			h = 2 * GUI_GRID_CENTER_H;
+///		};	
 	
-		class SAI_GUI_RESET : RscCheckBox
-		{
-			idc = 1023;
-			x = GUI_GRID_CENTER_X + 26 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;
-			w = 2 * GUI_GRID_CENTER_W;
-			h = 2 * GUI_GRID_CENTER_H;
-			tooltip = "Checking this will reset map save.";
-		};
+///		class SAI_GUI_RESET : RscCheckBox
+///			{
+///			idc = 1023;
+///			x = GUI_GRID_CENTER_X + 26 * GUI_GRID_CENTER_W;
+///			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;
+///			w = 2 * GUI_GRID_CENTER_W;
+///			h = 2 * GUI_GRID_CENTER_H;
+///			tooltip = "Checking this will reset map save.";
+///		};
 
 		class SAI_GUI_TEXT_PLAY: RscText
 		{

@@ -1,6 +1,8 @@
 {
 	private _scale = SAI_CFG_SCALE;
 
+	/// add check if custom,
+	/// go throught array with modulo?
 	private _difficulty = 0 - SAI_CFG_DIFFICULTY;
 	private _vehicles = SAI_SPAWN_WEST;
 	private _support = SAI_SPAWN_WEST_SUP;

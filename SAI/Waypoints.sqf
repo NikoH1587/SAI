@@ -5,22 +5,15 @@ SAI_WP_CHK = {
 	private _veh = _this select 1;
 	private _plr = _this select 2;
 	private _busy = false;
-	
+
 	private _grp = group _ldr;
 	private _wpIdx = currentWaypoint _grp;
 	private _wpTot = count (waypoints _grp);
 	private _wpMax = (_wpIdx >= _wpTot);
 	if (!_wpMax) then {_busy = true};
 	
-	private _sta = getUnitState _ldr;
-	if (_sta != "WAIT" && _sta != "OK") then {_busy = true};
-	if (!unitReady _ldr) then {_busy = true};
-	if (!unitReady commander _veh) then {_busy = true};
-	if (!unitReady gunner _veh) then {_busy = true};
-	if (!unitReady driver _veh) then {_busy = true};
-	if (!unitReady _veh) then {_busy = true};
+	if (_grp != group driver _veh) then {_busy = true};
 	if (!alive _ldr) then {_busy = true};
-	/// add disable autotasking task check?
 	_busy
 };
 

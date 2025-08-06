@@ -2,3 +2,4 @@
 #include "UI\Import.hpp"
 #include "UI\SettingsGUI.hpp"
 #include "UI\VehiclesGUI.hpp"
+#include "UI\CommandsGUI.hpp"

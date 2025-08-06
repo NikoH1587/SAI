@@ -80,7 +80,7 @@ SAI_OPS_EAST = [];
 		_target = getPosASL _enemy;
 	};
 	SAI_OPS_WEST append [[_x, "PLA", _target]];
-}forEach SAI_WEST_ART;
+}forEach SAI_WEST_PLA;
 
 {
 	private _group = _x;
@@ -130,4 +130,4 @@ SAI_OPS_EAST = [];
 		_target = getPosASL _enemy;
 	};
 	SAI_OPS_EAST append [[_x, "PLA", _target]];
-}forEach SAI_EAST_ART;
+}forEach SAI_EAST_PLA;

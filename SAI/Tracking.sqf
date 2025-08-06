@@ -1,5 +1,6 @@
-private _west = allMapmarkers select {_x find "SAI_WEST_" == 0};
-private _east = allMapmarkers select {_x find "SAI_EAST_" == 0};
+SAI_MARKERS_WEST = allMapmarkers select {_x find "SAI_WEST_" == 0};
+SAI_MARKERS_WP = allMapmarkers select {_x find "SAI_WPWP_" == 0};
+SAI_MARKERS_EAST = allMapmarkers select {_x find "SAI_EAST_" == 0};
 private _westID = SAI_WEST_ALL apply {groupId _x};
 private _eastID = SAI_EAST_ALL apply {groupId _x};
 
@@ -7,33 +8,47 @@ private _eastID = SAI_EAST_ALL apply {groupId _x};
 	private _name = _x;
 	private _idx = _name select [9, count _name];
 	private _alive = _idx in _westID;
+	private _wpMrk = format ["SAI_WPWP_%1", _idx];
 	
 	if (!_alive && markerAlpha _name != 0.5) then {
 		_name setMarkerColor "ColorBlack";
 		_name setMarkerAlpha 0.5;
+		deleteMarker _wpMrk;
 	};
-}forEach _west;
+}forEach SAI_MARKERS_WEST;
 
 {
 	private _name = _x;
 	private _idx = _name select [9, count _name];
 	private _alive = _idx in _eastID;
 	
-	if (!_alive) then {
+	if (!_alive && markerAlpha _name != 0.5) then {
 		_name setMarkerColor "ColorBlack";
 		_name setMarkerAlpha 0.5;
 	};
-}forEach _east;
+}forEach SAI_MARKERS_EAST;
 
 {
 	private _grp = _x;
 	private _idx = groupId _grp;
 	private _ldr = leader _grp;
 	private _mrk = format ["SAI_WEST_%1", _idx];
+	private _wpMrk = format ["SAI_WPWP_%1", _idx];
 	
-	if !(_mrk in _west) then {
+	
+	if !(_mrk in SAI_MARKERS_WEST) then {
+		_wpMrk = createMarker [_wpMrk, position _ldr];
 		_mrk = createMarker [_mrk, position _ldr];
+		_wpMrk setMarkerShape "POLYLINE";
+		_wpMrk setMarkerColor "ColorWEST";
+		_wpMrk setMarkerAlpha 0.5;
 	} else {
+		private _wp = currentWaypoint _grp;
+		private _ldrPos = position _ldr;
+		private _wpPos = waypointPosition [_grp, _wp];
+		if (_wpPos select 0 != 0 && _wpPos select 1 != 0 && _wpPos distance _ldrPos > 50) then {
+			_wpMrk setMarkerPolyline [_ldrPos select 0, _ldrPos select 1, _wpPos select 0, _wpPos select 1];
+		};
 		_mrk setMarkerPos (position _ldr);
 	};
 	
@@ -61,7 +76,7 @@ private _eastID = SAI_EAST_ALL apply {groupId _x};
 	private _ldr = leader _grp;
 	private _mrk = format ["SAI_EAST_%1", _idx];
 	
-	if !(_mrk in _east) then {
+	if !(_mrk in SAI_MARKERS_EAST) then {
 		_mrk = createMarker [_mrk, position _ldr];
 		_mrk setMarkerAlpha 0;
 	} else {
