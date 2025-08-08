@@ -18,7 +18,7 @@ class SAI_GUI_SETTINGS
 		class SAI_GUI_TITLE: RscText
 		{
 			idc = -1;
-			text = "HIVE BATTLE GENERATOR";
+			text = "UNIVERSAL SCENARIO GENERATOR";
 			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 0 * GUI_GRID_CENTER_H;
 			w = 20 * GUI_GRID_CENTER_W;
@@ -28,7 +28,7 @@ class SAI_GUI_SETTINGS
 		class SAI_GUI_VERSION: RscText
 		{
 			idc = -1;
-			text = "VERSION 2";
+			text = "VERSION 1";
 			x = GUI_GRID_CENTER_X + 20 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 0 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;

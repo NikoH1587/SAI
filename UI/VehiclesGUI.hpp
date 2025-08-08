@@ -108,7 +108,7 @@ class SAI_GUI_VEHICLES
 		
 		class SAI_GUI_VEH_NO : RscButtonMenu
 		{
-			idc = 1015;
+			idc = 2015;
 			text = "RESET";
 			x = GUI_GRID_CENTER_X + 20 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;
@@ -121,7 +121,7 @@ class SAI_GUI_VEHICLES
 		
 		class SAI_GUI_VEH_OK : RscButtonMenu
 		{
-			idc = 1021;
+			idc = 2021;
 			text = "START MISSION";
 			x = GUI_GRID_CENTER_X + 30 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;

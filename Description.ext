@@ -3,3 +3,5 @@
 #include "UI\SettingsGUI.hpp"
 #include "UI\VehiclesGUI.hpp"
 #include "UI\CommandsGUI.hpp"
+#include "UI\ScenarioGUI.hpp"
+#include "UI\MenuGUI.hpp"
