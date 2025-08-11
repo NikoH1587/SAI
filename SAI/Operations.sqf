@@ -1,133 +1,91 @@
-SAI_WEST_ENEMIES = [];
-SAI_EAST_ENEMIES = [];
+SAI_OPS_WEST = [];
+
+SAI_WEST_GRP = SAI_WEST_INF + SAI_WEST_MOT + SAI_WEST_MEC + SAI_WEST_ARM + SAI_WEST_HEL + SAI_WEST_UAV;
+SAI_WEST_REC = [];
+SAI_WEST_QRF = [];
+SAI_WEST_DEF = [];
 
 {
-	if ((SAI_WEST knowsAbout _x) > 0 && (side _x == SAI_EAST) && alive _x) then {
-		SAI_WEST_ENEMIES append [_x];
-		private _grp = group _x;
-		private _idx = groupId _grp;
-		private _mrk = format ["SAI_EAST_%1", _idx];
-		if (markerAlpha _mrk == 0) then {
-			_mrk setMarkerAlpha 1;
-		};
+	private _grp = _x;
+	if (_x in SAI_WEST_GRP) then {
+		private _assigned = false;
+		if (count SAI_WEST_REC < ((count SAI_WEST_GRP)/3) && _assigned == false) then {_assigned = true; SAI_WEST_REC append [_grp]};
+		if (count SAI_WEST_QRF < ((count SAI_WEST_GRP)/3) && _assigned == false) then {_assigned = true; SAI_WEST_QRF append [_grp]};
+		if (_assigned == false) then {SAI_WEST_DEF append [_grp]};
 	};
-	
-	if ((SAI_EAST knowsAbout _x) > 0 && (side _x == SAI_WEST) && alive _x) then {
-		SAI_WEST_ENEMIES append [_x];
+}forEach SAI_WEST_ALL;
+
+{
+	private _obj = [0, 0, 0];
+	if (count SAI_NEUT_OBJ > 0) then {
+		private _mod = count SAI_WEST_REC / count SAI_NEUT_OBJ;
+		private _idx = floor (_forEachIndex / _mod);
+		if (_idx >= count SAI_NEUT_OBJ) then {_idx = 0};
+		_obj = SAI_NEUT_OBJ select _idx;
 	};
-}forEach allUnits;
+	SAI_OPS_WEST append [[_x, "REC", _obj]];
+}forEach SAI_WEST_REC;
 
-private _west = SAI_WEST_MOT + SAI_WEST_HEL + SAI_WEST_ARM + SAI_WEST_MEC + SAI_WEST_INF;
-private _east = SAI_EAST_MOT + SAI_EAST_HEL + SAI_EAST_ARM + SAI_EAST_MEC + SAI_EAST_INF;
+{
+	private _obj = [0, 0, 0];
+	if (count SAI_WEST_OBJ > 0) then {
+		private _mod = count SAI_WEST_DEF / count SAI_WEST_OBJ;
+		private _idx = floor (_forEachIndex / _mod);
+		if (_idx >= count SAI_WEST_OBJ) then {_idx = 0};
+		_obj = SAI_WEST_OBJ select _idx;
+	};
+	SAI_OPS_WEST append [[_x, "DEF", _obj]];
+}forEach SAI_WEST_DEF;
 
-private _modw = ceil ((count _west)/3);
-private _mode = ceil ((count _east)/3);
+{SAI_OPS_WEST append [[_x, "LOG", []]]}forEach SAI_WEST_LOG;
+{SAI_OPS_WEST append [[_x, "SUP", []]]}forEach SAI_WEST_SUP;
+{SAI_OPS_WEST append [[_x, "STA", []]]}forEach SAI_WEST_STA;
+{SAI_OPS_WEST append [[_x, "QRF", SAI_WEST_ENEMIES select floor random count SAI_WEST_ENEMIES]]}forEach SAI_WEST_QRF;
+{SAI_OPS_WEST append [[_x, "ART", SAI_WEST_ENEMIES select floor random count SAI_WEST_ENEMIES]]}forEach SAI_WEST_ART;
+{SAI_OPS_WEST append [[_x, "PLA", SAI_WEST_ENEMIES select floor random count SAI_WEST_ENEMIES]]}forEach SAI_WEST_PLA;
 
-private _recw = ceil ((count SAI_RECON_WEST) / _modw);
-private _rece = ceil ((count SAI_RECON_WEST) / _mode);
-
-private _defw = ceil ((count SAI_DEFEND_WEST) / _modw);
-private _defe = ceil ((count SAI_DEFEND_WEST) / _mode);
-
-SAI_OPS_WEST = [];
 SAI_OPS_EAST = [];
 
-{
-	private _group = _x;
-	private _idx = _forEachIndex;
-	private _total = count _east;
-	
-	private _task = "DEF";
-	private _target = "";
-	
-	if (_idx < _modw) then {
-		_task = "REC";
-		_target = SAI_RECON_WEST select (_idx % (count SAI_RECON_WEST));
-	} else {
-		if (_idx < (_modw * 2)) then {
-			_task = "QRF";
-			if (count SAI_WEST_ENEMIES > 0) then {
-				private _enemy = SAI_WEST_ENEMIES select (_idx % (count SAI_WEST_ENEMIES));
-				_target = getPos _enemy;
-			} else {
-				_target = [0,0,0];
-			};
-		} else  {
-			_task = "DEF";
-			_target = SAI_DEFEND_WEST select ((_idx - (_modw * 2)) % (count SAI_DEFEND_WEST));
-		}
-	};
-	SAI_OPS_WEST append [[_group, _task, _target]];
-}forEach _west;
-
-{SAI_OPS_WEST append [[_x, "LOG", [0, 0, 0]]]}forEach SAI_WEST_LOG;
-{SAI_OPS_WEST append [[_x, "SUP", [0, 0, 0]]]}forEach SAI_WEST_SUP;
-{SAI_OPS_WEST append [[_x, "STA", [0, 0, 0]]]}forEach SAI_WEST_STA;
+SAI_EAST_GRP = SAI_EAST_INF + SAI_EAST_MOT + SAI_EAST_MEC + SAI_EAST_ARM + SAI_EAST_HEL + SAI_EAST_UAV;
+SAI_EAST_REC = [];
+SAI_EAST_QRF = [];
+SAI_EAST_DEF = [];
 
 {
-	private _target = [0,0,0];
-	if (count SAI_WEST_ENEMIES > 0) then {
-		private _enemy = SAI_WEST_ENEMIES select floor random count SAI_WEST_ENEMIES;
-		_target = getPosASL _enemy;
+	private _grp = _x;
+	if (_x in SAI_EAST_GRP) then {
+		private _assigned = false;
+		if (count SAI_EAST_REC < ((count SAI_EAST_GRP)/3) && _assigned == false) then {_assigned = true; SAI_EAST_REC append [_grp]};
+		if (count SAI_EAST_QRF < ((count SAI_EAST_GRP)/3) && _assigned == false) then {_assigned = true; SAI_EAST_QRF append [_grp]};
+		if (_assigned == false) then {SAI_EAST_DEF append [_grp]};
 	};
-	SAI_OPS_WEST append [[_x, "ART", _target]];
-}forEach SAI_WEST_ART;
+}forEach SAI_EAST_ALL;
 
 {
-	private _target = [0,0,0];
-	if (count SAI_WEST_ENEMIES > 0) then {
-		private _enemy = SAI_WEST_ENEMIES select floor random count SAI_WEST_ENEMIES;
-		_target = getPosASL _enemy;
+	private _obj = [0, 0, 0];
+	if (count SAI_NEUT_OBJ > 0) then {
+		private _mod = count SAI_EAST_REC / count SAI_NEUT_OBJ;
+		private _idx = floor (_forEachIndex / _mod);
+		if (_idx >= count SAI_NEUT_OBJ) then {_idx = 0};
+		_obj = SAI_NEUT_OBJ select _idx;
 	};
-	SAI_OPS_WEST append [[_x, "PLA", _target]];
-}forEach SAI_WEST_PLA;
+	SAI_OPS_EAST append [[_x, "REC", _obj]];
+}forEach SAI_EAST_REC;
 
 {
-	private _group = _x;
-	private _idx = _forEachIndex;
-	private _total = count _east;
-	
-	private _task = "DEF";
-	private _target = "";
-	
-	if (_idx < _mode) then {
-		_task = "REC";
-		_target = SAI_RECON_EAST select (_idx % (count SAI_RECON_EAST));
-	} else {
-		if (_idx < (_mode * 2)) then {
-			_task = "QRF";
-			if (count SAI_WEST_ENEMIES > 0) then {
-				private _enemy = SAI_WEST_ENEMIES select (_idx % (count SAI_WEST_ENEMIES));
-				_target = getPos _enemy;
-			} else {
-				_target = [0,0,0];
-			};
-		} else  {
-			_task = "DEF";
-			_target = SAI_DEFEND_EAST select ((_idx - (_mode * 2)) % (count SAI_DEFEND_EAST));
-		}
+	private _obj = [0, 0, 0];
+	if (count SAI_EAST_OBJ > 0) then {
+		private _mod = count SAI_EAST_DEF / count SAI_EAST_OBJ;
+		private _idx = floor (_forEachIndex / _mod);
+		if (_idx >= count SAI_EAST_OBJ) then {_idx = 0};
+		_obj = SAI_EAST_OBJ select _idx;
 	};
-	SAI_OPS_EAST append [[_group, _task, _target]];
-}forEach _east;
+	SAI_OPS_EAST append [[_x, "DEF", _obj]];
+}forEach SAI_EAST_DEF;
 
-{SAI_OPS_EAST append [[_x, "LOG", [0, 0, 0]]]}forEach SAI_EAST_LOG;
-{SAI_OPS_EAST append [[_x, "SUP", [0, 0, 0]]]}forEach SAI_EAST_SUP;
-{SAI_OPS_EAST append [[_x, "STA", [0, 0, 0]]]}forEach SAI_EAST_STA;
-
-{
-	private _target = [0,0,0];
-	if (count SAI_EAST_ENEMIES > 0) then {
-		private _enemy = SAI_EAST_ENEMIES select floor random count SAI_EAST_ENEMIES;
-		_target = getPosASL _enemy;
-	};
-	SAI_OPS_EAST append [[_x, "ART", _target]];
-}forEach SAI_EAST_ART;
-
-{
-	private _target = [0,0,0];
-	if (count SAI_EAST_ENEMIES > 0) then {
-		private _enemy = SAI_EAST_ENEMIES select floor random count SAI_EAST_ENEMIES;
-		_target = getPosASL _enemy;
-	};
-	SAI_OPS_EAST append [[_x, "PLA", _target]];
-}forEach SAI_EAST_PLA;
+{SAI_OPS_EAST append [[_x, "LOG", []]]}forEach SAI_EAST_LOG;
+{SAI_OPS_EAST append [[_x, "SUP", []]]}forEach SAI_EAST_SUP;
+{SAI_OPS_EAST append [[_x, "STA", []]]}forEach SAI_EAST_STA;
+{SAI_OPS_EAST append [[_x, "QRF", SAI_EAST_ENEMIES select floor random count SAI_EAST_ENEMIES]]}forEach SAI_EAST_QRF;
+{SAI_OPS_EAST append [[_x, "ART", SAI_EAST_ENEMIES select floor random count SAI_EAST_ENEMIES]]}forEach SAI_EAST_ART;
+{SAI_OPS_EAST append [[_x, "PLA", SAI_EAST_ENEMIES select floor random count SAI_EAST_ENEMIES]]}forEach SAI_EAST_PLA;

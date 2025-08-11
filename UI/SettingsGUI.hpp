@@ -133,66 +133,45 @@ class SAI_GUI_SETTINGS
 			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_COM_EAST;";
 		};
 
-		class SAI_GUI_TIME_TEXT : RscText
+		class SAI_GUI_CONDITIONS_TEXT : RscText
 		{
 			idc = -1;
-			text = "TIME";
+			text = "CONDITIONS";
 			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 14 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
 		};	
 
-		class SAI_GUI_TIME : RscCombo
+		class SAI_GUI_CONDITIONS : RscCombo
 		{
 			idc = 1011;
 			x = GUI_GRID_CENTER_X + 10 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 14 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
-			tooltip = "Set world time.";
-			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_SET_TIME;";
+			tooltip = "Set time and weather";
+			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_CONDITIONS;";
 		};	
 		
-		class SAI_GUI_WEATHER_TEXT : RscText
+		class SAI_GUI_SCENARIO_TEXT : RscText
 		{
 			idc = -1;
-			text = "WEATHER";
+			text = "SCENARIO";
 			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 16 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
 		};			
 		
-		class SAI_GUI_WEATHER : RscCombo
+		class SAI_GUI_SCENARIO : RscCombo
 		{
 			idc = 1012;
 			x = GUI_GRID_CENTER_X + 10 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 16 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
-			tooltip = "Set world weather.";
-			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_SET_WEATHER;";
-		};	
-		
-		class SAI_GUI_SCALE_TEXT : RscText
-		{
-			idc = -1;
-			text = "SCALE";
-			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;
-			w = 10 * GUI_GRID_CENTER_W;
-			h = 2 * GUI_GRID_CENTER_H;
-		};			
-		
-		class SAI_GUI_SCALE : RscCombo
-		{
-			idc = 1013;
-			x = GUI_GRID_CENTER_X + 10 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;
-			w = 10 * GUI_GRID_CENTER_W;
-			h = 2 * GUI_GRID_CENTER_H;
-			tooltip = "Set scale of mission.";
+			tooltip = "Set mission scale and starting objectives.";
 			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_SET_SCALE;";
 		};	
 
@@ -200,43 +179,22 @@ class SAI_GUI_SETTINGS
 		{
 			idc = -1;
 			text = "DIFFICULTY";
-			x = GUI_GRID_CENTER_X + 20 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 14 * GUI_GRID_CENTER_H;
+			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
+			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
 		};			
 		
 		class SAI_GUI_DIFFICULTY : RscCombo
 		{
-			idc = 1021;
-			x = GUI_GRID_CENTER_X + 30 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 14 * GUI_GRID_CENTER_H;
+			idc = 1013;
+			x = GUI_GRID_CENTER_X + 10 * GUI_GRID_CENTER_W;
+			y = GUI_GRID_CENTER_Y + 18 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 2 * GUI_GRID_CENTER_H;
-			tooltip = "Select player side to enemy side ratio.";
+			tooltip = "Set sides ratio and player role.";
 			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_SET_DIFFICULTY;";
 		};	
-	
-		class SAI_GUI_ROLE_TEXT : RscText
-		{
-			idc = -1;
-			text = "PLAYER ROLE";
-			x = GUI_GRID_CENTER_X + 20 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 16 * GUI_GRID_CENTER_H;
-			w = 10 * GUI_GRID_CENTER_W;
-			h = 2 * GUI_GRID_CENTER_H;
-		};			
-		
-		class SAI_GUI_ROLE : RscCombo
-		{
-			idc = 1022;
-			x = GUI_GRID_CENTER_X + 30 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 16 * GUI_GRID_CENTER_H;
-			w = 10 * GUI_GRID_CENTER_W;
-			h = 2 * GUI_GRID_CENTER_H;
-			tooltip = "Select player role for mission.";
-			onLBSelChanged = "_select = (_this select 1); [_select] call SAI_FNC_SET_ROLE;";
-		};		
 	
 ///		class SAI_GUI_TEXT_RESET: RscText
 ///		{

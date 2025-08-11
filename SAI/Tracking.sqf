@@ -46,7 +46,7 @@ private _eastID = SAI_EAST_ALL apply {groupId _x};
 		private _wp = currentWaypoint _grp;
 		private _ldrPos = position _ldr;
 		private _wpPos = waypointPosition [_grp, _wp];
-		if (_wpPos select 0 != 0 && _wpPos select 1 != 0 && _wpPos distance _ldrPos > 50) then {
+		if (_wpPos select 0 != 0 && _wpPos select 1 != 0 && _wpPos distance _ldrPos > 10) then {
 			_wpMrk setMarkerPolyline [_ldrPos select 0, _ldrPos select 1, _wpPos select 0, _wpPos select 1];
 		};
 		_mrk setMarkerPos (position _ldr);
@@ -64,7 +64,7 @@ private _eastID = SAI_EAST_ALL apply {groupId _x};
 	if (_grp in SAI_WEST_SUP) then {_typ = "b_support"};
 	if (_grp in SAI_WEST_STA) then {_typ = "b_installation"};
 	if (_grp in SAI_WEST_ART) then {_typ = "b_art"};
-
+	if (_grp in SAI_WEST_UAV) then {_typ = "b_uav"};
 	if (markerType _mrk != _typ) then {
 		_mrk setMarkerType _typ;
 	}
@@ -98,6 +98,7 @@ private _eastID = SAI_EAST_ALL apply {groupId _x};
 	if (_grp in SAI_EAST_SUP) then {_typ = "o_support"};
 	if (_grp in SAI_EAST_STA) then {_typ = "o_installation"};
 	if (_grp in SAI_EAST_ART) then {_typ = "o_art"};
+	if (_grp in SAI_EAST_UAV) then {_typ = "o_uav"};
 
 	if (markerType _mrk != _typ) then {
 		_mrk setMarkerType _typ;

@@ -1,9 +1,7 @@
 {
 	private _scale = SAI_CFG_SCALE;
 
-	/// add check if custom,
-	/// go throught array with modulo?
-	private _difficulty = 0 - SAI_CFG_DIFFICULTY;
+	private _difficulty = 0 - SAI_CFG_RATIO;
 	private _vehicles = SAI_SPAWN_WEST;
 	private _support = SAI_SPAWN_WEST_SUP;
 	private _artillery = SAI_SPAWN_WEST_ART;
@@ -14,7 +12,7 @@
 	private _morale = SAI_MORALE_WEST;
 	
 	if (_x == "EAST") then {
-		_difficulty = 0 + SAI_CFG_DIFFICULTY;
+		_difficulty = 0 + SAI_CFG_RATIO;
 		_vehicles = SAI_SPAWN_EAST;
 		_support = SAI_SPAWN_EAST_SUP;
 		_artillery = SAI_SPAWN_EAST_ART;

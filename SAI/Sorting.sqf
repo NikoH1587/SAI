@@ -18,6 +18,7 @@ SAI_WEST_STA = [];
 SAI_WEST_LOG = [];
 SAI_WEST_SUP = [];
 SAI_WEST_ART = [];
+SAI_WEST_UAV = [];
 
 SAI_EAST_INF = [];
 SAI_EAST_MOT = [];
@@ -29,6 +30,7 @@ SAI_EAST_STA = [];
 SAI_EAST_LOG = [];
 SAI_EAST_SUP = [];
 SAI_EAST_ART = [];
+SAI_EAST_UAV = [];
 
 {
 	private _ldr = leader _x;
@@ -38,11 +40,13 @@ SAI_EAST_ART = [];
 	private _drv = getNumber (_cfg >> "hasDriver");
 	private _sim = getText (_cfg >> "simulation");
 	private _tra = getNumber (_cfg >> "transportSoldier");
+	private _cls = getText (_cfg >> "vehicleClass");
 	if (_sim == "carx") then {_type = "MOT"};
 	if (_sim == "tankx") then {_type = "ARM"};
 	if (_sim == "tankx" && _tra > 6) then {_type = "MEC"};
 	if (_sim == "helicopterrtd") then {_type = "HEL"};
 	if (_sim == "airplanex") then {_type = "PLA"};
+	if (_cls == "Autonomous") then {_type = "UAV"};
 		
 	if (count units _x == 1 && _sim == "carx") then {_type = "LOG"};
 	private _med = getNumber (_cfg >> "attendant");
@@ -69,6 +73,7 @@ SAI_EAST_ART = [];
 		case "SUP_WEST": {SAI_WEST_SUP append [_x]};
 		case "STA_WEST": {SAI_WEST_STA append [_x]};
 		case "ART_WEST": {SAI_WEST_ART append [_x]};
+		case "UAV_WEST": {SAI_WEST_UAV append [_x]};
 		
 		case "INF_EAST": {SAI_EAST_INF append [_x]};
 		case "MOT_EAST": {SAI_EAST_MOT append [_x]};
@@ -79,7 +84,8 @@ SAI_EAST_ART = [];
 		case "LOG_EAST": {SAI_EAST_LOG append [_x]};
 		case "SUP_EAST": {SAI_EAST_SUP append [_x]};
 		case "STA_EAST": {SAI_EAST_STA append [_x]};
-		case "ART_EAST": {SAI_EAST_ART append [_x]};		
+		case "ART_EAST": {SAI_EAST_ART append [_x]};
+		case "UAV_EAST": {SAI_EAST_UAV append [_x]};		
 		default {SAI_ALL = SAI_ALL - [_x]};
 	}
 }forEach SAI_ALL;

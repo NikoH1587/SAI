@@ -29,9 +29,15 @@ SAI_CENTER = [_centX, _centY];
 
 SAI_DISTANCE = 500;
 
+private _maxdist = 0;
+{
+	private _distance = (getMarkerPos _x) distance SAI_CENTER;
+	if (_distance > _maxdist) then {_maxdist = _distance};
+}forEach SAI_MARKERS;
+
 private _sizeOut = 50000;
-private _sizeX = SAI_DISTANCE * _count;
-private _sizeY = SAI_DISTANCE * _count;
+private _sizeX = _maxdist + 500;
+private _sizeY = _maxdist + 500;
 private _dir = 0;
 private _posX = _centX;
 private _posY = _centY;
@@ -53,7 +59,7 @@ for "_i" from 0 to 270 step 90 do {
 	_marker setmarkersize [_sizeMarker,_sizeOut - _size1];
 	_marker setmarkerdir _dirTemp;
 	_marker setmarkershape "rectangle";
-	_marker setmarkerbrush "solid";
+	_marker setmarkerbrush "SolidFull";
 	_marker setmarkercolor "colorBlack";
 
 };

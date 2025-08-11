@@ -2,7 +2,59 @@ SAI_CFG_FACTIONS = [];
 SAI_CFG_FACNAMES = [];
 SAI_CFG_CFGVEHICLES = [];
 SAI_CFG_CFGVEHNAMES = [];
+SAI_CFG_DATE = date;
+SAI_CFG_CAST = random 1;
+SAI_CFG_TIME = random [0, 11.5, 23];
+
+SAI_CFG_SCENARIO = floor random 3;
+SAI_CFG_SCALE = ceil random 3;
+
+SAI_CFG_RATIO = 0;
+SAI_CFG_ROLE = 1;
+
+private _world = worldSize;
+private _positions = [];
+private _rando = [] call BIS_fnc_randomPos;
+private _locations = nearestLocations [ _rando, ["NameCityCapital", "NameCity", "NameVillage", "NameLocal", "Hill"], _world/4];
+
+{
+	private _pos = position _x;
+	if ((surfaceIsWater _pos == false) && count _positions < (3 * SAI_CFG_SCALE)) then {
+		private _distance = false;
+		{
+			if (_pos distance _x < 1000) then {
+				_distance = true;
+			}
+		}forEach _positions;
+		
+		if (_distance == false) then {
+			_positions append [_pos];
+		}
+	}
+}forEach _locations;
+
+SAI_CFG_OBJECTIVES = _positions;
+
+{
+	private _mrk = createMarker ["SAI_OBJ_" + str _forEachIndex, _x];
+	_mrk setMarkerType "mil_flag";
+	if (_forEachIndex == 0) then {_mrk setMarkerColor "ColorWEST"};
+	if (_forEachIndex == 1) then {_mrk setMarkerColor "ColorEAST"};
+	/// 2
+	if (_forEachIndex == 3) then {_mrk setMarkerColor "ColorWEST"};
+	if (_forEachIndex == 4) then {_mrk setMarkerColor "ColorEAST"};
+	/// 5
+	/// 6
+	if (_forEachIndex == 7) then {_mrk setMarkerColor "ColorWEST"};
+	if (_forEachIndex == 8) then {_mrk setMarkerColor "ColorEAST"};
+	/// 8
+}forEach SAI_CFG_OBJECTIVES;
+
+SAI_CFG_WEST = ["West", "BLU_F", "Infantry", "BLU_F"];
+SAI_CFG_WEST_COM = 0;
 SAI_CFG_CUSTOM_WEST = [];
+SAI_CFG_EAST = ["East", "OPF_F", "Infantry", "OPF_F"];
+SAI_CFG_EAST_COM = 0;
 SAI_CFG_CUSTOM_EAST = [];
 
 _cfg = configFile >> "CfgGroups";

@@ -1,43 +1,32 @@
-SAI_FNC_SET_WEATHER = {
-	private _overcast = 0;
-	switch (_this select 0) do {
-		case 0: {_overcast = random 1};
-		case 1: {_overcast = 0};
-		case 2: {_overcast = 0.5};
-		case 3: {_overcast = 1};
-	};
-	0 setOverCast _overcast;
-	forceWeatherChange;
-};
-
-SAI_FNC_SET_TIME = {
-	private _date = date;
-	private _suntime = _date call BIS_fnc_sunriseSunsetTime;
+SAI_FNC_CONDITIONS = {
+	private _suntime = SAI_CFG_DATE call BIS_fnc_sunriseSunsetTime;
 	private _sunrise = _suntime select 0;
 	private _sunset = _suntime select 1;
-	private _hour = 0;
-
+	
 	switch (_this select 0) do {
-		case 0: {_hour = random [0, 11.5, 23]};
-		case 1: {_hour = _sunrise + 1};
-		case 2: {_hour = random [9, 12, 15]};
-		case 3: {_hour = _sunset - 1};
-		case 4: {random 4};
+		case 0: {SAI_CFG_TIME = random [0, 11.5, 23]; 	SAI_CFG_CAST = random 1};
+		case 1: {SAI_CFG_TIME = _sunrise + (random 1); 	SAI_CFG_CAST = 0};
+		case 2: {SAI_CFG_TIME = random [9, 12, 15];		SAI_CFG_CAST = 0};
+		case 3: {SAI_CFG_TIME = _sunset - (random 1);	SAI_CFG_CAST = 0};
+		case 4: {SAI_CFG_TIME = random 4; 				SAI_CFG_CAST = 0};
+		case 5: {SAI_CFG_TIME = _sunrise + (random 1); 	SAI_CFG_CAST = 0.5};
+		case 6: {SAI_CFG_TIME = random [9, 12, 15]; 	SAI_CFG_CAST = 0.5};
+		case 7: {SAI_CFG_TIME = _sunset - (random 1); 	SAI_CFG_CAST = 0.5};
+		case 8: {SAI_CFG_TIME = random 4;				SAI_CFG_CAST = 0.5};
+		case 9: {SAI_CFG_TIME = _sunrise + (random 1);	SAI_CFG_CAST = 1};
+		case 10: {SAI_CFG_TIME = random [9, 12, 15]; 	SAI_CFG_CAST = 1};
+		case 11: {SAI_CFG_TIME = _sunset - (random 1);	SAI_CFG_CAST = 1};
+		case 12: {SAI_CFG_TIME = random 4;				SAI_CFG_CAST = 1};
 	};
-
-	_newDate = [_date select 0, _date select 1, _date select 2, _hour, random 59];
-	setDate _newDate;
-	skipTime 0;
-};
-
-SAI_FNC_SET_DATE = {
-	private _date = _this select 0;
+	
+	0 setOverCast SAI_CFG_CAST;
+	forceWeatherChange;
+	private _date = [SAI_CFG_DATE select 0, SAI_CFG_DATE  select 1, SAI_CFG_DATE  select 2, SAI_CFG_TIME, SAI_CFG_DATE  select 4];
 	setDate _date;
 	skipTime 0;
 };
 
-SAI_FNC_SET_SCALE = {
-	SAI_CFG_SCALE = 2;
+SAI_FNC_SCENARIO = {
 	switch (_this select 0) do {
 		case 0: {SAI_CFG_SCALE = 1};
 		case 1: {SAI_CFG_SCALE = 2};
@@ -46,7 +35,6 @@ SAI_FNC_SET_SCALE = {
 };
 
 SAI_FNC_SET_DIFFICULTY = {
-	SAI_CFG_DIFFICULTY = 0;
 	switch (_this select 0) do {
 		case 0: {SAI_CFG_DIFFICULTY = -1};
 		case 1: {SAI_CFG_DIFFICULTY = 0};
@@ -55,7 +43,6 @@ SAI_FNC_SET_DIFFICULTY = {
 };
 
 SAI_FNC_SET_ROLE = {
-	SAI_CFG_ROLE = 1;
 	switch (_this select 0) do {
 		case 0: {SAI_CFG_ROLE = 0};
 		case 1: {SAI_CFG_ROLE = 1};
@@ -68,19 +55,17 @@ SAI_FNC_SET_WEST = {
 	if (_select > 0) then {
 		SAI_CFG_WEST = SAI_CFG_FACTIONS select (_select - 1);
 	} else {
-		SAI_CFG_WEST = ["West", "BLU_F", "Infantry", "BLU_F"];
 	};
 };
 
 SAI_FNC_COM_WEST = {
-	SAI_CFG_WEST_COM = 0;
 	switch (_this select 0) do {
 		case 0: {SAI_CFG_WEST_COM = 0};
 		case 1: {SAI_CFG_WEST_COM = 1};
 		case 2: {SAI_CFG_WEST_COM = 2};
 		case 3: {SAI_CFG_WEST_COM = 3};
 		case 4: {SAI_CFG_WEST_COM = 4};
-		case 5: {SAI_CFG_WEST_COM = 5};
+		case 5: {SAI_CFG_WEST_COM = 5; };
 	};
 };
 
@@ -89,12 +74,10 @@ SAI_FNC_SET_EAST = {
 	if (_select > 0) then {
 		SAI_CFG_EAST = SAI_CFG_FACTIONS select (_select - 1);
 	} else {
-		SAI_CFG_EAST = ["East", "OPF_F", "Infantry", "OPF_F"];
 	};
 };
 
 SAI_FNC_COM_EAST = {
-	SAI_CFG_EAST_COM = 0;
 	switch (_this select 0) do {
 		case 0: {SAI_CFG_EAST_COM = 0};
 		case 1: {SAI_CFG_EAST_COM = 1};
@@ -146,33 +129,4 @@ SAI_FNC_RST_VEH_LIST = {
 	
 	SAI_CFG_CUSTOM_WEST = [];
 	SAI_CFG_CUSTOM_EAST = [];
-};
-
-/// onMapSingleClick {
-/// 	params ["_pos", "_alt", "_shift", "_ctrl"];
-/// 	// Example: only create marker if CTRL is held down
-/// 	if (_ctrl) then {
-/// 		[_pos, 1] call SAI_fnc_addObjectiveMarker;
-/// 	};
-/// 	true  // Ensures map click does not move player
-///};
-
-SAI_FNC_SET_MARKER = {
-	private _position = _this select 0;
-	private _side = _this select 1;
-	private _markers = allMapmarkers select {_x find "SAI_OBJ_" == 0};
-	private _index = count _markers;
-	private _name = format ["SAI_OBJ_%1", _index];
-	
-	private _marker = createMarker [_name, _position];
-	switch (_side) do {
-		case 0: {_marker setMarkerColor "ColorWEST"};
-		case 1: {_marker setMarkerColor "ColorBlack"};
-		case 2: {_marker setMarkerColor "ColorEAST"};
-	};
-};
-
-SAI_FNC_SELECT_SCENARIO = {
-	private _select = _this select 0;
-	SAI_CFG_SCENARIO = SAI_CFG_SCENARIOS select _select;
 };
