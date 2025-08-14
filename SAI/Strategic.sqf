@@ -1,94 +1,115 @@
-private _westX = 0;
-private _westY = 0;
-private _eastX = 0;
-private _eastY = 0;
+/// get forces ratio
+private _force_west = 0;
+{_force_west = _force_west + (_x select 3)}forEach SAI_WEST_ALL;
+private _force_east = 0;
+{_force_east = _force_east + (_x select 3)}forEach SAI_EAST_ALL;
 
-private _force_west = 
-(count SAI_WEST_INF * 1) +
-(count SAI_WEST_LOG * 1) +
-(count SAI_WEST_MOT * 2) +
-(count SAI_WEST_MEC * 3) +
-(count SAI_WEST_ARM * 4) +
-(count SAI_WEST_HEL * 3) +
-(count SAI_WEST_PLA * 4) +
-(count SAI_WEST_ART * 5) +
-(count SAI_WEST_STA * 1) +
-(count SAI_WEST_SUP * 1);
+/// assign objectves based on control
+SAI_OBJ_NEUT = [];
+SAI_OBJ_WEST = [];
+SAI_OBJ_EAST = [];
 
-private _force_east =
-(count SAI_EAST_INF * 1) +
-(count SAI_EAST_LOG * 1) +
-(count SAI_EAST_MOT * 2) +
-(count SAI_EAST_MEC * 3) +
-(count SAI_EAST_ARM * 4) +
-(count SAI_EAST_HEL * 3) +
-(count SAI_EAST_PLA * 4) +
-(count SAI_EAST_ART * 5) +
-(count SAI_EAST_STA * 1) +
-(count SAI_EAST_SUP * 1);
-
-SAI_WEST_OBJ = [];
-SAI_EAST_OBJ = [];
-SAI_NEUT_OBJ = [];
 {
 	private _marker = _x;
 	private _pos = getMarkerPos _marker;
 	private _west = 0;
 	private _east = 0;
 	private _side = "NONE";
-	private _entities = _pos nearEntities SAI_DISTANCE;
+
+	{
+		private _posGrp = _x select 2;
+		private _valGrp = _x select 3;
+		
+		if (_posGrp distance _pos < SAI_DISTANCE) then {
+			_west = _west + _valGrp;
+		};
+	}forEach SAI_WEST_ALL;
 	
 	{
-		if (alive _x) then {
-			if (side _x == SAI_WEST) then {_west = _west + 1};
-			if (side _x == SAI_EAST) then {_east = _east + 1};
-		}
-	}forEach _entities;
+		private _posGrp = _x select 2;
+		private _valGrp = _x select 3;
+		
+		if (_posGrp distance _pos < SAI_DISTANCE) then {
+			_east = _east + _valGrp;
+		};
+	}forEach SAI_EAST_ALL;
 	
-	if (_west > _east * 1.5) then {_side = "WEST"};
-	if (_east > _west * 1.5) then {_side = "EAST"};
+	if (_west > _east * 1.5) then {_side = "WEST";};
+	if (_east > _west * 1.5) then {_side = "EAST";};
 	
 	switch (_side) do {
-	case "NONE": {if (markerColor _marker != "ColorBLACK") then {_marker setMarkerColor "ColorBLACK"}; SAI_NEUT_OBJ append [_pos]};
-	case "WEST": {if (markerColor _marker != "ColorWEST") then {_marker setMarkerColor "ColorWEST"}; SAI_WEST_OBJ append [_pos]};
-	case "EAST": {if (markerColor _marker != "ColorEAST") then {_marker setMarkerColor "ColorEAST"}; SAI_EAST_OBJ append [_pos]};
+		case "NONE": {if (markerColor _marker != "ColorBlack") then {_marker setMarkerColor "ColorBlack"}; SAI_OBJ_NEUT append [_pos]};
+		case "WEST": {if (markerColor _marker != "ColorWEST") then {_marker setMarkerColor "ColorWEST"}; SAI_OBJ_WEST append [_pos]};
+		case "EAST": {if (markerColor _marker != "ColorEAST") then {_marker setMarkerColor "ColorEAST"}; SAI_OBJ_EAST append [_pos]};
 	}
 }forEach SAI_MARKERS;
 
-if (_force_west > _force_east * 1.5) then {SAI_NEUT_OBJ append SAI_EAST_OBJ};
-if (_force_east > _force_west * 1.5) then {SAI_NEUT_OBJ append SAI_WEST_OBJ};
+/// switch between gambit/attack/defend
+SAI_MODE_WEST = "GAMBIT";
+SAI_MODE_EAST = "GAMBIT";
+if (_force_west > _force_east * 1.5) then {SAI_MODE_WEST = "ATTACK"; SAI_MODE_EAST = "DEFEND"};
+if (_force_east > _force_west * 1.5) then {SAI_MODE_WEST = "DEFEND"; SAI_MODE_EAST = "ATTACK"};
 
-if (count SAI_NEUT_OBJ == 0) then {(SAI_WEST_OBJ + SAI_EAST_OBJ) select floor random count (SAI_WEST_OBJ + SAI_EAST_OBJ)};
+/// if no defensive objectives, defend center
+if (count SAI_OBJ_WEST == 0) then {SAI_OBJ_WEST = SAI_CENTER_WEST};
+if (count SAI_OBJ_EAST == 0) then {SAI_OBJ_EAST = SAI_CENTER_EAST};
 
+/// destruction victory tracking
 SAI_FORCE_WEST = SAI_FORCE_WEST max _force_west;
 SAI_FORCE_EAST = SAI_FORCE_EAST max _force_east;
 
-SAI_WEST_ENEMIES = [[0, 0, 0]];
-SAI_EAST_ENEMIES = [[0, 0, 0]];
+/// Track enemy positions for fire support solutions
+SAI_ENY_WEST = [];
+
+/// put objective arrays in order of distance from side centers
+
+SAI_OBJ_WEST = [SAI_OBJ_WEST, [], {_x distance2D SAI_CENTER_EAST}, "ASCEND"] call BIS_fnc_sortBy;
+SAI_OBJ_EAST = [SAI_OBJ_EAST, [], {_x distance2D SAI_CENTER_WEST}, "ASCEND"] call BIS_fnc_sortBy;
+
+/// assign recon objective if no neutrals
+SAI_OBJ_WEST_SEC = [];
+if (count SAI_OBJ_NEUT == 0) then {
+	SAI_OBJ_WEST_SEC = SAI_OBJ_EAST select 0;
+};
+
+SAI_OBJ_EAST_SEC = [];
+if (count SAI_OBJ_NEUT == 0) then {
+	SAI_OBJ_EAST_SEC = SAI_OBJ_WEST select 0;
+};
 
 {
-	if ((SAI_WEST knowsAbout _x) > 0 && (side _x == SAI_EAST) && alive _x) then {
-		private _pos = getPos _x;
-		SAI_WEST_ENEMIES append [_pos];
-		private _grp = group _x;
+	private _grp = _x select 0;
+	private _typ = _x select 1;
+	private _pos = _x select 2;
+	private _found = false;
+	
+	{if ((_x select 2) distance _pos < SAI_DISTANCE) then {_found = true}}forEach SAI_WEST_ALL;
+	if (_found && (_typ in ["HEL", "PLA", "UAV"] == false)) then {
+		SAI_ENY_WEST append [_pos];
 		private _idx = groupId _grp;
 		private _mrk = format ["SAI_EAST_%1", _idx];
-		if (markerAlpha _mrk == 0) then {
-			_mrk setMarkerAlpha 1;
-		};
+		_mrk setMarkerPos _pos;
+		_mrk setMarkerAlpha 1;
 	};
 	
-	if ((SAI_EAST knowsAbout _x) > 0 && (side _x == SAI_WEST) && alive _x) then {
-		private _pos = getPos _x;
-		SAI_EAST_ENEMIES append [_pos];
+	if (_typ in ["HEL", "PLA", "UAV"]) then {
+		private _idx = groupId _grp;
+		private _mrk = format ["SAI_EAST_%1", _idx];
+		_mrk setMarkerPos _pos;
+		_mrk setMarkerAlpha 1;
 	};
-}forEach allUnits;
+}forEach SAI_EAST_ALL;
 
-if (false) then {
-	private _percentWest = floor ((_force_west / SAI_FORCE_WEST) * 100);
-	private _percentEast = floor ((_force_east / SAI_FORCE_EAST) * 100);
-	private _conquestWest = floor ((SAI_DEFEND_WEST / (count SAI_MARKERS)) * 100);
-	private _conquestEast = floor ((SAI_DEFEND_EAST / (count SAI_MARKERS)) * 100);
-	player sideChat ("WEST CONQ: " + str _conquestWest + " DOM: " + str _percentWest + "%");
-	player sideChat ("WEST CONQ: " + str _conquestEast + " DOM: " + str _percentEast + "%");
-};
+SAI_ENY_EAST = [];
+
+{
+	private _grp = _x select 0;
+	private _typ = _x select 1;
+	private _pos = _x select 2;
+	private _found = false;
+	
+	{if ((_x select 2) distance _pos < SAI_DISTANCE) then {_found = true}}forEach SAI_EAST_ALL;
+	if (_found && (_typ in ["HEL", "PLA", "UAV"] == false)) then {SAI_ENY_EAST append [_pos]};
+}forEach SAI_WEST_ALL;
+
+

@@ -15,7 +15,7 @@ private _centY = 0;
 	_centX = _centX + _mrkX;
 	_centY = _centY + _mrkY;
 	_mrk setMarkerShape "Ellipse";
-	_mrk setMarkerSize [500, 500];
+	_mrk setMarkerSize [SAI_DISTANCE, SAI_DISTANCE];
 	_mrk setMarkerBrush "Border";
 	if (markerColor _mrk == "ColorWEST") then {SAI_MARKERS_WEST append [_mrk]};
 	if (markerColor _mrk == "ColorEAST") then {SAI_MARKERS_EAST append [_mrk]};
@@ -27,8 +27,6 @@ _centY = _centY / _count;
 SAI_CENTER = [_centX, _centY];
 ///private _respawn_west = createMarker ["respawn_west", SAI_POS_WEST];
 
-SAI_DISTANCE = 500;
-
 private _maxdist = 0;
 {
 	private _distance = (getMarkerPos _x) distance SAI_CENTER;
@@ -36,8 +34,8 @@ private _maxdist = 0;
 }forEach SAI_MARKERS;
 
 private _sizeOut = 50000;
-private _sizeX = _maxdist + 500;
-private _sizeY = _maxdist + 500;
+private _sizeX = _maxdist + SAI_DISTANCE;
+private _sizeY = _maxdist + SAI_DISTANCE;
 private _dir = 0;
 private _posX = _centX;
 private _posY = _centY;

@@ -1,106 +1,119 @@
 SAI_MARKERS_WEST = allMapmarkers select {_x find "SAI_WEST_" == 0};
-SAI_MARKERS_WP = allMapmarkers select {_x find "SAI_WPWP_" == 0};
 SAI_MARKERS_EAST = allMapmarkers select {_x find "SAI_EAST_" == 0};
-private _westID = SAI_WEST_ALL apply {groupId _x};
-private _eastID = SAI_EAST_ALL apply {groupId _x};
 
-{
-	private _name = _x;
-	private _idx = _name select [9, count _name];
-	private _alive = _idx in _westID;
-	private _wpMrk = format ["SAI_WPWP_%1", _idx];
-	
-	if (!_alive && markerAlpha _name != 0.5) then {
-		_name setMarkerColor "ColorBlack";
-		_name setMarkerAlpha 0.5;
-		deleteMarker _wpMrk;
-	};
-}forEach SAI_MARKERS_WEST;
+/// remove SAI_CENT?
 
+/// WEST
+private _markersWest = [];
+_westX = 0;
+_westY = 0;
+_westC = 0;
 {
-	private _name = _x;
-	private _idx = _name select [9, count _name];
-	private _alive = _idx in _eastID;
-	
-	if (!_alive && markerAlpha _name != 0.5) then {
-		_name setMarkerColor "ColorBlack";
-		_name setMarkerAlpha 0.5;
-	};
-}forEach SAI_MARKERS_EAST;
-
-{
-	private _grp = _x;
+	private _grp = _x select 0;
+	private _typ = _x select 1;
+	private _pos = _x select 2;
+	private _posX = _pos select 0;
+	private _posY = _pos select 1;
+	_westX = _westX + _posX;
+	_westY = _westY + _posY;
+	_westC = _westC + 1;
 	private _idx = groupId _grp;
-	private _ldr = leader _grp;
 	private _mrk = format ["SAI_WEST_%1", _idx];
-	private _wpMrk = format ["SAI_WPWP_%1", _idx];
-	
+	_markersWest append [_mrk];
 	
 	if !(_mrk in SAI_MARKERS_WEST) then {
-		_wpMrk = createMarker [_wpMrk, position _ldr];
-		_mrk = createMarker [_mrk, position _ldr];
-		_wpMrk setMarkerShape "POLYLINE";
-		_wpMrk setMarkerColor "ColorWEST";
-		_wpMrk setMarkerAlpha 0.5;
+		_mrk = createMarker [_mrk, _pos];
 	} else {
-		private _wp = currentWaypoint _grp;
-		private _ldrPos = position _ldr;
-		private _wpPos = waypointPosition [_grp, _wp];
-		if (_wpPos select 0 != 0 && _wpPos select 1 != 0 && _wpPos distance _ldrPos > 10) then {
-			_wpMrk setMarkerPolyline [_ldrPos select 0, _ldrPos select 1, _wpPos select 0, _wpPos select 1];
-		};
-		_mrk setMarkerPos (position _ldr);
-	};
-	
-	
-	private _typ = "mil_dot";
-	if (_grp in SAI_WEST_INF) then {_typ = "b_inf"};
-	if (_grp in SAI_WEST_MOT) then {_typ = "b_motor_inf"};
-	if (_grp in SAI_WEST_MEC) then {_typ = "b_mech_inf"};
-	if (_grp in SAI_WEST_ARM) then {_typ = "b_armor"};
-	if (_grp in SAI_WEST_PLA) then {_typ = "b_plane"};
-	if (_grp in SAI_WEST_HEL) then {_typ = "b_air"};
-	if (_grp in SAI_WEST_LOG) then {_typ = "b_unknown"};
-	if (_grp in SAI_WEST_SUP) then {_typ = "b_support"};
-	if (_grp in SAI_WEST_STA) then {_typ = "b_installation"};
-	if (_grp in SAI_WEST_ART) then {_typ = "b_art"};
-	if (_grp in SAI_WEST_UAV) then {_typ = "b_uav"};
-	if (markerType _mrk != _typ) then {
-		_mrk setMarkerType _typ;
-	}
-}forEach SAI_WEST_ALL;
-
-{
-	private _grp = _x;
-	private _idx = groupId _grp;
-	private _ldr = leader _grp;
-	private _mrk = format ["SAI_EAST_%1", _idx];
-	
-	if !(_mrk in SAI_MARKERS_EAST) then {
-		_mrk = createMarker [_mrk, position _ldr];
-		_mrk setMarkerAlpha 0;
-	} else {
-		_mrk setMarkerPos (position _ldr);
-		if (markerAlpha _mrk == 1) then {
-		_mrk setMarkerAlpha 0;
+		_mrk setMarkerPos _pos;
+		if (markerAlpha _mrk == 0.5) then {
+			_mrk setMarkerColor "Default";
+			_mrk setMarkerAlpha 1;
 		}
 	};
 	
-	
-	private _typ = "mil_dot";
-	if (_grp in SAI_EAST_INF) then {_typ = "o_inf"};
-	if (_grp in SAI_EAST_MOT) then {_typ = "o_motor_inf"};
-	if (_grp in SAI_EAST_MEC) then {_typ = "o_mech_inf"};
-	if (_grp in SAI_EAST_ARM) then {_typ = "o_armor"};
-	if (_grp in SAI_EAST_PLA) then {_typ = "o_plane"};
-	if (_grp in SAI_EAST_HEL) then {_typ = "o_air"};
-	if (_grp in SAI_EAST_LOG) then {_typ = "o_unknown"};
-	if (_grp in SAI_EAST_SUP) then {_typ = "o_support"};
-	if (_grp in SAI_EAST_STA) then {_typ = "o_installation"};
-	if (_grp in SAI_EAST_ART) then {_typ = "o_art"};
-	if (_grp in SAI_EAST_UAV) then {_typ = "o_uav"};
+	private _smt = "mil_dot";
+	if (_typ == "INF") then {_smt = "b_inf"};
+	if (_typ == "MOT") then {_smt = "b_motor_inf"};
+	if (_typ == "MEC") then {_smt = "b_mech_inf"};
+	if (_typ == "ARM") then {_smt = "b_armor"};
+	if (_typ == "PLA") then {_smt = "b_plane"};
+	if (_typ == "HEL") then {_smt = "b_air"};
+	if (_typ == "LOG") then {_smt = "b_unknown"};
+	if (_typ == "SUP") then {_smt = "b_support"};
+	if (_typ == "STA") then {_smt = "b_installation"};
+	if (_typ == "ART") then {_smt = "b_art"};
+	if (_typ == "UAV") then {_smt = "b_uav"};
+	if (markerType _mrk != _smt) then {
+		_mrk setMarkerType _smt;
+	};
+}forEach SAI_WEST_ALL;
 
-	if (markerType _mrk != _typ) then {
-		_mrk setMarkerType _typ;
-	}
+_westX = _westX / _westC;
+_westY = _westY / _westC;
+
+SAI_CENTER_WEST = [_westX, _westY];
+
+{
+	if (_x in _markersWest == false && markerAlpha _x != 0.5) then {
+		_x setMarkerColor "ColorBLACK";
+		_x setMarkerAlpha 0.5;
+	};
+}forEach SAI_MARKERS_WEST;
+
+/// EAST
+private _markersEast = [];
+_eastX = 0;
+_eastY = 0;
+_eastC = 0;
+{
+	private _grp = _x select 0;
+	private _typ = _x select 1;
+	private _pos = _x select 2;
+	private _posX = _pos select 0;
+	private _posY = _pos select 1;
+	_eastX = _eastX + _posX;
+	_eastY = _eastY + _posY;
+	_eastC = _eastC + 1;
+	private _idx = groupId _grp;
+	private _mrk = format ["SAI_EAST_%1", _idx];
+	_markersEast append [_mrk];
+	
+	if !(_mrk in SAI_MARKERS_WEST) then {
+		_mrk = createMarker [_mrk, _pos];
+		_mrk setMarkerAlpha 0;
+	} else {
+		_mrk setMarkerPos _pos;
+		if (markerAlpha _mrk == 0.5) then {
+			_mrk setMarkerColor "Default";
+			_mrk setMarkerAlpha 1;
+		}
+	};
+	
+	private _smt = "mil_dot";
+	if (_typ == "INF") then {_smt = "o_inf"};
+	if (_typ == "MOT") then {_smt = "o_motor_inf"};
+	if (_typ == "MEC") then {_smt = "o_mech_inf"};
+	if (_typ == "ARM") then {_smt = "o_armor"};
+	if (_typ == "PLA") then {_smt = "o_plane"};
+	if (_typ == "HEL") then {_smt = "o_air"};
+	if (_typ == "LOG") then {_smt = "o_unknown"};
+	if (_typ == "SUP") then {_smt = "o_support"};
+	if (_typ == "STA") then {_smt = "o_installation"};
+	if (_typ == "ART") then {_smt = "o_art"};
+	if (_typ == "UAV") then {_smt = "o_uav"};
+	if (markerType _mrk != _smt) then {
+		_mrk setMarkerType _smt;
+	};
 }forEach SAI_EAST_ALL;
+
+_eastX = _eastX / _eastC;
+_eastY = _eastY / _eastC;
+
+SAI_CENTER_EAST = [_eastX, _eastY];
+
+{
+	if (_x in _markersEast == false && markerAlpha _x != 0.5) then {
+		_x setMarkerColor "ColorBLACK";
+		_x setMarkerAlpha 0.5;
+	};
+}forEach SAI_MARKERS_EAST;

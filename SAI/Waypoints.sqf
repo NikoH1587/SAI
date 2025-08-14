@@ -59,63 +59,51 @@ SAI_WP_LOG = {
 	_found
 };
 
-SAI_WP_DEF = {
-	private _grp = _this select 0;
-	private _trg = _this select 1;
-	private _plr = _this select 2;
-	private _ldr = leader _grp;
-	if (_trg select 0 != 0 && _trg select 1 != 0) then {
-		private _pos = [[[_trg, SAI_DISTANCE]], ["water"]] call BIS_fnc_randomPos;
-		private _wp = _grp addWaypoint [_pos, 0];
-		_wp setWaypointType "MOVE";
-		_wp setWaypointTimeout [60, 120, 180];
-		
-		if (_plr) then {
-			[_ldr, "REC", ["Def Desc", "DEFEND", "marker"], _pos, "ASSIGNED", -1, true, "defend", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];
-		} else {_grp setFormation (SAI_FORMATIONS select floor random 4)};		
-		
-	} else {
-		/// wait stuff
-	}
-};
-
-
 SAI_WP_REC = {
 	private _grp = _this select 0;
 	private _trg = _this select 1;
 	private _plr = _this select 2;
 	private _ldr = leader _grp;
-	if (_trg select 0 != 0 && _trg select 1 != 0) then {
-		private _pos = [[[_trg, SAI_DISTANCE]], ["water"]] call BIS_fnc_randomPos;
-		private _posLdr = getPos _ldr;
-		private _pos = [((_pos select 0) + (_posLdr select 0)) / 2, ((_pos select 1) + (_posLdr select 1)) / 2];
-		private _wp = _grp addWaypoint [_pos, 0];
-		if (_plr) then {
-			[_ldr, "REC", ["Reconnaissance desc", "RECON", "marker"], _pos, "ASSIGNED", -1, true, "scout", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];	
-		} else {_grp setFormation (SAI_FORMATIONS select floor random 4)};		
-		
-	} else {
-		/// wait stuff
-	}
+	private _posLdr = getPos _ldr;
+	private _pos = [((_trg select 0) + (_posLdr select 0)) / 2, ((_trg select 1) + (_posLdr select 1)) / 2];
+	private _pos = [[[_pos, SAI_DISTANCE]], ["water"]] call BIS_fnc_randomPos;	
+	private _wp = _grp addWaypoint [_pos, 0];
+	if (_plr) then {
+		[_ldr, "REC", ["Reconnaissance desc", "RECON", "marker"], _pos, "ASSIGNED", -1, true, "scout", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];	
+	} else {_grp setFormation (SAI_FORMATIONS select floor random 4)};		
 };
 
-SAI_WP_QRF = {
+SAI_WP_DEF = {
 	private _grp = _this select 0;
 	private _trg = _this select 1;
 	private _plr = _this select 2;
 	private _ldr = leader _grp;
-	if (_trg select 0 != 0 && _trg select 1 != 0) then {
-		private _pos = [[[_trg, SAI_DISTANCE / 2]], ["water"]] call BIS_fnc_randomPos;
-		private _wp = _grp addWaypoint [_pos, 0];
-		_wp setWaypointType "SAD";
+	private _pos = [[[_trg, SAI_DISTANCE]], ["water"]] call BIS_fnc_randomPos;
+	private _nb = nearestBuilding _pos;
+	private _isInf = false;
+	if (vehicle _ldr == _ldr) then {_isInf = true};
+	if (_isInf && _nb distance _pos < SAI_DISTANCE/4) then {_pos = getPos _nb};
+	private _wp = _grp addWaypoint [_pos, 0];
+	_wp setWaypointType "MOVE";
+	_wp setWaypointTimeout [60, 120, 180];
 		
-		if (_plr) then {
-			[_ldr, "QRF", ["QRF desc", "QRF", "marker"], _trg, "ASSIGNED", -1, true, "attack", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];	
-		} else {_grp setFormation (SAI_FORMATIONS select floor random 4)};		
+	if (_plr) then {
+		[_ldr, "DEF", ["DEF Desc", "DEFEND", "marker"], _pos, "ASSIGNED", -1, true, "defend", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];
+	} else {_grp setFormation (SAI_FORMATIONS select floor random 4)};		
+};
+
+SAI_WP_ATK = {
+	private _grp = _this select 0;
+	private _trg = _this select 1;
+	private _plr = _this select 2;
+	private _ldr = leader _grp;
+	private _pos = [[[_trg, SAI_DISTANCE ]], ["water"]] call BIS_fnc_randomPos;
+	private _wp = _grp addWaypoint [_pos, 0];
+	_wp setWaypointType "SAD";
 		
-	} else {
-		/// wait stuff
-	}
+	if (_plr) then {
+		[_ldr, "ATTACK", ["ATK desc", "ATK", "marker"], _trg, "ASSIGNED", -1, true, "attack", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];	
+	} else {_grp setFormation (SAI_FORMATIONS select floor random 4)};		
 };
 
 SAI_WP_ART = {
@@ -125,39 +113,38 @@ SAI_WP_ART = {
 	private _trg = _this select 1;
 	private _plr = _this select 2;
 	private _ldr = leader _grp;
-	if (_trg select 0 != 0 && _trg select 1 != 0) then {
-		private _veh = vehicle _ldr;
-		private _ammos = getArtilleryAmmo [_veh];
-		private _near = _trg nearEntities 200;
-		if (count _ammos > 0 && _ldr countFriendly _near == 0 && _plr == false) then {
-			private _ammo = _ammos select 0;
-			_ldr doArtilleryFire [_trg, _ammo, 3];
-			/// add "waiting" waypoint to prevent spam
-		};
+	private _veh = vehicle _ldr;
+	private _ammos = getArtilleryAmmo [_veh];
+	private _near = _trg nearEntities 200;
+	if (count _ammos > 0 && _ldr countFriendly _near == 0 && _plr == false) then {
+		private _ammo = _ammos select 0;
+		_ldr doArtilleryFire [_trg, _ammo, 3];
+	};
 		
-		if (_plr && count _ammos > 0 && _ldr countFriendly _near == 0) then {
-			[_ldr, "ART1", ["Artillery desc1", "ARTY", "marker"], _enypos, "ASSIGNED", -1, true, "destroy", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];
-		};
-		
-	} else {
-		if (_plr) then {
-			[_ldr, "ART2", ["Artillery desc2", "ARTY", "marker"], _ldr, "ASSIGNED", -1, true, "wait", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];	
-		}	
-	}
+	if (_plr && count _ammos > 0 && _ldr countFriendly _near == 0) then {
+		[_ldr, "ART1", ["Artillery desc1", "ARTY", "marker"], _enypos, "ASSIGNED", -1, true, "destroy", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];
+	};
 };
 
 SAI_WP_PLA = {
 	private _grp = _this select 0;
 	private _trg = _this select 1;
 	private _plr = _this select 2;
-	if (_trg select 0 != 0 && _trg select 1 != 0) then {
-		private _wp = _grp addWaypoint [_trg, 0];
-		_wp setWaypointType "SAD";
-		if (_plr) then {
-			[_ldr, "AIRSTRIKE", ["Airstrike desc", "AIRSTRIKE", "marker"], _trg, "ASSIGNED", -1, true, "target", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];	
-		}
-	} else {
-	/// player "wait" task
+	private _wp = _grp addWaypoint [_trg, 0];
+	_wp setWaypointType "SAD";
+	if (_plr) then {
+		[_ldr, "AIRSTRIKE", ["Airstrike desc", "AIRSTRIKE", "marker"], _trg, "ASSIGNED", -1, true, "target", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];	
+	}
+};
+
+SAI_WP_UAV = {
+	private _grp = _this select 0;
+	private _trg = _this select 1;
+	private _plr = _this select 2;
+	private _wp = _grp addWaypoint [_trg, 0];
+	_wp setWaypointType "SAD";
+	if (_plr) then {
+		[_ldr, "DRONE", ["Drone desc", "DRONE", "marker"], _trg, "ASSIGNED", -1, true, "scout", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];	
 	}
 };
 

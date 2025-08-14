@@ -9,7 +9,6 @@ SAI_CFG_TIME = random [0, 11.5, 23];
 SAI_CFG_SCENARIO = floor random 3;
 SAI_CFG_SCALE = ceil random 3;
 
-SAI_CFG_RATIO = 0;
 SAI_CFG_ROLE = 1;
 
 private _world = worldSize;
