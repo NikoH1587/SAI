@@ -2,7 +2,6 @@ if (!isServer) exitWith {};
 
 SAI_WEST = west;
 SAI_EAST = east;
-SAI_DISTANCE = 500;
 
 SAI_DEBUG = true;
 SAI_ACTIVE = true;
@@ -43,3 +42,4 @@ waituntil {scriptDone _waypoints};
 }};
 
 /// for future: getUnitLoadout, setUnitLoadout
+/// add respawns (50%?) - replace squads invididually

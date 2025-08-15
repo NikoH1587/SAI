@@ -5,18 +5,10 @@ SAI_MARKERS_EAST = allMapmarkers select {_x find "SAI_EAST_" == 0};
 
 /// WEST
 private _markersWest = [];
-_westX = 0;
-_westY = 0;
-_westC = 0;
 {
 	private _grp = _x select 0;
 	private _typ = _x select 1;
 	private _pos = _x select 2;
-	private _posX = _pos select 0;
-	private _posY = _pos select 1;
-	_westX = _westX + _posX;
-	_westY = _westY + _posY;
-	_westC = _westC + 1;
 	private _idx = groupId _grp;
 	private _mrk = format ["SAI_WEST_%1", _idx];
 	_markersWest append [_mrk];
@@ -48,11 +40,6 @@ _westC = 0;
 	};
 }forEach SAI_WEST_ALL;
 
-_westX = _westX / _westC;
-_westY = _westY / _westC;
-
-SAI_CENTER_WEST = [_westX, _westY];
-
 {
 	if (_x in _markersWest == false && markerAlpha _x != 0.5) then {
 		_x setMarkerColor "ColorBLACK";
@@ -62,18 +49,10 @@ SAI_CENTER_WEST = [_westX, _westY];
 
 /// EAST
 private _markersEast = [];
-_eastX = 0;
-_eastY = 0;
-_eastC = 0;
 {
 	private _grp = _x select 0;
 	private _typ = _x select 1;
 	private _pos = _x select 2;
-	private _posX = _pos select 0;
-	private _posY = _pos select 1;
-	_eastX = _eastX + _posX;
-	_eastY = _eastY + _posY;
-	_eastC = _eastC + 1;
 	private _idx = groupId _grp;
 	private _mrk = format ["SAI_EAST_%1", _idx];
 	_markersEast append [_mrk];
@@ -105,11 +84,6 @@ _eastC = 0;
 		_mrk setMarkerType _smt;
 	};
 }forEach SAI_EAST_ALL;
-
-_eastX = _eastX / _eastC;
-_eastY = _eastY / _eastC;
-
-SAI_CENTER_EAST = [_eastX, _eastY];
 
 {
 	if (_x in _markersEast == false && markerAlpha _x != 0.5) then {

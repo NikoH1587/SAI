@@ -5,14 +5,16 @@
 	private _support = SAI_SPAWN_WEST_SUP;
 	private _artillery = SAI_SPAWN_WEST_ART;
 	private _infantry = [SAI_SPAWN_WEST_INF];
-	private _markers = SAI_MARKERS_WEST;
+	private _marker = getMarkerPos "SAI_WEST";
+	private _dir = _marker getDir (getMarkerPos "SAI_EAST");
 	private _side = SAI_WEST;
 	if (_x == "EAST") then {
 		_vehicles = SAI_SPAWN_EAST;
 		_support = SAI_SPAWN_EAST_SUP;
 		_artillery = SAI_SPAWN_EAST_ART;
 		_infantry = [SAI_SPAWN_EAST_INF];
-		_markers = SAI_MARKERS_EAST;
+		_marker = getMarkerPos "SAI_EAST";
+		_dir = _marker getDir (getMarkerPos "SAI_WEST");
 		_side = SAI_EAST;
 	};
 	
@@ -28,9 +30,7 @@
 		
 		if (count _vehs == 0) then {_rando == 1};
 		
-		private _marker = getMarkerPos (_markers select floor random count _markers);
 		private _pos = [_marker, 0, SAI_DISTANCE, 5, 0, 0.5, 0, [], [_marker]] call BIS_fnc_findSafePos;
-		private _dir = (((_pos getDir SAI_CENTER) - 90) + random 90);
 
 		if (_rando < 0.5) then {
 			private _select = _vehs select floor random count _vehs;

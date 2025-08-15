@@ -1,44 +1,32 @@
-SAI_MARKERS = allMapmarkers select {_x find "SAI_OBJ_" == 0};
-SAI_MARKERS_WEST = [];
-SAI_MARKERS_EAST = [];
+SAI_POS_WEST = getMarkerPos "SAI_WEST";
+SAI_POS_CENT = getMarkerPos "SAI_CENT";
+SAI_POS_EAST = getMarkerPos "SAI_EAST";
 
-private _count = 0;
-private _centX = 0;
-private _centY = 0;
+private _westX = SAI_POS_WEST select 0;
+private _westY = SAI_POS_WEST select 1;
+private _eastX = SAI_POS_EAST select 0;
+private _eastY = SAI_POS_EAST select 1;
+private _centX = SAI_POS_CENT select 0;
+private _centY = SAI_POS_CENT select 1;
 
-{
-	private _mrk = _x;
-	private _pos = getMarkerPos _x;
-	private _mrkX = _pos select 0;
-	private _mrkY = _pos select 1;
-	_count = _count + 1;
-	_centX = _centX + _mrkX;
-	_centY = _centY + _mrkY;
-	_mrk setMarkerShape "Ellipse";
-	_mrk setMarkerSize [SAI_DISTANCE, SAI_DISTANCE];
-	_mrk setMarkerBrush "Border";
-	if (markerColor _mrk == "ColorWEST") then {SAI_MARKERS_WEST append [_mrk]};
-	if (markerColor _mrk == "ColorEAST") then {SAI_MARKERS_EAST append [_mrk]};
-}forEach SAI_MARKERS;
+SAI_CENTER = [((_westX + _eastX + _centX) / 3), ((_westY + _eastY + _centY) / 3)];
 
-_centX = _centX / _count;
-_centY = _centY / _count;
-
-SAI_CENTER = [_centX, _centY];
-///private _respawn_west = createMarker ["respawn_west", SAI_POS_WEST];
+"SAI_WEST" setMarkerDir (SAI_POS_WEST getDir SAI_CENTER);
+"SAI_EAST" setMarkerDir (SAI_POS_EAST getDir SAI_CENTER);
+"SAI_CENT" setMarkerDir (SAI_POS_CENT getDir SAI_CENTER);
 
 private _maxdist = 0;
 {
 	private _distance = (getMarkerPos _x) distance SAI_CENTER;
 	if (_distance > _maxdist) then {_maxdist = _distance};
-}forEach SAI_MARKERS;
+}forEach ["SAI_WEST", "SAI_CENT", "SAI_EAST"];
 
 private _sizeOut = 50000;
-private _sizeX = _maxdist + SAI_DISTANCE;
-private _sizeY = _maxdist + SAI_DISTANCE;
+private _sizeX = _maxdist + (SAI_DISTANCE*1.25);
+private _sizeY = _maxdist + (SAI_DISTANCE*1.25);
 private _dir = 0;
-private _posX = _centX;
-private _posY = _centY;
+private _posX = SAI_CENTER select 0;
+private _posY = SAI_CENTER select 1;
 
 for "_i" from 0 to 270 step 90 do {
 	private _size1 = [_sizeX,_sizeY] select (abs cos _i);

@@ -8,20 +8,20 @@ SAI_CFG_TIME = random [0, 11.5, 23];
 
 SAI_CFG_SCENARIO = floor random 3;
 SAI_CFG_SCALE = ceil random 3;
+SAI_DISTANCE = 250 * SAI_CFG_SCALE;
 
 SAI_CFG_ROLE = 1;
 
-private _world = worldSize;
 private _positions = [];
 private _rando = [] call BIS_fnc_randomPos;
-private _locations = nearestLocations [ _rando, ["NameCityCapital", "NameCity", "NameVillage", "NameLocal", "Hill"], _world/4];
+private _locations = nearestLocations [ _rando, [], worldSize];
 
 {
 	private _pos = position _x;
-	if ((surfaceIsWater _pos == false) && count _positions < (3 * SAI_CFG_SCALE)) then {
+	if ((surfaceIsWater _pos == false) && count _positions < 3) then {
 		private _distance = false;
 		{
-			if (_pos distance _x < 1000) then {
+			if (_pos distance _x < SAI_DISTANCE*3) then {
 				_distance = true;
 			}
 		}forEach _positions;
@@ -32,23 +32,18 @@ private _locations = nearestLocations [ _rando, ["NameCityCapital", "NameCity", 
 	}
 }forEach _locations;
 
-SAI_CFG_OBJECTIVES = _positions;
-
-{
-	private _mrk = createMarker ["SAI_OBJ_" + str _forEachIndex, _x];
-	_mrk setMarkerType "mil_flag";
-	if (_forEachIndex == 0) then {_mrk setMarkerColor "ColorWEST"};
-	if (_forEachIndex == 1) then {_mrk setMarkerColor "ColorEAST"};
-	/// 2
-	if (_forEachIndex == 3) then {_mrk setMarkerColor "ColorWEST"};
-	if (_forEachIndex == 4) then {_mrk setMarkerColor "ColorEAST"};
-	/// 5
-	/// 6
-	if (_forEachIndex == 7) then {_mrk setMarkerColor "ColorWEST"};
-	if (_forEachIndex == 8) then {_mrk setMarkerColor "ColorEAST"};
-	/// 8
-}forEach SAI_CFG_OBJECTIVES;
-
+private _cent = createMarker ["SAI_CENT", _positions select 0];
+_cent setMarkerShape "RECTANGLE";
+_cent setMarkerSize [SAI_DISTANCE, SAI_DISTANCE/5];
+_cent setmarkerBrush "Vertical";
+private _west = createMarker ["SAI_WEST", _positions select 1];
+_west setMarkerShape "RECTANGLE";
+_west setMarkerSize [SAI_DISTANCE, SAI_DISTANCE/5];
+_west setmarkerBrush "FDiagonal";
+private _east = createMarker ["SAI_EAST", _positions select 2];
+_east setMarkerShape "RECTANGLE";
+_east setMarkerSize [SAI_DISTANCE, SAI_DISTANCE/5];
+_east setmarkerBrush "BDiagonal";
 SAI_CFG_WEST = ["West", "BLU_F", "Infantry", "BLU_F"];
 SAI_CFG_WEST_COM = 0;
 SAI_CFG_CUSTOM_WEST = [];
