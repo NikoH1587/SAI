@@ -17,37 +17,48 @@ SAI_WP_CHK = {
 	_busy
 };
 
-SAI_WP_LOG = {
+SAI_WP_TRA = {
 	private _tra = _this select 0;
 	private _inf = _this select 1;
 	private _plr = _this select 2;
 	private _veh = vehicle leader _tra;
 	private _seats = _veh emptyPositions "";
 	private _found = false;
+	
 	if (_veh != leader _tra) then {
+	private _traPos = getPos _veh;
+	
+	private _sort = _inf apply {
+		private _grp = _x select 0;
+		private _pos = _x select 1;
+		[_x, _pos distance _traPos]
+	};
+	_sort sort true;
+	_inf = _sort apply {_x select 0};
+	
 		{
-			private _count = count units _x;
-			private _index = currentWaypoint _x;
-			private _obj = getWPPos [_x, currentWaypoint _x];
-			private _pos = getPos leader _x;
-			private _ldr = leader _x;
-			private _crg = _x;
+			private _grp = _x select 0;
+			private _count = count units _grp;
+			private _index = currentWaypoint _grp;
+			private _obj = getWPPos [_grp, currentWaypoint _grp];
+			private _pos = getPos leader _grp;
+			private _ldr = leader _grp;
 			if (_obj isEqualTo [0,0,0]) then {_obj = _pos};
-			if (_seats >= _count && _pos distance _obj > SAI_DISTANCE*2 && !_found && alive _ldr) then {
+			if (_seats >= _count && _pos distance _obj > 1000 && !_found && alive _ldr) then {
 				_wpT = _tra addWaypoint [_pos, 10];
 				
 				if (_plr) then {
-					[leader _tra, "LOG", ["Transport desc", "LOAD", "marker"], _pos, "ASSIGNED", -1, true, "meet", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _tra];
+					[leader _tra, "TRA", ["Transport desc", "LOAD", "marker"], _pos, "ASSIGNED", -1, true, "meet", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _tra];
 				};
 				
 				_wpT setWaypointType "LOAD";
-				private _wpC = _crg addWaypoint [_pos, 10];
+				private _wpC = _grp addWaypoint [_pos, 10];
 				_wpC setWaypointType "GETIN";
 				_wpC synchronizeWaypoint [_wpT];
-				_crg setCurrentWaypoint _wpC;
+				_grp setCurrentWaypoint _wpC;
 				
-				if (isPlayer leader _crg) then {
-					[leader _crg, "LOG", ["Cargo desc", "LOAD", "marker"], _veh, "ASSIGNED", -1, true, "getin", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _tra];
+				if (isPlayer leader _grp) then {
+					[leader _grp, "TRA", ["Cargo desc", "LOAD", "marker"], _veh, "ASSIGNED", -1, true, "getin", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _tra];
 				};				
 				
 				private _wpO = _tra addWaypoint [_obj, 0];
@@ -174,6 +185,18 @@ SAI_WP_SUP = {
 	///_wp setWaypointType "SUPPORT";
 	if (isPlayer _ldr) then {
 		[_ldr, "SUP", ["Support desc", "SUPPORT", "marker"], _enypos, "ASSIGNED", -1, true, "heal", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];	
+	}	
+};
+
+SAI_WP_LOG = {
+	private _grp = _this select 0;
+	private _pos = _this select 1;
+	private _plr = _this select 2;
+
+	/// make logistics rtb if not assigned
+	
+	if (isPlayer _ldr) then {
+		[_ldr, "LOG", ["Logistics desc", "LOGISTICS", "marker"], _enypos, "ASSIGNED", -1, true, "default", false] remoteExec ["BIS_fnc_taskCreate", groupOwner _grp];	
 	}	
 };
 

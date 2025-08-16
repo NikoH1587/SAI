@@ -19,6 +19,8 @@ SAI_FNC_STRATEGIC = compile preprocessFileLineNumbers "SAI\Strategic.sqf";
 SAI_FNC_OPERATIONS = compile preprocessFileLineNumbers "SAI\Operations.sqf";
 SAI_FNC_TACTICS = compile preprocessFileLineNumbers "SAI\Tactics.sqf";
 
+cutText [SAI_CFG_TITLE + " \n" + " \n" + SAI_CFG_DESCRIPTION, "BLACK IN", 10];
+
 _markers = 0 spawn SAI_FNC_MARKERS;
 waituntil {scriptDone _markers};
 _config = 0 spawn SAI_FNC_CONFIG;
@@ -40,6 +42,12 @@ waituntil {scriptDone _waypoints};
 	_tactics = 0 spawn SAI_FNC_TACTICS;
 	waitUntil {scriptDone _tactics};
 }};
+
+
+if (SAI_DEBUG) then {
+	{SAI_CURATOR addCuratorEditableObjects [[_x], true]}forEach allunits;
+	{SAI_CURATOR addCuratorEditableObjects [[_x], true]}forEach vehicles;
+};
 
 /// for future: getUnitLoadout, setUnitLoadout
 /// add respawns (50%?) - replace squads invididually

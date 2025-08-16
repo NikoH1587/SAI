@@ -27,7 +27,7 @@
 	private _tran = false;
 	
 	if (_busy == false && _serv == false) then {
-		_tran = [_grp, _inf, _plr] call SAI_WP_LOG;
+		_tran = [_grp, _inf, _plr] call SAI_WP_TRA;
 	};
 	
 	if (_busy == false && _tran == false && _serv == false) then {
@@ -39,6 +39,7 @@
 			case "ART": {[_grp, _pos, _plr] call SAI_WP_ART};
 			case "PLA": {[_grp, _pos, _plr] call SAI_WP_PLA};
 			case "UAV": {[_grp, _pos, _plr] call SAI_WP_UAV};
+			case "TRA": {[_grp, _pos, _plr] call SAI_WP_TRA};
 			case "SUP": {[_grp, _plr] call SAI_WP_SUP};
 			/// add plane order
 			/// add statics order
