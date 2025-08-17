@@ -1,6 +1,6 @@
 [] call BIS_fnc_jukebox;
 
-call compile preprocessFile "UI\Command.sqf";
+///call compile preprocessFile "UI\Command.sqf";
 
 if (!isServer) exitWith {};
 

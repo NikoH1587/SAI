@@ -5,6 +5,7 @@ SAI_EAST = east;
 
 SAI_DEBUG = true;
 SAI_ACTIVE = true;
+SAI_FSM = false;
 SAI_BLACKLIST = [];
 SAI_FORCE_WEST = 0;
 SAI_FORCE_EAST = 0;
@@ -33,14 +34,20 @@ waituntil {scriptDone _waypoints};
 0 spawn {while {SAI_ACTIVE} do {
 	_sorting = 0 spawn SAI_FNC_SORTING;
 	waitUntil {scriptDone _sorting};
-	_tracking = 0 spawn SAI_FNC_TRACKING;
-	waitUntil {scriptDone _tracking};
 	_strategic = 0 spawn SAI_FNC_STRATEGIC;
 	waitUntil {scriptDone _strategic};
 	_operations = 0 spawn SAI_FNC_OPERATIONS;
 	waitUntil {scriptDone _operations};
 	_tactics = 0 spawn SAI_FNC_TACTICS;
 	waitUntil {scriptDone _tactics};
+	sleep 10;
+}};
+
+sleep 1;
+
+0 spawn {while {SAI_ACTIVE} do {
+	_tracking = 0 spawn SAI_FNC_TRACKING;
+	waitUntil {scriptDone _tracking};
 }};
 
 

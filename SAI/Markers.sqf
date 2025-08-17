@@ -2,14 +2,18 @@ SAI_POS_WEST = getMarkerPos "SAI_WEST";
 SAI_POS_CENT = getMarkerPos "SAI_CENT";
 SAI_POS_EAST = getMarkerPos "SAI_EAST";
 
+SAI_POS_LINE_WEST = SAI_POS_WEST getpos [SAI_DISTANCE / 2, (SAI_POS_WEST getDir SAI_POS_EAST)];
+SAI_POS_LINE_EAST = SAI_POS_EAST getpos [SAI_DISTANCE / 2, (SAI_POS_EAST getDir SAI_POS_WEST)];
+
+SAI_POS_REAR_WEST = SAI_POS_WEST getpos [SAI_DISTANCE / 2, (SAI_POS_EAST getDir SAI_POS_WEST)];
+SAI_POS_REAR_EAST = SAI_POS_EAST getpos [SAI_DISTANCE / 2, (SAI_POS_WEST getDir SAI_POS_EAST)];
+
 private _westX = SAI_POS_WEST select 0;
 private _westY = SAI_POS_WEST select 1;
 private _eastX = SAI_POS_EAST select 0;
 private _eastY = SAI_POS_EAST select 1;
-private _centX = SAI_POS_CENT select 0;
-private _centY = SAI_POS_CENT select 1;
 
-private _center = [((_westX + _eastX + _centX) / 3), ((_westY + _eastY + _centY) / 3)];
+private _center = [((_westX + _eastX) / 2), ((_westY + _eastY) / 2)];
 
 private _maxdist = 0;
 {

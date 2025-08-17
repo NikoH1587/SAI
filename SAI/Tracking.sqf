@@ -8,7 +8,7 @@ private _markersWest = [];
 {
 	private _grp = _x select 0;
 	private _typ = _x select 1;
-	private _pos = _x select 2;
+	private _pos = getpos leader _grp;
 	private _idx = groupId _grp;
 	private _mrk = format ["SAI_WEST_%1", _idx];
 	_markersWest append [_mrk];
@@ -17,10 +17,8 @@ private _markersWest = [];
 		_mrk = createMarker [_mrk, _pos];
 	} else {
 		_mrk setMarkerPos _pos;
-		if (markerAlpha _mrk == 0.5) then {
-			_mrk setMarkerColor "Default";
-			_mrk setMarkerAlpha 1;
-		}
+		if (behaviour leader _grp == "COMBAT" && markerText _mrk != "!") then {_mrk setMarkerText "!"};
+		if (behaviour leader _grp != "COMBAT" && markerText _mrk != "") then {_mrk setMarkerText ""};
 	};
 	
 	private _smt = "mil_dot";
@@ -41,9 +39,8 @@ private _markersWest = [];
 }forEach SAI_WEST_ALL;
 
 {
-	if (_x in _markersWest == false && markerAlpha _x != 0.5) then {
-		_x setMarkerColor "ColorBLACK";
-		_x setMarkerAlpha 0.5;
+	if (_x in _markersWest == false) then {
+		deletemarker _x;
 	};
 }forEach SAI_MARKERS_WEST;
 
@@ -52,20 +49,18 @@ private _markersEast = [];
 {
 	private _grp = _x select 0;
 	private _typ = _x select 1;
-	private _pos = _x select 2;
+	private _pos = getpos leader _grp;
 	private _idx = groupId _grp;
 	private _mrk = format ["SAI_EAST_%1", _idx];
 	_markersEast append [_mrk];
 	
-	if !(_mrk in SAI_MARKERS_WEST) then {
+	if !(_mrk in SAI_MARKERS_EAST) then {
 		_mrk = createMarker [_mrk, _pos];
 		_mrk setMarkerAlpha 0;
 	} else {
 		_mrk setMarkerPos _pos;
-		if (markerAlpha _mrk == 0.5) then {
-			_mrk setMarkerColor "Default";
-			_mrk setMarkerAlpha 1;
-		}
+		if (behaviour leader _grp == "COMBAT" && markerAlpha _mrk != 1 && _typ != "ART") then {_mrk setMarkerAlpha 1};
+		if (behaviour leader _grp != "COMBAT" && markerAlpha _mrk != 0 && _typ != "ART") then {_mrk setMarkerAlpha 0};
 	};
 	
 	private _smt = "mil_dot";
@@ -86,8 +81,7 @@ private _markersEast = [];
 }forEach SAI_EAST_ALL;
 
 {
-	if (_x in _markersEast == false && markerAlpha _x != 0.5) then {
-		_x setMarkerColor "ColorBLACK";
-		_x setMarkerAlpha 0.5;
+	if (_x in _markersEast == false) then {
+		deletemarker _x;
 	};
 }forEach SAI_MARKERS_EAST;

@@ -16,22 +16,24 @@ SAI_EAST_INF = [];
 	private _pos = _x select 2;
 	private _eny = count SAI_ENY_WEST > 0;
 	
-	if (_typ in ["INF", "MOT", "MEC", "ARM", "HEL"]) then {
+	if (_typ in ["INF", "MOT", "MEC", "ARM"]) then {
 		private _mod = "NAN";
 		private _obj = SAI_POS_CENT;
-		private _dis = _pos distance _obj;
 	
 		if (SAI_OBJECTIVE == "SAI_CENT") then {
+			private _dis = _pos distance _obj;
 			if (_dis < SAI_DISTANCE) then {_mod = "REC"} else {_mod = "MOV"};
 		};	
 	
 		if (SAI_OBJECTIVE == "SAI_WEST") then {
 			_obj = SAI_POS_WEST;
+			private _dis = _pos distance _obj;
 			if (_dis < SAI_DISTANCE) then {_mod = "DEF"} else {_mod = "MOV"};
 		};
 	
 		if (SAI_OBJECTIVE == "SAI_EAST") then {
 			_obj = SAI_POS_EAST;
+			private _dis = _pos distance _obj;
 			if (_dis < SAI_DISTANCE) then {_mod = "ATK"} else {_mod = "MOV"};
 		};
 
@@ -62,6 +64,10 @@ SAI_EAST_INF = [];
 		SAI_OPS_WEST append [[_grp, "LOG", SAI_POS_WEST]];
 	};
 	
+	if (_typ == "HEL") then {
+		SAI_OPS_WEST append [[_grp, "LOG", SAI_POS_WEST]];
+	};
+	
 	if (_typ == "SUP") then {
 		SAI_OPS_WEST append [[_grp, "SUP", SAI_POS_WEST]];
 	};
@@ -73,22 +79,25 @@ SAI_EAST_INF = [];
 	private _pos = _x select 2;
 	private _eny = count SAI_ENY_EAST > 0;
 	
-	if (_typ in ["INF", "MOT", "MEC", "ARM", "HEL"]) then {
+	if (_typ in ["INF", "MOT", "MEC", "ARM"]) then {
 		private _mod = "NAN";
 		private _obj = SAI_POS_CENT;
 		private _dis = _pos distance _obj;
 	
 		if (SAI_OBJECTIVE == "SAI_CENT") then {
+			private _dis = _pos distance _obj;
 			if (_dis < SAI_DISTANCE) then {_mod = "REC"} else {_mod = "MOV"};
 		};	
 	
 		if (SAI_OBJECTIVE == "SAI_EAST") then {
 			_obj = SAI_POS_EAST;
+			private _dis = _pos distance _obj;
 			if (_dis < SAI_DISTANCE) then {_mod = "DEF"} else {_mod = "MOV"};
 		};
 	
 		if (SAI_OBJECTIVE == "SAI_WEST") then {
 			_obj = SAI_POS_WEST;
+			private _dis = _pos distance _obj;
 			if (_dis < SAI_DISTANCE) then {_mod = "ATK"} else {_mod = "MOV"};
 		};
 
@@ -114,6 +123,10 @@ SAI_EAST_INF = [];
 		SAI_ENY_EAST = SAI_ENY_EAST - [_eny];
 		SAI_OPS_EAST append [[_grp, "UAV", _eny]];
 	};
+	
+	if (_typ == "HEL") then {
+		SAI_OPS_WEST append [[_grp, "LOG", SAI_POS_WEST]];
+	};	
 	
 	if (_typ == "LOG") then {
 		SAI_OPS_EAST append [[_grp, "LOG", SAI_POS_EAST]];

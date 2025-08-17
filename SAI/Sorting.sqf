@@ -14,6 +14,7 @@ SAI_EAST_ALL = [];
 	private _sim = getText (_cfg >> "simulation");
 	private _tra = getNumber (_cfg >> "transportSoldier");
 	private _cls = getText (_cfg >> "vehicleClass");
+///	private _com = groupId _x == "B Alpha 1-1";
 	if (_sim == "carx") then {_type = "MOT"; _val = 2};
 	if (_sim == "tankx") then {_type = "ARM"; _val = 4};
 	if (_sim == "tankx" && _tra > 6) then {_type = "MEC"; _val = 3};

@@ -6,16 +6,20 @@ SAI_CFG_DATE = date;
 SAI_CFG_CAST = random 1;
 SAI_CFG_TIME = random [0, 11.5, 23];
 
-SAI_CFG_SCENARIO = floor random 3;
-SAI_CFG_SCALE = ceil random 3;
+SAI_CFG_SCENARIO = ceil random 3;
+SAI_CFG_SCALE = ceil random 2;
 SAI_CFG_TITLE = "";
 SAI_CFG_DESCRIPTION = "";
 SAI_DISTANCE = 500 * SAI_CFG_SCALE;
 SAI_CFG_ROLE = 1;
+SAI_CFG_SPAWNS_WEST = 10*SAI_CFG_SCALE;
+SAI_CFG_SPAWNS_EAST = 10*SAI_CFG_SCALE;
+SAI_CFG_RESPAWNS_WEST = 10*SAI_CFG_SCALE;
+SAI_CFG_RESPAWNS_EAST = 10*SAI_CFG_SCALE;
 
 private _positions = [];
 private _rando = [] call BIS_fnc_randomPos;
-private _loc = nearestLocation [_rando, ["NameCityCapital", "NameCity", "NameVillage", "NameLocal", "Hill"]];
+private _loc = nearestLocation [_rando, ["NameCityCapital", "NameCity", "NameVillage", "NameLocal"]];
 private _name = text _loc;
 private _locations = nearestLocations [position _loc, [], worldSize];
 
@@ -49,12 +53,6 @@ if (SAI_CFG_SCALE == 2) then {
 	SAI_CFG_TITLE = "Battle of " + _name;
 	SAI_CFG_DESCRIPTION = " Description1 \n Description2 \n Description3";
 };
-if (SAI_CFG_SCALE == 3) then {
-	SAI_CFG_TITLE = "Campaign for " + _name;
-	SAI_CFG_DESCRIPTION = " Description1 \n Description2 \n Description3";
-};
-
-
 
 private _cent = createMarker ["SAI_CENT", _positions select 0];
 _cent setMarkerShape "ELLIPSE";
@@ -68,6 +66,10 @@ private _east = createMarker ["SAI_EAST", _positions select 2];
 _east setMarkerShape "ELLIPSE";
 _east setMarkerSize [SAI_DISTANCE, SAI_DISTANCE];
 _east setmarkerBrush "Border";
+
+if (SAI_CFG_SCENARIO == 2) then {_cent setMarkerPos (_positions select 1); _east setMarkerPos (_positions select 0)};
+if (SAI_CFG_SCENARIO == 3) then {_cent setMarkerPos (_positions select 2); _west setMarkerPos (_positions select 0)};
+
 SAI_CFG_WEST = ["West", "BLU_F", "Infantry", "BLU_F"];
 SAI_CFG_WEST_COM = 0;
 SAI_CFG_CUSTOM_WEST = [];
