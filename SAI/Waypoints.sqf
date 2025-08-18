@@ -130,11 +130,12 @@ SAI_WP_ATK = {
 };
 
 SAI_WP_ART = {
-	/// MOVE becasue of counter battery?? (won't work with statics lol)
 	/// return chat if firemission not possible?
 	private _grp = _this select 0;
 	private _pos = _this select 1;
 	private _plr = _this select 2;
+	private _rtb = _this select 3;
+
 	private _ldr = leader _grp;
 	private _veh = vehicle _ldr;
 	private _ammos = getArtilleryAmmo [_veh];
@@ -142,6 +143,9 @@ SAI_WP_ART = {
 	if (count _ammos > 0 && _ldr countFriendly _near == 0 && _plr == false) then {
 		private _ammo = _ammos select 0;
 		_ldr doArtilleryFire [_pos, _ammo, 3];
+		if !(isNull driver _veh) then { 
+			private _wp = _grp addWaypoint [_rtb, SAI_DISTANCE/2];
+		}
 	};
 		
 	if (_plr && count _ammos > 0 && _ldr countFriendly _near == 0) then {

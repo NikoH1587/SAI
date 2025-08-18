@@ -1,6 +1,7 @@
 SAI_MARKERS_WEST = allMapmarkers select {_x find "SAI_WEST_" == 0};
 SAI_MARKERS_EAST = allMapmarkers select {_x find "SAI_EAST_" == 0};
-
+SAI_WEST_HQ = false;
+SAI_EAST_HQ = false;
 /// remove SAI_CENT?
 
 /// WEST
@@ -17,8 +18,8 @@ private _markersWest = [];
 		_mrk = createMarker [_mrk, _pos];
 	} else {
 		_mrk setMarkerPos _pos;
-		if (behaviour leader _grp == "COMBAT" && markerText _mrk != "!") then {_mrk setMarkerText "!"};
-		if (behaviour leader _grp != "COMBAT" && markerText _mrk != "") then {_mrk setMarkerText ""};
+		if (SAI_EAST knowsAbout vehicle leader _grp > 0 && markerText _mrk != "!") then {_mrk setMarkerText "!"};
+		if (SAI_EAST knowsAbout vehicle leader _grp == 0 && markerText _mrk != "") then {_mrk setMarkerText ""};
 	};
 	
 	private _smt = "mil_dot";
@@ -33,6 +34,7 @@ private _markersWest = [];
 	if (_typ == "STA") then {_smt = "b_installation"};
 	if (_typ == "ART") then {_smt = "b_art"};
 	if (_typ == "UAV") then {_smt = "b_uav"};
+	if (_typ == "COM") then {_smt = "b_hq"; SAI_WEST_HQ = true};
 	if (markerType _mrk != _smt) then {
 		_mrk setMarkerType _smt;
 	};
@@ -59,8 +61,8 @@ private _markersEast = [];
 		_mrk setMarkerAlpha 0;
 	} else {
 		_mrk setMarkerPos _pos;
-		if (behaviour leader _grp == "COMBAT" && markerAlpha _mrk != 1 && _typ != "ART") then {_mrk setMarkerAlpha 1};
-		if (behaviour leader _grp != "COMBAT" && markerAlpha _mrk != 0 && _typ != "ART") then {_mrk setMarkerAlpha 0};
+		if (SAI_WEST knowsAbout vehicle leader _grp > 0 && markerAlpha _mrk != 1) then {_mrk setMarkerAlpha 1};
+		if (SAI_WEST knowsAbout vehicle leader _grp == 0 && markerAlpha _mrk != 0) then {_mrk setMarkerAlpha 0};
 	};
 	
 	private _smt = "mil_dot";
@@ -75,6 +77,7 @@ private _markersEast = [];
 	if (_typ == "STA") then {_smt = "o_installation"};
 	if (_typ == "ART") then {_smt = "o_art"};
 	if (_typ == "UAV") then {_smt = "o_uav"};
+	if (_typ == "COM") then {_smt = "o_hq"; SAI_EAST_HQ = true};
 	if (markerType _mrk != _smt) then {
 		_mrk setMarkerType _smt;
 	};

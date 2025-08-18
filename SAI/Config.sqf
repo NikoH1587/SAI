@@ -7,6 +7,7 @@ SAI_SPAWN_WEST_PLA = [];
 SAI_SPAWN_WEST_ART = [];
 SAI_SPAWN_WEST_SUP = [];
 SAI_SPAWN_WEST_STA = [];
+SAI_SPAWN_WEST_LOG = [];
 
 SAI_SPAWN_EAST_INF = [];
 SAI_SPAWN_EAST_MOT = [];
@@ -17,6 +18,7 @@ SAI_SPAWN_EAST_PLA = [];
 SAI_SPAWN_EAST_ART = [];
 SAI_SPAWN_EAST_SUP = [];
 SAI_SPAWN_EAST_STA = [];
+SAI_SPAWN_EAST_LOG = [];
 
 private _west_side = SAI_CFG_WEST select 0;
 private _west_faction = SAI_CFG_WEST select 1;
@@ -79,7 +81,7 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 			if (
 				_sim == "carx" && 
 				_cls != "Autonomous" &&
-				(_gun > 0 or _tra > 2) &&
+				_gun > 0 &&
 				_sup == 0 && 
 				_art == 0
 				) then {
@@ -154,6 +156,18 @@ for "_i" from 0 to (count (configFile >> "CfgVehicles")) do {
 				) then {
 					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_SUP append [configName _entry]};
 					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_SUP append [configName _entry]};
+				};
+				
+			if (
+				_sim == "carx" && 
+				_cls != "Autonomous" &&
+				_gun == 0 &&
+				_tra > 4 &&
+				_sup == 0 && 
+				_art == 0
+				) then {
+					if (_fac == SAI_CFG_WEST_VEH) then {SAI_SPAWN_WEST_LOG append [configName _entry]};
+					if (_fac == SAI_CFG_EAST_VEH) then {SAI_SPAWN_EAST_LOG append [configName _entry]};
 				};
 		}
 	}

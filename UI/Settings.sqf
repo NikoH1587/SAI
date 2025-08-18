@@ -41,28 +41,16 @@ _east_com lbSetCurSel 0;
 
 /// CONDITIONS SETTINGS
 private _conditions = _display displayCtrl 1011;
-_conditions lbAdd "Random conditions";
-_conditions lbAdd "Morning - Clear";
-_conditions lbAdd "Day - Clear";
-_conditions lbAdd "Evening - Clear";
-_conditions lbAdd "Night - Clear";
-_conditions lbAdd "Morning - Cloudy";
-_conditions lbAdd "Day - Cloudy";
-_conditions lbAdd "Evening - Cloudy";
-_conditions lbAdd "Night - Cloudy";
-_conditions lbAdd "Morning - Storm";
-_conditions lbAdd "Day - Storm";
-_conditions lbAdd "Evening - Storm";
-_conditions lbAdd "Night - Storm";
+_conditions lbAdd "Random weather";
+_conditions lbAdd "Clear";
+_conditions lbAdd "Overcast";
+_conditions lbAdd "Storm";
 _conditions lbSetCurSel 0;
 
 /// SCENARIO SETTINGS
-_scale = _display displayCtrl 1012;
-_scale lbAdd "Random scenario";
-_scale lbAdd "Skirmish - Gambit";
-_scale lbAdd "Skirmish - Attack";
-_scale lbAdd "Skirmish - Defend";
-_scale lbAdd "Battle - Gambit";
-_scale lbAdd "Battle - Attack";
-_scale lbAdd "Battle - Defend";
-_scale lbSetCurSel 0;
+_scenario = _display displayCtrl 1012;
+_scenario lbAdd "Random scenario";
+_scenario lbAdd "Gambit";
+_scenario lbAdd "Attack";
+_scenario lbAdd "Defend";
+_scenario lbSetCurSel 0;

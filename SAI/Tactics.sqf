@@ -33,7 +33,7 @@
 			case "MOV": {[_grp, _pos, _plr, _dir] call SAI_WP_MOV};
 			case "DEF": {[_grp, _pos, _plr, _dir] call SAI_WP_DEF};
 			case "ATK": {[_grp, _pos, _plr] call SAI_WP_ATK};
-			case "ART": {[_grp, _pos, _plr] call SAI_WP_ART};
+			case "ART": {[_grp, _pos, _plr, _rtb] call SAI_WP_ART};
 			case "PLA": {[_grp, _pos, _plr] call SAI_WP_PLA};
 			case "UAV": {[_grp, _pos, _plr] call SAI_WP_UAV};
 			case "LOG": {[_grp, _inf, _rtb] call SAI_WP_LOG};

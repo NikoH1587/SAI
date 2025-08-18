@@ -7,15 +7,14 @@ SAI_CFG_CAST = random 1;
 SAI_CFG_TIME = random [0, 11.5, 23];
 
 SAI_CFG_SCENARIO = ceil random 3;
-SAI_CFG_SCALE = ceil random 2;
 SAI_CFG_TITLE = "";
 SAI_CFG_DESCRIPTION = "";
-SAI_DISTANCE = 500 * SAI_CFG_SCALE;
+SAI_DISTANCE = 1000;
 SAI_CFG_ROLE = 1;
-SAI_CFG_SPAWNS_WEST = 10*SAI_CFG_SCALE;
-SAI_CFG_SPAWNS_EAST = 10*SAI_CFG_SCALE;
-SAI_CFG_RESPAWNS_WEST = 10*SAI_CFG_SCALE;
-SAI_CFG_RESPAWNS_EAST = 10*SAI_CFG_SCALE;
+SAI_CFG_SPAWNS_WEST = 10;
+SAI_CFG_SPAWNS_EAST = 10;
+SAI_CFG_RESPAWNS_WEST = 10;
+SAI_CFG_RESPAWNS_EAST = 10;
 
 private _positions = [];
 private _rando = [] call BIS_fnc_randomPos;
@@ -45,14 +44,8 @@ if (_name == "") then {
 	_name = _names select floor random count _names;
 };
 
-if (SAI_CFG_SCALE == 1) then {
-	SAI_CFG_TITLE = "Skirmish in " + _name;
-	SAI_CFG_DESCRIPTION = " Description1 \n Description2 \n Description3";
-};
-if (SAI_CFG_SCALE == 2) then {
-	SAI_CFG_TITLE = "Battle of " + _name;
-	SAI_CFG_DESCRIPTION = " Description1 \n Description2 \n Description3";
-};
+SAI_CFG_TITLE = "Battle of " + _name;
+SAI_CFG_DESCRIPTION = " Description1 \n Description2 \n Description3";
 
 private _cent = createMarker ["SAI_CENT", _positions select 0];
 _cent setMarkerShape "ELLIPSE";
