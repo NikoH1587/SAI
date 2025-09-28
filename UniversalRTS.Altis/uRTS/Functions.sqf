@@ -7,18 +7,18 @@ uRTS_FNC_UPDATE = {
 	lbClear 1008;
 	for "_i" from 0 to (count (uRTS_CFG select 2)) do {
 		private _cfg = (uRTS_CFG select 2) select _i;
-		private _price = str (_cfg select 0) + " Points - ";
+		private _price = str (_cfg select 0) + "¤ - ";
 		private _name = (_cfg select 1) + " - ";
-		private _count = str (count (_cfg select 2)) + " Units ";
+		private _count = str (count (_cfg select 2)) + "x";
 		_display displayCtrl 1008 lbAdd (_price + _name + _count);
 	};
 	
 	lbClear 1009;
 	for "_i" from 0 to (count (uRTS_CFG select 3)) do {
 		private _cfg = (uRTS_CFG select 3) select _i;
-		private _price = str (_cfg select 0) + " Points - ";
+		private _price = str (_cfg select 0) + "¤ - ";
 		private _name = (_cfg select 1) + " - ";
-		private _count = str (count (_cfg select 2)) + " Units ";
+		private _count = str (count (_cfg select 2)) + "x";
 		_display displayCtrl 1009 lbAdd (_price + _name + _count);
 	};
 	
@@ -49,7 +49,7 @@ uRTS_CFG_LIST = [];
 			private _cfg = _x select 2;
 
 			if (count _cfg > 1) then {
-				_cfgTXT = str (count _cfg) +  " units";
+				_cfgTXT = str (count _cfg) +  "x";
 				private _idx = _list lbAdd _text + " - " + _cfgTXT;				
 			} else {
 				private _idx = _list lbAdd _text + " - " + (_cfg select 0);				
@@ -141,8 +141,12 @@ uRTS_FNC_SPAWN = {
 	private _units = _this select 1;
 	private _base = getMarkerPos (uRTS_OBJECTIVES select 0);
 	if (_side == east) then {_base = getMarkerPos (uRTS_OBJECTIVES select ((count uRTS_OBJECTIVES) - 1))};
-	private _pos = [_base, 0, 250, 5, 0, 0.5, 0, [], [_base]] call BIS_fnc_findsafepos;
-	private _spawned = [_pos, _side, _units] call BIS_fnc_spawnGroup;
+	private _pos = [_base, 0, 500, 10, 0, 0.5, 0, [], [_base]] call BIS_fnc_findsafepos;
+	private _relpos = [];
+	for "_i" from 0 to (count _units - 1) do {
+		_relpos pushBack [_i * 3, 0];
+	};
+	private _spawned = [_pos, _side, _units, _relpos] call BIS_fnc_spawnGroup;
 	private _vehs = [_spawned, true] call BIS_fnc_groupVehicles;
 	
 	{

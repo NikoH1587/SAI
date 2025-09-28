@@ -117,8 +117,8 @@ uRTS_PLAYER_CLICK = {
 		
 		lbClear _info;
 		_info lbAdd str _grp + " " + str (count units _grp) + "x";
-		
-		private _vehs = assignedVehicles _grp;
+	
+		private _vehs = [leader _grp, false] call BIS_fnc_groupVehicles;
 		if (count _vehs > 0) then {
 			_veh = _vehs select 0;
 			_pic = getText (configFile >> "CfgVehicles" >> typeOf _veh >> "Picture");
@@ -126,21 +126,20 @@ uRTS_PLAYER_CLICK = {
 		} else {_icon ctrlSetText ""};
 		
 		_info lbAdd "";
-		{_info lbAdd ([configOf _x] call BIS_fnc_displayName)}forEach _vehs;		
-		_info lbAdd "";
+		{_info lbAdd ([configOf _x] call BIS_fnc_displayName)}forEach _vehs;
 		{_info lbAdd ([configOf _x] call BIS_fnc_displayName)}forEach units _grp;
 		
 		switch (_cmdType) do {
-			case "_hq": {_list lbAdd "AI CMD ON"; _list lbAdd "AI CMD OFF"; "LEAVE SQUAD"};
-			case "_inf": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"; _list lbAdd "DEFEND"};
-			case "_motor_inf": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"; _list lbAdd "DEFEND"};
-			case "_recon": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"; _list lbAdd "DEFEND"};
-			case "_armor": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"; _list lbAdd "DEFEND"};
-			case "_mech_inf": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"; _list lbAdd "DEFEND"};
-			case "_air": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"; _list lbAdd "DEFEND"};
+			case "_hq": {_list lbAdd "AI CMD ON"; _list lbAdd "AI CMD OFF"};
+			case "_inf": {_list lbAdd "MOVE"; _list lbAdd "ATTACK", _list lbAdd "GARRISON"};
+			case "_motor_inf": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"; _list lbAdd "UNLOAD"};
+			case "_recon": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"};
+			case "_armor": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"};
+			case "_mech_inf": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"; _list lbAdd "UNLOAD"};
+			case "_air": {_list lbAdd "MOVE"; _list lbAdd "ATTACK"};
 		};
 		
-		_list lbAdd ""; _list lbAdd "STOP"; _list lbAdd "LEAD"; _list lbAdd "DISBAND";
+		_list lbAdd ""; _list lbAdd "STOP"; _list lbAdd "JOIN"; _list lbAdd "DISBAND";
 		
 		uRTS_PLAYER_MODE = "COMMAND";
 	}
@@ -161,19 +160,22 @@ uRTS_PLAYER_COMMAND = {
 	_list ctrlShow false;
 	lbClear _info;
 	
-	if (_CMD in ["MOVE", "ATTACK", "DEFEND"]) then {
+	if (_CMD in ["MOVE", "ATTACK", "UNLOAD", "GARRISON"]) then {
 		_info lbAdd "SELECT " + str _CMD + " POSITION";
-		_info lbAdd "SHIFT TO KEEP CURRENT";
+		private _text = "PRESS SHIFT FOR MULTI";
+		if (_CMD == "UNLOAD") then {_text = "PRESS SHIFT TO LOAD"};
+		if (_CMD == "GARRISON") then {_text = "PRESS SHIFT TO ENTRENCH"};
+		_info lbAdd _text;
 		(findDisplay 1100) setVariable ["uRTS_NEXTCLICK", true];
 		uRTS_PLAYER_MODE = "POSITION";
 	} else {
 		switch (_cmd) do {
 			case "STOP": {[_nid] remoteExecCall ["uRTS_CMD_STOP", 2]};
-			case "LEAD": {[_nid, player] remoteExecCall ["uRTS_CMD_LEAD", 2]};
+			case "JOIN": {[_nid, player] remoteExecCall ["uRTS_CMD_JOIN", 2]};
 			case "DISBAND": {[_nid] remoteExecCall ["uRTS_CMD_DISBAND", 2]};
+
 			case "AI CMD ON": {[side player] remoteExecCall ["uRTS_CMD_AI_CMD_0", 2]};
 			case "AI CMD OFF": {[side player] remoteExecCall ["uRTS_CMD_AI_CMD_1", 2]};
-			case "LEAVE SQUAD": {[player] remoteExecCall ["uRTS_CMD_LEAVE", 2]};
 		};
 		uRTS_PLAYER_MODE = "SELECT";
 	};
@@ -181,6 +183,7 @@ uRTS_PLAYER_COMMAND = {
 
 uRTS_PLAYER_POSITION = {
 	private _pos = _this select 0;
+	private _shift = _this select 1;
 	
 	private _display = findDisplay 1100;
 	(findDisplay 1100) setVariable ["uRTS_SelectedPos", _pos];
@@ -194,7 +197,11 @@ uRTS_PLAYER_POSITION = {
 	switch (_cmd) do {
 		case "MOVE": {[_nid, _pos, _shift] remoteExecCall ["uRTS_CMD_MOVE", 2]};
 		case "ATTACK": {[_nid, _pos, _shift] remoteExecCall ["uRTS_CMD_ATTACK", 2]};
-		case "DEFEND": {[_nid, _pos, _shift] remoteExecCall ["uRTS_CMD_DEFEND", 2]};
+		case "UNLOAD": {[_nid, _pos, _shift] remoteExecCall ["uRTS_CMD_UNLOAD", 2]};
+		case "GARRISON": {[_nid, _pos, _shift] remoteExecCall ["uRTS_CMD_GARRISON", 2]};
+		
+		/// fire mission
+		/// airstrike?
 	};
 	
 	uRTS_PLAYER_MODE = "SELECT";
@@ -221,13 +228,13 @@ uRTS_PLAYER_POSITION = {
 			if (side player == west) then {
 				_back ctrlSetBackgroundColor [0.00, 0.30, 0.60, 0.5];
 				_info lbAdd (profilename + " - WEST");
-				{_list lbAdd (str (_x select 0) + " - " + (_x select 1))}forEach uRTS_WEST;
+				{_list lbAdd (str (_x select 0) + "¤ - " + (_x select 1))}forEach uRTS_WEST;
 			};
 				
 			if (side player == east) then {
 				_back ctrlSetBackgroundColor [0.50, 0.00, 0.00, 0.5];
 				_info lbAdd (profilename + " - EAST");
-				{_list lbAdd (str (_x select 0) + " - " + (_x select 1))}forEach uRTS_EAST;				
+				{_list lbAdd (str (_x select 0) + "¤ - " + (_x select 1))}forEach uRTS_EAST;				
 			};
 			
 			_back ctrlCommit 0;
@@ -269,8 +276,8 @@ uRTS_PLAYER_POSITION = {
 		if (visiblemap && _open) then {
 			private _menu = findDisplay 1100;
 			private _points = _menu displayCtrl 1104;				
-			if (side player == west) then {_points ctrlSetText ("Points Available: " + str uRTS_POINTS_WEST)};
-			if (side player == east) then {_points ctrlSetText ("Points Available: " + str uRTS_POINTS_EAST)};	
+			if (side player == west) then {_points ctrlSetText ("Points Available: " + str uRTS_POINTS_WEST + "¤")};
+			if (side player == east) then {_points ctrlSetText ("Points Available: " + str uRTS_POINTS_EAST + "¤")};	
 		}
 	};
 };

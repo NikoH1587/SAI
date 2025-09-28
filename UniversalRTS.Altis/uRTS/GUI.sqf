@@ -39,15 +39,15 @@ for "_i" from 0 to (count uRTS_CFG_FACTIONS) do {
 	_display displayCtrl 1006 lbAdd (uRTS_CFG_FACTIONS select _i);
 };
 
-_display displayCtrl 1007 lbAdd "Recon - 1 point";
-_display displayCtrl 1007 lbAdd "Infantry - 1 point";
-_display displayCtrl 1007 lbAdd "Vehicle - 2 points";
-_display displayCtrl 1007 lbAdd "Motorized - 3 points";
-_display displayCtrl 1007 lbAdd "Mechanized - 4 points";
-_display displayCtrl 1007 lbAdd "Armor - 5 points";
-_display displayCtrl 1007 lbAdd "Artillery - 5 points";
-_display displayCtrl 1007 lbAdd "Helicopter - 6 points";
-_display displayCtrl 1007 lbAdd "Plane - 7 points";
+_display displayCtrl 1007 lbAdd "1¤ - Recon";
+_display displayCtrl 1007 lbAdd "1¤ - Infantry";
+_display displayCtrl 1007 lbAdd "2¤ - Vehicle";
+_display displayCtrl 1007 lbAdd "3¤ - Motorized";
+_display displayCtrl 1007 lbAdd "4¤ - Mechanized";
+_display displayCtrl 1007 lbAdd "5¤ - Armor";
+_display displayCtrl 1007 lbAdd "5¤ - Artillery";
+_display displayCtrl 1007 lbAdd "5¤ - Helicopter";
+_display displayCtrl 1007 lbAdd "7¤ - Plane";
 
 /// Scenario
 _display displayCtrl 1013 lbAdd "Random Time";

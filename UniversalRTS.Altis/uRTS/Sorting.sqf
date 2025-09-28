@@ -7,8 +7,10 @@ uRTS_EAST_ALL = [];
 		private _uni = count units _x;
 		private _type = "inf";
 		private _vehs = [_x, false] call BIS_fnc_groupVehicles;
+		private _name = (str _uni) + "x";
 		if (count _vehs != 0) then {
 			_veh = _vehs select 0;
+			_name = [configOf _veh] call BIS_fnc_displayName;
 			private _cfg = configFile >> "CfgVehicles" >> typeOf _veh;
 			private _drv = getNumber (_cfg >> "hasDriver");
 			private _sim = getText (_cfg >> "simulation");
@@ -29,8 +31,8 @@ uRTS_EAST_ALL = [];
 	
 		if (isPlayer leader _x) then {_type = "hq"};
 		
-		if (side _ldr == west) then {uRTS_WEST_ALL append [[_x call BIS_fnc_netID, "b_" + _type, _pos]]};
-		if (side _ldr == east) then {uRTS_EAST_ALL append [[_x call BIS_fnc_netID, "o_" + _type, _pos]]};
+		if (side _ldr == west) then {uRTS_WEST_ALL append [[_x call BIS_fnc_netID, "b_" + _type, _pos, _name]]};
+		if (side _ldr == east) then {uRTS_EAST_ALL append [[_x call BIS_fnc_netID, "o_" + _type, _pos, _name]]};
 	}
 }forEach allgroups;
 

@@ -76,7 +76,9 @@ uRTS_OBJECTIVES = [];
 private _westbase = (uRTS_OBJECTIVES select 0);
 private _eastbase = (uRTS_OBJECTIVES select ((count uRTS_OBJECTIVES) - 1));
 _westbase setMarkerColor "ColorWEST";
+_westbase setMarkerSize [uRTS_SIZE * 2, uRTS_SIZE * 2];
 _eastbase setMarkerColor "ColorEAST";
+_eastbase setMarkerSize [uRTS_SIZE * 2, uRTS_SIZE * 2];
 
 private _neutrals = uRTS_OBJECTIVES - ([_westbase] + [_eastbase]);
 
