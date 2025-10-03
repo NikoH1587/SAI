@@ -60,14 +60,14 @@ class uRTS_GUI
 			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 1 * GUI_GRID_CENTER_H;
 			w = 40 * GUI_GRID_CENTER_W;
-			h = 4 * GUI_GRID_CENTER_H;
+			h = 7 * GUI_GRID_CENTER_H;
 		};
 		
 		class Faction : RscCombo
 		{
 			idc = 1006;
 			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 5 * GUI_GRID_CENTER_H;
+			y = GUI_GRID_CENTER_Y + 8 * GUI_GRID_CENTER_H;
 			w = 20 * GUI_GRID_CENTER_W;
 			h = 1 * GUI_GRID_CENTER_H;
 		};
@@ -76,7 +76,7 @@ class uRTS_GUI
 		{
 			idc = 1007;
 			x = GUI_GRID_CENTER_X + 20 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 5 * GUI_GRID_CENTER_H;
+			y = GUI_GRID_CENTER_Y + 8 * GUI_GRID_CENTER_H;
 			w = 20 * GUI_GRID_CENTER_W;
 			h = 1 * GUI_GRID_CENTER_H;
 			onLBSelChanged = "_this call uRTS_FNC_LIST;";
@@ -86,10 +86,10 @@ class uRTS_GUI
 		{
 			idc = 1008;
 			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 13 * GUI_GRID_CENTER_H;
+			y = GUI_GRID_CENTER_Y + 16 * GUI_GRID_CENTER_H;
 			w = 20 * GUI_GRID_CENTER_W;
-			h = 9 * GUI_GRID_CENTER_H;
-			colorBackground[] = {0,1,1,0.1};
+			h = 6 * GUI_GRID_CENTER_H;
+			colorBackground[] = {0, 0.15, 0.3, 1};
 			onLBSelChanged = "_this call uRTS_FNC_SELECT;";
 		};
 		
@@ -97,10 +97,10 @@ class uRTS_GUI
 		{
 			idc = 1009;
 			x = GUI_GRID_CENTER_X + 20 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 13 * GUI_GRID_CENTER_H;
+			y = GUI_GRID_CENTER_Y + 16 * GUI_GRID_CENTER_H;
 			w = 20 * GUI_GRID_CENTER_W;
-			h = 9 * GUI_GRID_CENTER_H;
-			colorBackground[] = {1,1,0,0.1};
+			h = 6 * GUI_GRID_CENTER_H;
+			colorBackground[] = {0.25, 0, 0, 1};
 			onLBSelChanged = "_this call uRTS_FNC_SELECT;";
 		};
 		
@@ -108,7 +108,7 @@ class uRTS_GUI
 		{
 			idc = 1010;
 			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 6 * GUI_GRID_CENTER_H;
+			y = GUI_GRID_CENTER_Y + 9 * GUI_GRID_CENTER_H;
 			w = 28 * GUI_GRID_CENTER_W;
 			h = 7 * GUI_GRID_CENTER_H;
 			onLBSelChanged = "[] call uRTS_FNC_ICON;";
@@ -158,7 +158,7 @@ class uRTS_GUI
 		{
 			idc = 1017;
 			x = GUI_GRID_CENTER_X + 28 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 6 * GUI_GRID_CENTER_H;
+			y = GUI_GRID_CENTER_Y + 9 * GUI_GRID_CENTER_H;
 			w = 12 * GUI_GRID_CENTER_W;
 			h = 7 * GUI_GRID_CENTER_H;
 			text = "";

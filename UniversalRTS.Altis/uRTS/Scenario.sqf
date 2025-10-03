@@ -4,8 +4,8 @@ private _cfg = uRTS_CFG select 1;
 private _time = _cfg select 0;
 private _weather = _cfg select 1;
 private _objectives = _cfg select 2;
-private _scenario = _cfg select 3;
-private _side = _cfg select 4; /// Can be left as placeholder for future
+private _placeholder1 = _cfg select 3;
+private _placeholder1 = _cfg select 4;
 private _code = _cfg select 5;
 
 uRTS_WEST = uRTS_CFG select 2;
@@ -42,82 +42,95 @@ switch (_time) do {
 [[date select 0, date select 1, date select 2, _time, 0]] remoteExec ["setDate"];
 
 /// Size
-
+private _mod = 5;
+if (_objectives == 1) then {_mod = 7};
+if (_objectives == 2) then {_mod = 9};
 uRTS_SIZE = 250;
 
-/// Objectives
-switch (_objectives) do {
-	case 1: {_objectives = 7};
-	case 2: {_objectives = 9};
-	default {_objectives = 5};
-};
-
+/// Select objetives
 private _randomPos = [] call BIS_fnc_randomPos;
 private _locations = nearestLocations [_randomPos, ["NameCityCapital", "NameCity", "NameVillage", "NameLocal", "Hill"], worldSize];
-private _locations = _locations select [0, _objectives];
+{
+	private _loc = _x;
+	{
+		if ((_x != _loc && _x distance _loc < 500)) then {_locations = _locations - [_x]};
+	}forEach _locations;
+}forEach _locations;
 
-private _randomDir = _randomPos getPos [worldSize, random 360];
-_locations = [_locations, [], {(position _x) distance _randomDir}, "ASCEND"] call BIS_fnc_sortBy;
+private _locations = _locations select [0, _mod];
 
 uRTS_OBJECTIVES = [];
-
 {
 	private _mrk = createMarker ["uRTS_OBJ_" + (str _forEachIndex), position _x];
 	_mrk setMarkerShape "RECTANGLE";
-///	_mrk setMarkerSize [(size _x select 0) max uRTS_SIZE, (size _x select 1) max uRTS_SIZE];
 	_mrk setMarkerSize [uRTS_SIZE, uRTS_SIZE];
 	_mrk setMarkerBrush "SolidBorder";
 	_mrk setMarkerAlpha 0.5;
-	_mrk setMarkerDir (position _x getDir _randomDir);
 	uRTS_OBJECTIVES append [_mrk];
 }forEach _locations;
 
-/// Scenario
-private _westbase = (uRTS_OBJECTIVES select 0);
-private _eastbase = (uRTS_OBJECTIVES select ((count uRTS_OBJECTIVES) - 1));
+/// Select bases
+
+private _far = [0, "", ""];
+
+{
+	private _mrk = _x;
+	private _pos = getMarkerPos _x;
+	{
+		private _dist = _pos distance (getMarkerPos _x);
+		if (_dist > (_far select 0)) then {_far = [_dist, _mrk, _x]};
+	}forEach uRTS_OBJECTIVES;
+}forEach uRTS_OBJECTIVES;
+
+private _rand = [[1, 2],[2, 1]] select floor random 2;
+private _westBase = _far select (_rand select 0);
+private _eastBase = _far select (_rand select 1);
 _westbase setMarkerColor "ColorWEST";
 _westbase setMarkerSize [uRTS_SIZE * 2, uRTS_SIZE * 2];
 _eastbase setMarkerColor "ColorEAST";
 _eastbase setMarkerSize [uRTS_SIZE * 2, uRTS_SIZE * 2];
 
-private _neutrals = uRTS_OBJECTIVES - ([_westbase] + [_eastbase]);
-
-switch (_scenario) do {
-	case 1: {{_x setMarkerColor "ColorEAST"}forEach _neutrals};
-	case 2: {{_x setMarkerColor "ColorWEST"}forEach _neutrals};
-	default {{_x setMarkerColor "ColorBLACK"}forEach _neutrals};
-};
-
-/// Loadouts
-private _westSLD = "B_Soldier_F";
-private _eastSLD = "O_Soldier_F";
-
+/// Rotate markers
 {
-	{
-		if (_x isKindOf "Man" && _westSLD == "B_Soldier_F") then {_westSLD = _x};
-	}forEach (_x select 2);
-}forEach uRTS_WEST;
+	private _dir = (getmarkerPos _westBase) getdir (getmarkerPos _eastBase);
+	_x setMarkerDir _dir;
+}forEach uRTS_OBJECTIVES;
 
-{
-	{
-		if (_x isKindOf "Man" && _eastSLD == "O_Soldier_F") then {_eastSLD = _x};
-	}forEach (_x select 2);
-}forEach uRTS_EAST;
+/// Game variables
+uRTS_RESERVE = 5 * _mod;
+uRTS_CAPTURE = 15 * _mod;
+uRTS_DESTROY = 10 * _mod;
 
-uRTS_LOAD_WEST = getUnitLoadout _westSLD;
-uRTS_LOAD_EAST = getUnitLoadout _eastSLD;
+publicVariable "uRTS_RESERVE";
+publicVariable "uRTS_CAPTURE";
+publicVariable "uRTS_DESTROY";
+publicVariable "uRTS_RESPAWN";
 
-/// Starting points
-uRTS_POINTS_WEST = 5;
-uRTS_POINTS_EAST = 5;
-publicVariable "uRTS_POINTS_WEST";
-publicVariable "uRTS_POINTS_EAST";
+uRTS_RESERVE_WEST = uRTS_RESERVE;
+uRTS_CAPTURE_WEST = 0;
+uRTS_DESTROY_WEST = 0;
+publicVariable "uRTS_RESERVE_WEST";
+publicVariable "uRTS_CAPTURE_WEST";
+publicVariable "uRTS_DESTROY_WEST";
+
+uRTS_RESERVE_EAST = uRTS_RESERVE;
+uRTS_CAPTURE_EAST = 0;
+uRTS_DESTROY_EAST = 0;
+publicVariable "uRTS_RESERVE_EAST";
+publicVariable "uRTS_CAPTURE_EAST";
+publicVariable "uRTS_DESTROY_EAST";
+
+uRTS_TIMER = 60;
+publicVariable "uRTS_TIMER";
 
 /// Run custom code
 call _code;
 
+/// reset the cfg variables
+{_x = nil}forEach uRTS_CFG_ALL;
+
 /// Start game!
-private _rspW = createMarker ["respawn_west", getMarkerpos _westbase];
-private _rspE = createMarker ["respawn_east", getMarkerpos _eastbase];
-private _uRTS = createMarker ["uRTS_ACTIVE", [0, 0, 0]];
+createMarker ["respawn_west", getMarkerpos _westbase];
+createMarker ["respawn_east", getMarkerpos _eastbase];
 call compile preprocessFile "uRTS\uRTS.sqf";
+[] remoteExec ["uRTS_PLAYER_START", 0, true];

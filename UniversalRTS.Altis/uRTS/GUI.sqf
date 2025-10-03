@@ -39,15 +39,18 @@ for "_i" from 0 to (count uRTS_CFG_FACTIONS) do {
 	_display displayCtrl 1006 lbAdd (uRTS_CFG_FACTIONS select _i);
 };
 
-_display displayCtrl 1007 lbAdd "1¤ - Recon";
-_display displayCtrl 1007 lbAdd "1¤ - Infantry";
-_display displayCtrl 1007 lbAdd "2¤ - Vehicle";
-_display displayCtrl 1007 lbAdd "3¤ - Motorized";
-_display displayCtrl 1007 lbAdd "4¤ - Mechanized";
-_display displayCtrl 1007 lbAdd "5¤ - Armor";
-_display displayCtrl 1007 lbAdd "5¤ - Artillery";
-_display displayCtrl 1007 lbAdd "5¤ - Helicopter";
-_display displayCtrl 1007 lbAdd "7¤ - Plane";
+_display displayCtrl 1007 lbAdd "Recon";
+_display displayCtrl 1007 lbAdd "Infantry";
+_display displayCtrl 1007 lbAdd "Statics";
+_display displayCtrl 1007 lbAdd "Vehicle";
+_display displayCtrl 1007 lbAdd "Support";
+_display displayCtrl 1007 lbAdd "Motorized";
+_display displayCtrl 1007 lbAdd "Mechanized";
+_display displayCtrl 1007 lbAdd "Autonomous";
+_display displayCtrl 1007 lbAdd "Armor";
+_display displayCtrl 1007 lbAdd "Artillery";
+_display displayCtrl 1007 lbAdd "Helicopter";
+_display displayCtrl 1007 lbAdd "Plane";
 
 /// Scenario
 _display displayCtrl 1013 lbAdd "Random Time";
@@ -63,12 +66,10 @@ _display displayCtrl 1014 lbAdd "Cloudy";
 _display displayCtrl 1014 lbAdd "Storm";
 _display displayCtrl 1014 lbSetCurSel 0;
 
-_display displayCtrl 1015 lbAdd "3 Objectives";
 _display displayCtrl 1015 lbAdd "5 Objectives";
 _display displayCtrl 1015 lbAdd "7 Objectives";
+_display displayCtrl 1015 lbAdd "9 Objectives";
 _display displayCtrl 1015 lbSetCurSel 0;
 
-_display displayCtrl 1016 lbAdd "Gambit";
-_display displayCtrl 1016 lbAdd "Attack";
-_display displayCtrl 1016 lbAdd "Defend";
+_display displayCtrl 1016 lbAdd "Placeholder";
 _display displayCtrl 1016 lbSetCurSel 0;

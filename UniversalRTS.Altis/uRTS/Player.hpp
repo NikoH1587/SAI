@@ -1,67 +1,35 @@
 class uRTS_MENU {
 	idd = 1100;
-	movingEnable = 0;
-	enableSimulation = 1;
 		
 	class controls
-	{
-		class Backround: RscText
-		{
-			idc = 1100;
-			x = GUI_GRID_TOPCENTER_X + 10 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_TOPCENTER_Y + 2 * GUI_GRID_CENTER_W;
-			w = 20 * GUI_GRID_CENTER_W;
-			h = 5 * GUI_GRID_CENTER_H;
-		};
-				
-		class Info: RscListbox
+	{		
+		class Purchase: RscCombo
 		{
 			idc = 1101;
-			x = GUI_GRID_TOPCENTER_X + 10 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_TOPCENTER_Y + 2.5 * GUI_GRID_CENTER_H;
+			x = GUI_GRID_TOPCENTER_X + 15 * GUI_GRID_CENTER_W;
+			y = GUI_GRID_TOPCENTER_Y + 0 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
-			h = 4 * GUI_GRID_CENTER_H;
+			h = 1.5 * GUI_GRID_CENTER_H;
+			onLBSelChanged = "_this call uRTS_PLAYER_PURCHASE;";
 		};
-			
-		class Select: RscCombo
+		
+		class Gameinfo: RscListbox
 		{
 			idc = 1102;
-			x = GUI_GRID_TOPCENTER_X + 20 * GUI_GRID_CENTER_W;
+			x = GUI_GRID_TOPCENTER_X + 15 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_TOPCENTER_Y + 1.5 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
-			h = 1 * GUI_GRID_CENTER_H;
-			onLBSelChanged = "_this call uRTS_PLAYER_SELECT;";
-		};
-			
-		class Icon: RscPicture
+			h = 3 * GUI_GRID_CENTER_H;
+		};		
+		
+		class Command: RscListbox
 		{
 			idc = 1103;
-			x = GUI_GRID_TOPCENTER_X + 22 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_TOPCENTER_Y + 3.5 * GUI_GRID_CENTER_H;
-			w = 6 * GUI_GRID_CENTER_W;
-			h = 3 * GUI_GRID_CENTER_H;
-			text = "";
-		};
-		
-		class Points: RscText
-		{
-			idc = 1104;
-			x = GUI_GRID_TOPCENTER_X + 10 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_TOPCENTER_Y + 1.5 * GUI_GRID_CENTER_H;
+			x = GUI_GRID_TOPCENTER_X + 15 * GUI_GRID_CENTER_W;
+			y = GUI_GRID_TOPCENTER_Y + 4.5 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
-			h = 1 * GUI_GRID_CENTER_H;
-			colorBackground[] = {0,0,0,1};
-			text = "Points Available: ";
-		}
-		
-		class List: RscListbox
-		{
-			idc = 1105;
-			x = GUI_GRID_TOPCENTER_X + 20 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_TOPCENTER_Y + 2.5 * GUI_GRID_CENTER_H;
-			w = 10 * GUI_GRID_CENTER_W;
-			h = 4 * GUI_GRID_CENTER_H;
-			onLBSelChanged = "_this call uRTS_PLAYER_COMMAND";
+			h = 2 * GUI_GRID_CENTER_H;
+			onLBSelChanged = "(_this select 1) call uRTS_PLAYER_ORDER;";
 		};
 	};
 };

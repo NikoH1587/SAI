@@ -3,8 +3,9 @@ uRTS_CMD_MOVE = {
 	private _pos = _this select 1;
 	private _shift = _this select 2;
 	private _grp = _nid call BIS_fnc_groupFromNetId;
+	private _price = _grp getVariable "uRTS_PRICE";
 	
-	systemChat format ["CMD_MOVE called: netID=%1, pos=%2, grp=%3", _nid, _pos, _grp, _shift];
+	systemChat format ["CMD_MOVE called: netID=%1, pos=%2, grp=%3, shf=%4, prc=%5", _nid, _pos, _grp, _shift, _price];
 	if (!_shift) then {
 		for "_i" from 0 to (count waypoints _grp) - 1 do {
 			deleteWaypoint [_grp, 0];
@@ -19,7 +20,6 @@ uRTS_CMD_ATTACK = {
 	private _shift = _this select 2;
 	private _grp = _nid call BIS_fnc_groupFromNetId;
 	
-	systemChat format ["CMD_ATTACK called: netID=%1, pos=%2, grp=%3", _nid, _pos, _grp, _shift];
 	if (!_shift) then {
 		for "_i" from 0 to (count waypoints _grp) - 1 do {
 			deleteWaypoint [_grp, 0];
@@ -35,7 +35,6 @@ uRTS_CMD_GARRISON = {
 	private _shift = _this select 2;
 	private _grp = _nid call BIS_fnc_groupFromNetId;
 	private _units = units _grp;
-	systemChat format ["CMD_GARRISON called: netID=%1, pos=%2, grp=%3", _nid, _pos, _grp, _shift];
 	if (!_shift) then {
 		_pos = nearestBuilding _pos;
 		
@@ -64,7 +63,6 @@ uRTS_CMD_UNLOAD = {
 	private _shift = _this select 2;
 	private _grp = _nid call BIS_fnc_groupFromNetId;
 	
-	systemChat format ["CMD_UNLOAD called: netID=%1, pos=%2, grp=%3", _nid, _pos, _grp, _shift];
 	if (!_shift) then {
 		for "_i" from 0 to (count waypoints _grp) - 1 do {
 			deleteWaypoint [_grp, 0];
@@ -83,8 +81,6 @@ uRTS_CMD_UNLOAD = {
 uRTS_CMD_STOP = {
 	private _nid = _this select 0;
 	private _grp = _nid call BIS_fnc_groupFromNetId;
-	
-	systemChat format ["CMD_STOP called: netID=%1, pos=%2, grp=%3", _nid, _grp];
 
 	for "_i" from 0 to (count waypoints _grp) - 1 do {
 		deleteWaypoint [_grp, 0];

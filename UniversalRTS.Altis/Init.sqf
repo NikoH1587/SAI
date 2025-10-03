@@ -1,6 +1,6 @@
 [] call BIS_fnc_jukebox;
 call compile preprocessFile "uRTS\Player.sqf";
-
+call compile preprocessFile "uRTS\Commands.sqf";
 if (!isServer) exitWith {};
 
 sleep 0.1;
