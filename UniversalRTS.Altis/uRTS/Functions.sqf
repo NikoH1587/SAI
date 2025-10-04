@@ -122,7 +122,6 @@ uRTS_FNC_IMPORT = {
 };
 
 uRTS_FNC_PLAY = {
-	createMarker ["uRTS_ACTIVE", [0, 0, 0]];
 	closeDialog 0;
 	call compile preprocessFile "uRTS\Scenario.sqf";
 };

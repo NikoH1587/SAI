@@ -3,7 +3,7 @@
 uRTS_CFG = 
 [
 ["Title","Author",["Description"]],
-[0,0,0,[],[],{}],
+[0,0,0,[0, 0],[[1, 1],[1, 1]],{}],
 [
 [1,"inf","Rifle Squad",["B_soldier_SL_F","B_soldier_F","B_soldier_LAT_F","B_soldier_M_F","B_soldier_TL_F","B_soldier_AR_F","B_soldier_A_F","B_medic_F"]],
 [1,"recon","Recon Team",["B_recon_TL_F","B_recon_M_F","B_recon_medic_F","B_recon_LAT_F","B_recon_JTAC_F","B_recon_exp_F"]],

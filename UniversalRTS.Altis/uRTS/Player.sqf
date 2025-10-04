@@ -11,7 +11,6 @@ uRTS_PLAYER_START = {
 		private _units = _select select 3;
 		private _group = [_side, _marker, _units, _price] call uRTS_PLAYER_SPAWN;
 		private _leader = leader _group;
-///		{addSwitchableUnit _x} forEach units _group;
 		selectPlayer _leader;
 	}
 };
@@ -24,11 +23,15 @@ uRTS_PLAYER_SPAWN = {
 	private _units = _this select 2;
 	private _price = _this select 3;
 	private _base = getMarkerPos "respawn_west";
+	private _morale = uRTS_MORALE_WEST;
+	private _supply = uRTS_SUPPLY_WEST;
 	_marker = "b_" + _marker;	
 	
 	if (_side == east) then {
 		_marker = "o_" + _marker;
 		_base = getMarkerPos getMarkerPos "respawn_east";
+		_morale = uRTS_MORALE_EAST;
+		_supply = uRTS_SUPPLY_EAST;
 	};
 	
 	private _pos = [_base, 0, 500, 10, 0, 0.5, 0, [], [_base]] call BIS_fnc_findsafepos;
@@ -41,7 +44,7 @@ uRTS_PLAYER_SPAWN = {
 		_pos = [nil, ["water"]] call BIS_fnc_randomPos;
 	};
 	
-	private _spawned = [_pos, _side, _units, _relpos] call BIS_fnc_spawnGroup;
+	private _spawned = [_pos, _side, _units, _relpos, [], [_morale, _morale], [_supply, _supply]] call BIS_fnc_spawnGroup;
 	private _vehs = [_spawned, true] call BIS_fnc_groupVehicles;
 	
 	{
@@ -50,7 +53,7 @@ uRTS_PLAYER_SPAWN = {
 	}forEach units _spawned;
 	
     _spawned setVariable ["uRTS_PRICE", _price, true];
-	
+	_spawned deleteGroupWhenEmpty true;
 	_grpMarker = createMarker ["uRTS_GRP_" + (netID _spawned), getPosASL leader _spawned];
 	_grpMarker setMarkerType _marker;
 	_grpMarker setMarkerAlpha 0;
@@ -211,7 +214,6 @@ uRTS_PLAYER_ORDER = {
 };
 
 uRTS_PLAYER_SWITCH = {
-	hint str uRTS_PLAYER_GROUP;
 	private _grp = uRTS_PLAYER_GROUP;
 	private _ldr = leader _grp;
 	if (alive _ldr) then {

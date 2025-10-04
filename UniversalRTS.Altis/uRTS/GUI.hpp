@@ -144,14 +144,16 @@ class uRTS_GUI
 			onLBSelChanged = "_this call uRTS_FNC_SELECT;";
 		};
 		
-		class Scenario : RscCombo
+		class Position: RscButton
 		{
 			idc = 1016;
+			text = "Position";
 			x = GUI_GRID_CENTER_X + 30 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 22 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 1 * GUI_GRID_CENTER_H;
-			onLBSelChanged = "_this call uRTS_FNC_SELECT;";
+			colorBackground[] = {0, 0, 0, 1};
+			onButtonClick = "[] call uRTS_FNC_POSITION;";
 		};
 		
 		class Icon: RscPicture

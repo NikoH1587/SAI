@@ -4,8 +4,8 @@ private _cfg = uRTS_CFG select 1;
 private _time = _cfg select 0;
 private _weather = _cfg select 1;
 private _objectives = _cfg select 2;
-private _placeholder1 = _cfg select 3;
-private _placeholder1 = _cfg select 4;
+private _position = _cfg select 3;
+private _morale = _cfg select 4;
 private _code = _cfg select 5;
 
 uRTS_WEST = uRTS_CFG select 2;
@@ -49,7 +49,8 @@ uRTS_SIZE = 250;
 
 /// Select objetives
 private _randomPos = [] call BIS_fnc_randomPos;
-private _locations = nearestLocations [_randomPos, ["NameCityCapital", "NameCity", "NameVillage", "NameLocal", "Hill"], worldSize];
+if (_position select 0 == 0) then {_position = _randomPos};
+private _locations = nearestLocations [_position, ["NameCityCapital", "NameCity", "NameVillage", "NameLocal", "Hill"], worldSize];
 {
 	private _loc = _x;
 	{
@@ -96,6 +97,17 @@ _eastbase setMarkerSize [uRTS_SIZE * 2, uRTS_SIZE * 2];
 	_x setMarkerDir _dir;
 }forEach uRTS_OBJECTIVES;
 
+/// Morale & Supply situation
+uRTS_MORALE_WEST = ((_morale select 0) select 0);
+uRTS_SUPPLY_WEST = ((_morale select 0) select 1);
+uRTS_MORALE_EAST = ((_morale select 1) select 0);
+uRTS_SUPPLY_EAST = ((_morale select 1) select 1);
+
+publicVariable "uRTS_MORALE_WEST";
+publicVariable "uRTS_SUPPLY_WEST";
+publicVariable "uRTS_MORALE_EAST";
+publicVariable "uRTS_SUPPLY_EAST";
+
 /// Game variables
 uRTS_RESERVE = 5 * _mod;
 uRTS_CAPTURE = 15 * _mod;
@@ -123,6 +135,22 @@ publicVariable "uRTS_DESTROY_EAST";
 uRTS_TIMER = 60;
 publicVariable "uRTS_TIMER";
 
+/// Show description and play map animation.
+private _genDesc = [];
+private _descSize = "Skirmish near ";
+if (_mod == 7) then {_descSize = "Battle of "};
+if (_mod == 9) then {_descSize = "Campaign for "};
+private _descTime = (str (date select 3)) + ":00";
+private _descRain = ", Clear.";
+if (overCast > 0.25) then {_descRain = ", Cloudy"};
+if (overCast > 0.75) then {_descRain = ", Storm"};
+private _locDesc = text (_locations select 0);
+if (_locDesc == "") then {_locDesc = mapGridPosition _position};
+private _genDesc = [_descSize + _locDesc, _descTime + _descRain];
+
+private _cfgDesc = ((uRTS_CFG select 0)select 2);
+if (_cfgDesc select 0 == "description") then {_cfgDesc = _genDesc};
+
 /// Run custom code
 call _code;
 
@@ -134,3 +162,4 @@ createMarker ["respawn_west", getMarkerpos _westbase];
 createMarker ["respawn_east", getMarkerpos _eastbase];
 call compile preprocessFile "uRTS\uRTS.sqf";
 [] remoteExec ["uRTS_PLAYER_START", 0, true];
+_cfgDesc spawn BIS_fnc_EXP_camp_SITREP;
