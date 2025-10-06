@@ -125,3 +125,79 @@ uRTS_FNC_PLAY = {
 	closeDialog 0;
 	call compile preprocessFile "uRTS\Scenario.sqf";
 };
+
+/// [east, "o_unknown", ["O_Truck_02_covered_F"], 1] call uRTS_FNC_SPAWN;
+/// [east, "unknown", ["O_Truck_02_covered_F"], 1] remoteExec ["uRTS_FNC_SPAWN", 2, false];
+uRTS_FNC_SPAWN = {
+	private _side = _this select 0;
+	private _side2 = civilian;
+	private _marker = _this select 1;
+	private _units = _this select 2;
+	private _price = _this select 3;
+	private _base = getMarkerPos "respawn_west";
+	private _morale = uRTS_MORALE_WEST;
+	private _supply = uRTS_SUPPLY_WEST;
+	private _prefix = "b_";	
+	
+	if (_side == "WEST") then {
+		_side2 = west;
+	};
+	
+	if (_side == "EAST") then {
+		_side2 = east;
+		_prefix = "o_";
+		_base = getMarkerPos "respawn_east";
+		_morale = uRTS_MORALE_EAST;
+		_supply = uRTS_SUPPLY_EAST;
+	};
+	
+	_marker = _prefix + _marker;
+	
+	private _pos = [_base, 0, 500, 10, 0, 0.5, 0, [], [_base]] call BIS_fnc_findsafepos;
+	private _relpos = [];
+	for "_i" from 0 to (count _units - 1) do {
+		_relpos pushBack [_i * 3, 0];
+	};
+	
+	if ((_units select 0) isKindOf "Air") then {
+		_pos = [nil, ["water"]] call BIS_fnc_randomPos;
+	};
+	
+	private _spawned = [_pos, _side2, _units, _relpos, [], [_morale, _morale], [_supply, _supply]] call BIS_fnc_spawnGroup; /// REPLACE WITH creatvehicle?
+	private _vehs = [_spawned, true] call BIS_fnc_groupVehicles;
+	
+	{
+		private _unit = _x;
+		if (count _vehs > 0) then {_unit moveInCargo (_vehs select 0)};
+	}forEach units _spawned;
+	
+    _spawned setVariable ["uRTS_PRICE", _price, true];
+	_spawned deleteGroupWhenEmpty true;
+	_grpMarker = createMarker ["uRTS_GRP_" + (netID _spawned), getPosASL leader _spawned];
+	_grpMarker setMarkerType _marker;
+	_grpMarker setMarkerAlpha 0.5;
+	_spawned;
+};
+
+uRTS_FNC_PURCHASE = {
+	private _side = _this select 0;
+	private _value = _this select 1;
+	private _cfg = uRTS_CFG_WEST;
+	private _reserve = 0;
+	if (_side == "WEST") then {_reserve = uRTS_RESERVE_WEST};
+	if (_side == "EAST") then {_cfg = uRTS_CFG_EAST; _reserve = uRTS_RESERVE_EAST};
+	private _select = _cfg select _value;
+	private _price = _select select 0;
+	private _marker = _select select 1;
+	private _name = _select select 2;
+	private _units = _select select 3;
+	private _owner = netID player;
+	if (_reserve >= _price) then {
+		if (_side == "WEST") then {uRTS_RESERVE_WEST = uRTS_RESERVE_WEST - _price; [west, "BLU"] sideChat ("Reinforcements: " + _name)};
+		if (_side == "EAST") then {uRTS_RESERVE_EAST = uRTS_RESERVE_EAST - _price; [east, "OPF"] sideChat ("Reinforcements: " + _name)};
+		[_side, _marker, _units, _price] call uRTS_FNC_SPAWN;
+	} else {
+		if (_side == "WEST") then {[west, "BLU"] sideChat ("Not enough ¤ reserve!")};
+		if (_side == "EAST") then {[east, "OPF"] sideChat ("Not enough ¤ reserve!")};
+	};
+};

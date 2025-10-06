@@ -10,7 +10,7 @@ class uRTS_MENU {
 			y = GUI_GRID_TOPCENTER_Y + 0 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 1.5 * GUI_GRID_CENTER_H;
-			onLBSelChanged = "_this call uRTS_PLAYER_PURCHASE;";
+			onLBSelChanged = "(_this select 1) call uRTS_PLAYER_PURCHASE;";
 		};
 		
 		class Gameinfo: RscListbox

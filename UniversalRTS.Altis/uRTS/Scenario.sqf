@@ -8,11 +8,11 @@ private _position = _cfg select 3;
 private _morale = _cfg select 4;
 private _code = _cfg select 5;
 
-uRTS_WEST = uRTS_CFG select 2;
-uRTS_EAST = uRTS_CFG select 3;
+uRTS_CFG_WEST = uRTS_CFG select 2;
+uRTS_CFG_EAST = uRTS_CFG select 3;
 
-publicVariable "uRTS_WEST";
-publicVariable "uRTS_EAST";
+publicVariable "uRTS_CFG_WEST";
+publicVariable "uRTS_CFG_EAST";
 
 /// Weather
 switch (_weather) do {
@@ -116,7 +116,6 @@ uRTS_DESTROY = 10 * _mod;
 publicVariable "uRTS_RESERVE";
 publicVariable "uRTS_CAPTURE";
 publicVariable "uRTS_DESTROY";
-publicVariable "uRTS_RESPAWN";
 
 uRTS_RESERVE_WEST = uRTS_RESERVE;
 uRTS_CAPTURE_WEST = 0;
