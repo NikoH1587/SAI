@@ -97,7 +97,6 @@ uRTS_FNC_SELECT = {
 		case 1013: {(uRTS_CFG select 1) set [0, _value]}; /// Time
 		case 1014: {(uRTS_CFG select 1) set [1, _value]}; /// Weather
 		case 1015: {(uRTS_CFG select 1) set [2, _value]}; /// Scale
-		case 1016: {(uRTS_CFG select 1) set [3, _value]}; /// Scenario
 	};
 	
 	[] call uRTS_FNC_UPDATE;
@@ -121,8 +120,23 @@ uRTS_FNC_IMPORT = {
 	};
 };
 
+uRTS_FNC_POSITION = {
+	openMap true;
+	closeDialog 0;
+	hint "Select position.";
+	onMapSingleClick {
+		(uRTS_CFG select 1) set [3, _pos];
+		openMap false;
+		execVM "uRTS\GUI.sqf";
+		hint ("Position " + str _pos + " set.");
+	};
+};
+
+
 uRTS_FNC_PLAY = {
 	closeDialog 0;
+	call compile preprocessFile "uRTS\Player.sqf";
+	call compile preprocessFile "uRTS\Commands.sqf";
 	call compile preprocessFile "uRTS\Scenario.sqf";
 };
 
@@ -193,11 +207,13 @@ uRTS_FNC_PURCHASE = {
 	private _units = _select select 3;
 	private _owner = netID player;
 	if (_reserve >= _price) then {
-		if (_side == "WEST") then {uRTS_RESERVE_WEST = uRTS_RESERVE_WEST - _price; [west, "BLU"] sideChat ("Reinforcements: " + _name)};
-		if (_side == "EAST") then {uRTS_RESERVE_EAST = uRTS_RESERVE_EAST - _price; [east, "OPF"] sideChat ("Reinforcements: " + _name)};
+		if (_side == "WEST") then {uRTS_RESERVE_WEST = uRTS_RESERVE_WEST - _price; [west, "BLU"] sideChat ("Reinforcements: " + _name); publicVariable "uRTS_RESERVE_WEST"};
+		if (_side == "EAST") then {uRTS_RESERVE_EAST = uRTS_RESERVE_EAST - _price; [east, "OPF"] sideChat ("Reinforcements: " + _name); publicVariable "uRTS_RESERVE_EAST"};
 		[_side, _marker, _units, _price] call uRTS_FNC_SPAWN;
+		
 	} else {
 		if (_side == "WEST") then {[west, "BLU"] sideChat ("Not enough ¤ reserve!")};
 		if (_side == "EAST") then {[east, "OPF"] sideChat ("Not enough ¤ reserve!")};
 	};
 };
+

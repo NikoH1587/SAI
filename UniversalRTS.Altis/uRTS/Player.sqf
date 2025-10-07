@@ -1,21 +1,7 @@
 uRTS_PLAYER_START = {
-///	if (simulationEnabled player == false) then {
-///		sleep 0.1;
-///		private _side = side player;
-///		private _cfg = uRTS_CFG select 2;
-///		if (side player == east) then {_cfg = uRTS_CFG select 3};
-///		private _select = _cfg select 0;
-///		private _price = _select select 0;
-///		private _marker = _select select 1;
-///		private _name = _select select 2;
-///		private _units = _select select 3;
-///		[_side, _marker, _units, _price] remoteExec ["uRTS_FNC_SPAWN", 2, false];
-///		private _group = groupFromNetId _netID;
-///		private _leader = leader _group;
-///		selectPlayer _leader;
-///	}
-/// this stuff is maybe uneeded because you can just switch?
-
+    openMap true;
+	if (playerSide == west) then {mapAnimAdd [0, 0.33, getMarkerPos "respawn_west"]; mapAnimCommit};
+	if (playerSide == east) then {mapAnimAdd [0, 0.33, getMarkerPos "respawn_east"]; mapAnimCommit};
 };
 
 uRTS_PLAYER_TRACKING = {
@@ -90,11 +76,7 @@ uRTS_PLAYER_GROUP = group player;
 				if (uRTS_PLAYER_MODE == "CANCEL") then {[_pos] call uRTS_PLAYER_RESUME};
 				if (uRTS_PLAYER_MODE == "POSITION") then {[_pos, _shift] call uRTS_PLAYER_POSITION};
 			};
-		};		
-		
-///		publicVariable "uRTS_RESERVE_WEST";
-///		publicVariable "uRTS_CAPTURE_WEST";
-///		publicVariable "uRTS_DESTROY_WEST";
+		};
 		
 		if (visiblemap) then {
 			private _menu = findDisplay 1100;
@@ -103,21 +85,27 @@ uRTS_PLAYER_GROUP = group player;
 			private _reserve = "0";
 			private _capture = "0";
 			private _destroy = "0";
+			private _capture2 = "0";
+			private _destroy2 = "0";
 			if (playerSide == west) then {
 				_reserve = str uRTS_RESERVE_WEST;
 				_capture = uRTS_CAPTURE_WEST;
+				_capture2 = uRTS_CAPTURE_EAST;
 				_destroy = uRTS_DESTROY_WEST;
+				_destroy2 = uRTS_DESTROY_EAST;
 			};
 			
 			if (playerSide == east) then {
 				_reserve = str uRTS_RESERVE_EAST;
 				_capture = uRTS_CAPTURE_EAST;
+				_capture2 = uRTS_CAPTURE_WEST;
 				_destroy = uRTS_DESTROY_EAST;
+				_destroy2 = uRTS_DESTROY_WEST;
 			};
 			
-			_gameinfo lbAdd ("RESERVE: " + _reserve + "¤");
-///			_gameinfo lbAdd ("CAPTURE: " + (str ((_capture/uRTS_CAPTURE) * 100)) + "%";
-///				_gameinfo lbAdd ("DESTROY: " + (str ((_destroy/uRTS_DESTROY) * 100)) + "%";
+			_gameinfo lbAdd ("RESERVES AVAILABLE: " + _reserve + "¤");
+			_gameinfo lbAdd ("CAPTURE WIN: " + str (round((_capture / uRTS_CAPTURE)*100)) + "% ENEMY: " + str (round((_capture2 / uRTS_CAPTURE)*100)) + "%");
+			_gameinfo lbAdd ("DESTRUCTION: " + str (round((_destroy2 / uRTS_DESTROY)*100)) + "% ENEMY: " + str (round((_destroy / uRTS_DESTROY)*100)) + "%");
 		};
 		
 		if (!visiblemap && _open) then {
@@ -141,14 +129,12 @@ uRTS_PLAYER_SELECT = {
 	private _markers = allMapmarkers select {_x find "uRTS_GRP_" == 0};
 	private _mrk = "";
 	private _dist = 1000000;
-	hint str _markers;
 	{
 		private _d = _pos distance2D (getMarkerPos _x);
 		private _type = markerType _x;
 		if (_d < _dist) then {_dist = _d; _mrk = _x; _side2 = _type select [0, 1]};
 	}forEach _markers;
 	if (_mrk != "" && _dist <= 100 && _side == _side2) then {
-		hint str _mrk;
 		private _chars = count _mrk;
 		private _netID = _mrk select [9, _chars];
 		uRTS_PLAYER_GROUP = groupFromNetId _netID;
