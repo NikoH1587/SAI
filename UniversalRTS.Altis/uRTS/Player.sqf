@@ -1,9 +1,3 @@
-uRTS_PLAYER_START = {
-    openMap true;
-	if (playerSide == west) then {mapAnimAdd [0, 0.33, getMarkerPos "respawn_west"]; mapAnimCommit};
-	if (playerSide == east) then {mapAnimAdd [0, 0.33, getMarkerPos "respawn_east"]; mapAnimCommit};
-};
-
 uRTS_PLAYER_TRACKING = {
 	{
 		sleep 0.1;

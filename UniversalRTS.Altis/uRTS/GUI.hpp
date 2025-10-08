@@ -19,11 +19,11 @@ class uRTS_GUI
 		class Import: RscButton
 		{
 			idc = 1001;
-			text = "IMPORT / EXPORT:";
 			x = GUI_GRID_CENTER_X + 0 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 23 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 1 * GUI_GRID_CENTER_H;
+			colorBackground[] = {1,1,0,0.2};
 			onButtonClick = "[] call uRTS_FNC_IMPORT;";
 		};
 		
@@ -147,7 +147,7 @@ class uRTS_GUI
 		class Position: RscButton
 		{
 			idc = 1016;
-			text = "Position";
+			text = "Position: random";
 			x = GUI_GRID_CENTER_X + 30 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 22 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
@@ -169,13 +169,12 @@ class uRTS_GUI
 		class Play: RscButton
 		{
 			idc = 1020;
-			text = "PLAY";
 			x = GUI_GRID_CENTER_X + 30 * GUI_GRID_CENTER_W;
 			y = GUI_GRID_CENTER_Y + 23 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 1 * GUI_GRID_CENTER_H;
 			colorBackground[] = {0,1,0,0.2};
-			onButtonClick = "[] call uRTS_FNC_PLAY;";
+			onButtonClick = "[] call uRTS_FNC_READY;";
 		};
 	};
 };

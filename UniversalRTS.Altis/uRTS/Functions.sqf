@@ -1,9 +1,7 @@
 uRTS_FNC_UPDATE = {
 	private _display = findDisplay 1000;
-	
-	lbClear 1002;
-	_display displayCtrl 1002 ctrlSetText str uRTS_CFG;
-	
+	lbClear 1020;
+	_display displayCtrl 1020 ctrlSetText "PLAY SCENARIO (READY: " + str uRTS_READY + "/" + str uRTS_PLAYERS + ")";
 	lbClear 1008;
 	for "_i" from 0 to (count (uRTS_CFG select 2)) do {
 		private _cfg = (uRTS_CFG select 2) select _i;
@@ -22,6 +20,10 @@ uRTS_FNC_UPDATE = {
 		_display displayCtrl 1009 lbAdd (_price + _name + _count);
 	};
 	
+	if (lbCurSel 1013 != ((uRTS_CFG select 1) select 0)) then {_display displayCtrl 1013 lbSetCurSel ((uRTS_CFG select 1) select 0)};
+	if (lbCurSel 1014 != ((uRTS_CFG select 1) select 1)) then {_display displayCtrl 1014 lbSetCurSel ((uRTS_CFG select 1) select 1)};
+	if (lbCurSel 1015 != ((uRTS_CFG select 1) select 2)) then {_display displayCtrl 1015 lbSetCurSel ((uRTS_CFG select 1) select 2)};
+	if ((((uRTS_CFG select 1) select 3) select 0) != 0) then {_display displayCtrl 1016 ctrlSetText ("Position: " + text nearestLocation [((uRTS_CFG select 1) select 3), ""])};
 };
 
 uRTS_FNC_LIST = {
@@ -51,14 +53,6 @@ uRTS_CFG_LIST = [];
 	}forEach _types;
 };
 
-uRTS_FNC_SELECT = {
-	private _display = findDisplay 1000;
-	private _selection = uRTS_CFG_LIST select (lbCurSel (_display displayCtrl 1010));
-	(uRTS_CFG select 2) pushBack _selection;
-	(uRTS_CFG select 2) deleteAt 0;
-	[] call uRTS_FNC_UPDATE;
-};
-
 uRTS_FNC_ICON = {
 	private _display = findDisplay 1000;
 	private _picturePath = "";
@@ -69,28 +63,24 @@ uRTS_FNC_ICON = {
 	}
 };
 
-uRTS_FNC_SETEAST = {
-	private _display = findDisplay 1000;
-	private _selection = uRTS_CFG_LIST select (lbCurSel (_display displayCtrl 1010));
-	(uRTS_CFG select 3) pushBack _selection;
-	(uRTS_CFG select 3) deleteAt 0;
-	[] call uRTS_FNC_UPDATE;
-};
-
 uRTS_FNC_SELECT = {
 	params ["_ctrl", "_value"];
 	switch (ctrlIDC _ctrl) do {
 		case 1008: {
-			private _selection = uRTS_CFG_LIST select (lbCurSel (findDisplay 1000 displayCtrl 1010));
-			if (isNil "_selection" == false) then {
-				(uRTS_CFG select 2) set [_value, _selection];
+			if (playerSide == west or isServer) then {
+				private _selection = uRTS_CFG_LIST select (lbCurSel (findDisplay 1000 displayCtrl 1010));
+				if (isNil "_selection" == false) then {
+					(uRTS_CFG select 2) set [_value, _selection];
+				}
 			}
 		};
 		
 		case 1009: {
-			private _selection = uRTS_CFG_LIST select (lbCurSel (findDisplay 1000 displayCtrl 1010));
-			if (isNil "_selection" == false) then {
-				(uRTS_CFG select 3) set [_value, _selection];
+			if (playerSide == east or isServer) then {
+				private _selection = uRTS_CFG_LIST select (lbCurSel (findDisplay 1000 displayCtrl 1010));
+				if (isNil "_selection" == false) then {
+					(uRTS_CFG select 3) set [_value, _selection];
+				}
 			}
 		};
 		
@@ -98,26 +88,27 @@ uRTS_FNC_SELECT = {
 		case 1014: {(uRTS_CFG select 1) set [1, _value]}; /// Weather
 		case 1015: {(uRTS_CFG select 1) set [2, _value]}; /// Scale
 	};
-	
-	[] call uRTS_FNC_UPDATE;
+	publicVariable "uRTS_CFG";
+	remoteExecCall ["uRTS_FNC_UPDATE", 0, false];
 };
 
 uRTS_FNC_IMPORT = {
-	private _display = findDisplay 1000;
-	private _config = _display displayCtrl 1002;
-	private _text = ctrlText _config;
+///	private _display = findDisplay 1000;
+///	private _config = _display displayCtrl 1002;
+///	private _text = ctrlText _config;
 
-	private _result = call compile _text;
+///	private _result = call compile _text;
 	
-	if (typeName _result == "ARRAY" && count _result == 4) then {
-		uRTS_CFG = _result;
-		closeDialog 0;
-		uRTS_CFG_IMPORT = true;
-		execVM "uRTS\GUI.sqf";
-		hint "Configuration imported";	
-	} else {
-		hint "Invalid configuration!";
-	};
+///	if (typeName _result == "ARRAY" && count _result == 4) then {
+///		uRTS_CFG = _result;
+///		publicVariable "uRTS_CFG";
+///		closeDialog 0;
+///		uRTS_CFG_IMPORT = true;
+///		execVM "uRTS\GUI.sqf";
+///		hint "Configuration imported";	
+///	} else {
+///		hint "Invalid configuration!";
+///	};
 };
 
 uRTS_FNC_POSITION = {
@@ -126,22 +117,22 @@ uRTS_FNC_POSITION = {
 	hint "Select position.";
 	onMapSingleClick {
 		(uRTS_CFG select 1) set [3, _pos];
+		publicVariable "uRTS_CFG";
 		openMap false;
 		execVM "uRTS\GUI.sqf";
-		hint ("Position " + str _pos + " set.");
 	};
 };
 
-
-uRTS_FNC_PLAY = {
-	closeDialog 0;
-	call compile preprocessFile "uRTS\Player.sqf";
-	call compile preprocessFile "uRTS\Commands.sqf";
-	call compile preprocessFile "uRTS\Scenario.sqf";
+uRTS_FNC_READY = {
+	uRTS_READY = uRTS_READY + 1;
+	publicVariable "uRTS_READY";
+	remoteExecCall ["uRTS_FNC_UPDATE", 0, false];	
+	if (uRTS_READY >= uRTS_PLAYERS) then {
+		remoteExec ["uRTS_FNC_JOIN", 0, true];
+		remoteExec ["uRTS_FNC_PLAY", 2, false];	
+	};
 };
 
-/// [east, "o_unknown", ["O_Truck_02_covered_F"], 1] call uRTS_FNC_SPAWN;
-/// [east, "unknown", ["O_Truck_02_covered_F"], 1] remoteExec ["uRTS_FNC_SPAWN", 2, false];
 uRTS_FNC_SPAWN = {
 	private _side = _this select 0;
 	private _side2 = civilian;
@@ -207,13 +198,13 @@ uRTS_FNC_PURCHASE = {
 	private _units = _select select 3;
 	private _owner = netID player;
 	if (_reserve >= _price) then {
-		if (_side == "WEST") then {uRTS_RESERVE_WEST = uRTS_RESERVE_WEST - _price; [west, "BLU"] sideChat ("Reinforcements: " + _name); publicVariable "uRTS_RESERVE_WEST"};
-		if (_side == "EAST") then {uRTS_RESERVE_EAST = uRTS_RESERVE_EAST - _price; [east, "OPF"] sideChat ("Reinforcements: " + _name); publicVariable "uRTS_RESERVE_EAST"};
+		if (_side == "WEST") then {uRTS_RESERVE_WEST = uRTS_RESERVE_WEST - _price; [west, "HQ"] sideChat ("Reinforcements: " + _name); publicVariable "uRTS_RESERVE_WEST"};
+		if (_side == "EAST") then {uRTS_RESERVE_EAST = uRTS_RESERVE_EAST - _price; [east, "HQ"] sideChat ("Reinforcements: " + _name); publicVariable "uRTS_RESERVE_EAST"};
 		[_side, _marker, _units, _price] call uRTS_FNC_SPAWN;
 		
 	} else {
-		if (_side == "WEST") then {[west, "BLU"] sideChat ("Not enough ¤ reserve!")};
-		if (_side == "EAST") then {[east, "OPF"] sideChat ("Not enough ¤ reserve!")};
+		if (_side == "WEST") then {[west, "HQ"] sideChat ("Not enough ¤ reserve!")};
+		if (_side == "EAST") then {[east, "HQ"] sideChat ("Not enough ¤ reserve!")};
 	};
 };
 

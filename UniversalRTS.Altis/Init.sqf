@@ -1,17 +1,17 @@
-[] call BIS_fnc_jukebox;
-if (!isServer) then {call compile preprocessFile "uRTS\Player.sqf"};
-if (!isServer) then {call compile preprocessFile "uRTS\Commands.sqf"};
-if (!isServer) exitWith {};
+uRTS_FNC_PLAY = {
+	call compile preprocessFile "uRTS\Scenario.sqf";
+};
 
+uRTS_FNC_JOIN = {
+	closeDialog 0;
+	call compile preprocessFile "uRTS\Player.sqf";
+	call compile preprocessFile "uRTS\Commands.sqf";
+	if (playerSide == west) then {mapAnimAdd [0, 0.33, getMarkerPos "respawn_west"]; mapAnimCommit};
+	if (playerSide == east) then {mapAnimAdd [0, 0.33, getMarkerPos "respawn_east"]; mapAnimCommit};
+};
+
+[] call BIS_fnc_jukebox;
 enableTeamSwitch false;
-sleep 0.1;
 call compile preprocessFile "uRTS\Config.sqf";
 call compile preprocessFile "uRTS\Functions.sqf";
-
-/// Dedicated starts with default settings
-/// sp/hosted starts with menu
-if (isDedicated) then {
-	[] call uRTS_FNC_PLAY;
-} else {
-	call compile preprocessFile "uRTS\GUI.sqf";
-};
+call compile preprocessFile "uRTS\GUI.sqf";

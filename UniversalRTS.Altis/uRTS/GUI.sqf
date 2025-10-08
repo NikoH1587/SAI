@@ -2,37 +2,22 @@ createDialog "uRTS_GUI";
 private _display = findDisplay 1000;
 
 /// TEXT
-_display displayCtrl 1002 ctrlSetText str uRTS_CFG;
-
-if (uRTS_CFG_IMPORT == false) then {
-	_display displayCtrl 1003 ctrlSetText "Universal RTS Version 1";
-	_display displayCtrl 1004 ctrlSetText "Made by Kosmokainen";
-
-	_display displayCtrl 1005 lbAdd "Creating a deck:";
-	_display displayCtrl 1005 lbAdd "Select faction and then type.";
-	_display displayCtrl 1005 lbAdd "Select unit from list.";
-	_display displayCtrl 1005 lbAdd "Click west/east list.";
-	_display displayCtrl 1005 lbAdd "";
-	_display displayCtrl 1005 lbAdd "Importing scenarios:";
-	_display displayCtrl 1005 lbAdd "Select array next to 'IMPORT/EXPORT' with ctrl+a.";
-	_display displayCtrl 1005 lbAdd "Clear array with backspace.";
-	_display displayCtrl 1005 lbAdd "Paste deck/scenario with ctrl+v.";
-	_display displayCtrl 1005 lbAdd "Click 'IMPORT/EXPORT' to load.";
-	_display displayCtrl 1005 lbAdd "";
-	_display displayCtrl 1005 lbAdd "Exporting decks:";
-	_display displayCtrl 1005 lbAdd "Select array next to 'IMPORT/EXPORT' with ctrl+a.";
-	_display displayCtrl 1005 lbAdd "Copy with ctrl+c.";
-	_display displayCtrl 1005 lbAdd "Check out workshop discussions thread!";
-	
-} else {
-
-	_display displayCtrl 1003 ctrlSetText ((uRTS_CFG select 0) select 0);
-	_display displayCtrl 1004 ctrlSetText ((uRTS_CFG select 0) select 1);
-	
-	{
-		_display displayCtrl 1005 lbAdd _x;
-	}forEach ((uRTS_CFG select 0) select 2);
+if (isServer) then {
+	_display displayCtrl 1001 ctrlSetText "LOAD CAMPAIGN:";
 };
+
+_display displayCtrl 1003 ctrlSetText "Universal RTS Version 1";
+_display displayCtrl 1004 ctrlSetText "Made by Kosmokainen";
+
+_display displayCtrl 1005 lbAdd "Creating a deck:";
+_display displayCtrl 1005 lbAdd "Select faction and then type.";
+_display displayCtrl 1005 lbAdd "Select unit from list.";
+_display displayCtrl 1005 lbAdd "Click west/east list.";
+_display displayCtrl 1005 lbAdd "Click 'PLAY SCENARIO' to start.";
+_display displayCtrl 1005 lbAdd "";
+_display displayCtrl 1005 lbAdd "Importing campaign:";
+_display displayCtrl 1005 lbAdd "Paste campaign with ctrl+v.";
+_display displayCtrl 1005 lbAdd "Click 'LOAD CAMPAIGN:' to start.";
 
 /// CONFIG
 for "_i" from 0 to (count uRTS_CFG_FACTIONS) do {

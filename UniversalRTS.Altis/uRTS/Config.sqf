@@ -1,5 +1,8 @@
 /// THESE ARE DEFAULT SETTINGS
 /// FOR DEDICATED SERVER CHANGE THE uRTS_CFG ARRAY HERE
+uRTS_PLAYERS = count (call BIS_fnc_listPlayers);
+uRTS_READY = 0;
+
 uRTS_CFG = 
 [
 ["Title","Author",["Description"]],

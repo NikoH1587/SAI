@@ -160,5 +160,4 @@ call _code;
 createMarker ["respawn_west", getMarkerpos _westbase];
 createMarker ["respawn_east", getMarkerpos _eastbase];
 call compile preprocessFile "uRTS\uRTS.sqf";
-[] remoteExec ["uRTS_PLAYER_START", 0, true];
 _cfgDesc spawn BIS_fnc_EXP_camp_SITREP;
