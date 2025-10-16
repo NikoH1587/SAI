@@ -13,6 +13,7 @@ uRTS_NEURONACTIVATION = {
 	deleteMarker _mrk;
 };
 
+/// how to fix group dismounting the vehicle and "cheating" the destruction value this way?
 uRTS_TRACKING = {
 	{
 		sleep 0.1;

@@ -31,6 +31,7 @@ uRTS_PLAYER_PURCHASE = {
 	if (playerSide == west) then {_side = "WEST"};
 	if (playerSide == east) then {_side = "EAST"};
 	[_side, _selection] remoteExec ["uRTS_FNC_PURCHASE", 2, false];
+	1 spawn uRTS_PLAYER_BEEPBOOP;
 };
 
 uRTS_PLAYER_COMMANDS = [];
@@ -110,7 +111,7 @@ uRTS_PLAYER_GROUP = group player;
 			uRTS_PLAYER_GROUP = group player;
 			
 		};
-		call uRTS_PLAYER_TRACKING;
+		0 spawn uRTS_PLAYER_TRACKING;
 	}
 };
 
@@ -132,7 +133,8 @@ uRTS_PLAYER_SELECT = {
 		private _chars = count _mrk;
 		private _netID = _mrk select [9, _chars];
 		uRTS_PLAYER_GROUP = groupFromNetId _netID;
-		[_mrk] call uRTS_PLAYER_LIST;
+		[_mrk] spawn uRTS_PLAYER_LIST;
+		0 spawn uRTS_PLAYER_BEEPBOOP;
 	};
 };
 
@@ -145,7 +147,7 @@ uRTS_PLAYER_LIST = {
 		case "inf": {_ord = ["MOVE", "GARRISON", "SWITCH", "CANCEL"]};
 		case "installation": {_ord = ["MOVE", "REPOS", "SWITCH", "CANCEL"]}; /// cannot repos if in combat!
 		case "unknown": {_ord = ["MOVE", "ATTACK", "SWITCH", "CANCEL"]};
-		case "support": {_ord = ["MOVE", "AUTO", "SWITCH", "CANCEL"]};
+		case "support": {_ord = ["MOVE", "SUPPORT", "SWITCH", "CANCEL"]};
 		case "motor_inf": {_ord = ["MOVE", "DISMOUNT", "SWITCH", "CANCEL"]};
 		case "mech_inf": {_ord = ["MOVE", "DISMOUNT", "SWITCH", "CANCEL"]};
 		case "uav": {_ord = ["MOVE", "CONTROL", "SWITCH", "CANCEL"]};
@@ -153,6 +155,7 @@ uRTS_PLAYER_LIST = {
 		case "art": {_ord = ["MOVE", "FIRE", "SWITCH", "CANCEL"]}; /// fire
 		case "air": {_ord = ["MOVE", "STRIKE", "SWITCH", "CANCEL"]}; /// strike?
 		case "plane": {_ord = ["MOVE", "STRIKE", "SWITCH", "CANCEL"]}; /// strike?
+		case "naval": {_ord = ["MOVE", "DISMOUNT", "SWITCH", "CANCEL"]};
 	};
 	
 	private _cmd = (findDisplay 1100) displayCtrl 1103;
@@ -162,12 +165,13 @@ uRTS_PLAYER_LIST = {
 	_cmd ctrlSetPosition [_pos select 0, _pos select 1, 0.15, 0.17];
 	_cmd ctrlCommit 0;
 	uRTS_PLAYER_MODE = "LIST";
-	uRTS_PLAYER_COMMANDs = _ord;
+	uRTS_PLAYER_COMMANDS = _ord;
 };
 
 uRTS_PLAYER_ORDER = {
-	private _order = uRTS_PLAYER_COMMANDs select _this;
+	private _order = uRTS_PLAYER_COMMANDS select _this;
 	switch (_order) do {
+		case "MOVE": {0 call uRTS_PLAYER_POSITION};
 		case "SWITCH": {0 call uRTS_PLAYER_SWITCH};	
 		case "CANCEL": {0 call uRTS_PLAYER_CANCEL};
 	};
@@ -180,6 +184,7 @@ uRTS_PLAYER_SWITCH = {
 		_old = player;
 		selectPlayer _ldr;
 		_old enableAI "TeamSwitch";
+		openMap [false, false];
 	}
 };
 
@@ -197,8 +202,51 @@ uRTS_PLAYER_RESUME = {
 	uRTS_PLAYER_MODE = "SELECT";
 };
 
-uRTS_PLAYER_POSITION = {};
+uRTS_PLAYER_POSITION = {
+};
 
+uRTS_PLAYER_BEEPBOOP = {
+	private _mode = _this;
+	private _sounds = ["a3\dubbing_radio_f\sfx\radionoise1.ogg", "a3\dubbing_radio_f\sfx\radionoise2.ogg", "a3\dubbing_radio_f\sfx\radionoise3.ogg"];
+	private _sounds2 = [
+		"a3\sounds_f\sfx\radio\ambient_radio1.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio10.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio11.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio12.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio13.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio14.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio15.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio16.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio17.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio18.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio19.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio2.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio20.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio21.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio22.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio23.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio24.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio25.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio26.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio27.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio28.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio29.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio3.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio30.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio4.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio5.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio6.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio7.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio8.wss",
+		"a3\sounds_f\sfx\radio\ambient_radio9.wss"];
+	_sound = _sounds select floor random 3;
+	_sleep = 1;
+	_volume = 1;
+	if (_mode == 1) then {_sound = _sounds2 select floor random 30; _sleep = 2; _volume = 0.25};
+	_snd = playSoundUI [_sound, _volume];
+	sleep _sleep;
+	stopSound _snd;
+};
 /// RESERVE: 0¤ (+10)
 /// CAPTURE: 0 / 100
 /// DESTROY: 0 / 100

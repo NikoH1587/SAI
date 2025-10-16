@@ -1,12 +1,11 @@
 /// THESE ARE DEFAULT SETTINGS
-/// FOR DEDICATED SERVER CHANGE THE uRTS_CFG ARRAY HERE
+/// FOR DEDICATED SERVER CHANGE THE uRTS_CFG ARRAYS HERE
 uRTS_PLAYERS = count (call BIS_fnc_listPlayers);
 uRTS_READY = 0;
 
-uRTS_CFG = 
-[
-["Title","Author",["Description"]],
-[0,0,0,[0, 0],[[1, 1],[1, 1]],{}],
+uRTS_CFG_COND = [0, 0, 0, [0, 0], 0, 0, 0];
+
+uRTS_CFG_WEST = 
 [
 [1,"inf","Rifle Squad",["B_soldier_SL_F","B_soldier_F","B_soldier_LAT_F","B_soldier_M_F","B_soldier_TL_F","B_soldier_AR_F","B_soldier_A_F","B_medic_F"]],
 [1,"recon","Recon Team",["B_recon_TL_F","B_recon_M_F","B_recon_medic_F","B_recon_LAT_F","B_recon_JTAC_F","B_recon_exp_F"]],
@@ -17,7 +16,9 @@ uRTS_CFG =
 [7,"art","M4 Scorcher",["B_MBT_01_arty_F"]],
 [6,"air","AH-99 Blackfoot",["B_Heli_Attack_01_dynamicLoadout_F"]],
 [7,"plane","A-164 Wipeout (CAS)",["B_Plane_CAS_01_dynamicLoadout_F"]]
-],
+];
+
+uRTS_CFG_EAST = 
 [
 [1,"inf","Rifle Squad",["O_soldier_SL_F","O_soldier_F","O_soldier_LAT_F","O_soldier_M_F","O_soldier_TL_F","O_soldier_AR_F","O_soldier_A_F","O_medic_F"]],
 [1,"recon","Recon Team",["O_recon_TL_F","O_recon_M_F","O_recon_medic_F","O_recon_LAT_F","O_recon_JTAC_F","O_recon_exp_F"]],
@@ -28,10 +29,7 @@ uRTS_CFG =
 [5,"art","2S9 Sochor",["O_MBT_02_arty_F"]],
 [6,"air","Mi-48 Kajman",["O_Heli_Attack_02_dynamicLoadout_F"]],
 [7,"plane","To-199 Neophron (CAS)",["O_Plane_CAS_02_dynamicLoadout_F"]]
-]
 ];
-
-uRTS_CFG_IMPORT = false;
 
 uRTS_CFG_FACTIONS = [];
 
@@ -47,8 +45,9 @@ uRTS_CFG_HELO = [];
 uRTS_CFG_TANK = [];
 uRTS_CFG_ARTY = [];
 uRTS_CFG_AERO = [];
+uRTS_CFG_BOAT = [];
 
-uRTS_CFG_ALL = [uRTS_CFG_RECG, uRTS_CFG_INFG, uRTS_CFG_STAT, uRTS_CFG_CARS, uRTS_CFG_SUPS, uRTS_CFG_MOTG, uRTS_CFG_MECG, uRTS_CFG_AUTO, uRTS_CFG_TANK, uRTS_CFG_ARTY, uRTS_CFG_HELO, uRTS_CFG_AERO];
+uRTS_CFG_ALL = [uRTS_CFG_RECG, uRTS_CFG_INFG, uRTS_CFG_STAT, uRTS_CFG_CARS, uRTS_CFG_SUPS, uRTS_CFG_MOTG, uRTS_CFG_MECG, uRTS_CFG_AUTO, uRTS_CFG_TANK, uRTS_CFG_ARTY, uRTS_CFG_HELO, uRTS_CFG_AERO, uRTS_CFG_BOAT];
 
 private _cfgVehicles = configFile >> "CfgVehicles";
 
@@ -79,6 +78,7 @@ for "_i" from 0 to ((count _cfgVehicles) - 1) do {
 				if (_sim == "helicopterrtd") then {uRTS_CFG_HELO append [[_faction, "air", _name, [_config], 6]]};
 				if (_sim == "tankx") then {uRTS_CFG_TANK append [[_faction, "armor", _name, [_config], (5 min _arm) max 3]]};
 				if (_sim == "airplanex" or _sim == "airplane") then {uRTS_CFG_AERO append [[_faction, "plane", _name, [_config], 7]]};
+				if (_sim == "shipx" or _sim == "submarinex") then {uRTS_CFG_BOAT append [[_faction, "naval", _name, [_config], (2 max _arm) min 4]]};
 			};
 			
 			if (_sup > 0 && _sim != "soldier") then {
@@ -142,6 +142,7 @@ private _mecICON = ["\A3\ui_f\data\map\markers\nato\b_mech_inf.paa", "\A3\ui_f\d
 				private _men = 0;
 				private _at = 0;
 				private _inc = true;
+				private _boat = false;
 				
 				private _ban = 
 				["B_support_GMG_F", "B_support_MG_F", "B_support_Mort_F",
@@ -155,6 +156,7 @@ private _mecICON = ["\A3\ui_f\data\map\markers\nato\b_mech_inf.paa", "\A3\ui_f\d
 					private _a = (getNumber (configFile >> "CfgVehicles" >> _x >> "armor")) / 100;
 					private _man = getNumber (configFile >> "CfgVehicles" >> _x >> "isMan");
 					private _icon = getText (configfile >> "CfgVehicles" >> _x >> "icon");
+					private _sim = toLower getText (configfile >> "CfgVehicles" >> _x >> "simulation");
 					if (_icon == "iconManAT") then {_at = _at + 1};
 					if (_a > _arm) then {_arm = _a};
 					if (_man == 0) then {
@@ -165,6 +167,7 @@ private _mecICON = ["\A3\ui_f\data\map\markers\nato\b_mech_inf.paa", "\A3\ui_f\d
 						_men = _men + 1;
 					};
 					
+					if (_sim == "shipx" or _sim == "submarinex") then {_boat = true};
 					if (_x in _ban) then {_inc = false};
 					
 				}forEach _vehicles;
@@ -177,6 +180,7 @@ private _mecICON = ["\A3\ui_f\data\map\markers\nato\b_mech_inf.paa", "\A3\ui_f\d
 				if (_icon in _infICON && _inc && _vehs < 2 && _catName != "Support Infantry" && _catName != "Special Forces") then {uRTS_CFG_INFG append [[_faction,"inf", _name, _vehicles, (0.5 max _at) min 2]]};
 				if (_icon in _motICON && _inc && _vehs < 3) then {uRTS_CFG_MOTG append [[_faction,"motor_inf", _name, _vehicles, ((3 max _arm) min 4) + _big]]};
 				if (_icon in _mecICON && _inc && _vehs == 1) then {uRTS_CFG_MECG append [[_faction,"mech_inf", _name, _vehicles, (4 max _arm) min 5]]};
+				if (_boat && _vehs == 1) then {uRTS_CFG_BOAT append [[_faction,"naval", _name, _vehicles, ((3 max _arm) min 4) + _big]]};				
 			}forEach _groups;
 		}forEach _categories;
 	}forEach _factions;

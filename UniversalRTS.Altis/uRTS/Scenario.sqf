@@ -1,15 +1,13 @@
 /// Configuration
-private _cfg = uRTS_CFG select 1;
+private _cfg = uRTS_CFG_COND;
 
 private _time = _cfg select 0;
 private _weather = _cfg select 1;
 private _objectives = _cfg select 2;
 private _position = _cfg select 3;
-private _morale = _cfg select 4;
-private _code = _cfg select 5;
-
-uRTS_CFG_WEST = uRTS_CFG select 2;
-uRTS_CFG_EAST = uRTS_CFG select 3;
+private _aiWEST = _cfg select 4;
+private _aiEAST = _cfg select 5;
+private _difficulty = _cfg select 6;
 
 publicVariable "uRTS_CFG_WEST";
 publicVariable "uRTS_CFG_EAST";
@@ -97,17 +95,6 @@ _eastbase setMarkerSize [uRTS_SIZE * 2, uRTS_SIZE * 2];
 	_x setMarkerDir _dir;
 }forEach uRTS_OBJECTIVES;
 
-/// Morale & Supply situation
-uRTS_MORALE_WEST = ((_morale select 0) select 0);
-uRTS_SUPPLY_WEST = ((_morale select 0) select 1);
-uRTS_MORALE_EAST = ((_morale select 1) select 0);
-uRTS_SUPPLY_EAST = ((_morale select 1) select 1);
-
-publicVariable "uRTS_MORALE_WEST";
-publicVariable "uRTS_SUPPLY_WEST";
-publicVariable "uRTS_MORALE_EAST";
-publicVariable "uRTS_SUPPLY_EAST";
-
 /// Game variables
 uRTS_RESERVE = 5 * _mod;
 uRTS_CAPTURE = 15 * _mod;
@@ -135,7 +122,7 @@ uRTS_TIMER = 60;
 publicVariable "uRTS_TIMER";
 
 /// Show description and play map animation.
-private _genDesc = [];
+private _description = [];
 private _descSize = "Skirmish near ";
 if (_mod == 7) then {_descSize = "Battle of "};
 if (_mod == 9) then {_descSize = "Campaign for "};
@@ -145,19 +132,13 @@ if (overCast > 0.25) then {_descRain = ", Cloudy"};
 if (overCast > 0.75) then {_descRain = ", Storm"};
 private _locDesc = text (_locations select 0);
 if (_locDesc == "") then {_locDesc = mapGridPosition _position};
-private _genDesc = [_descSize + _locDesc, _descTime + _descRain];
-
-private _cfgDesc = ((uRTS_CFG select 0)select 2);
-if (_cfgDesc select 0 == "description") then {_cfgDesc = _genDesc};
+private _description = [_descSize + _locDesc, _descTime + _descRain];
 
 /// Run custom code
 call _code;
-
-/// reset the cfg variables
-{_x = nil}forEach uRTS_CFG_ALL;
 
 /// Start game!
 createMarker ["respawn_west", getMarkerpos _westbase];
 createMarker ["respawn_east", getMarkerpos _eastbase];
 call compile preprocessFile "uRTS\uRTS.sqf";
-_cfgDesc spawn BIS_fnc_EXP_camp_SITREP;
+_description spawn BIS_fnc_EXP_camp_SITREP;
