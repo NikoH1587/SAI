@@ -21,12 +21,12 @@ uRTS_TRACKING = {
 		private _netID = _x select [9, _chars];
 		private _grp = groupFromNetId _netID;
 		private _ldr = leader _grp;
-		private _veh = vehicle _ldr;
-		private _txt = [configOf _veh] call BIS_fnc_displayName;
-		private _uni = str (count units _grp) + "x";
-		if (markerText _x != _txt && _veh != _ldr) then {_x setMarkerText _txt};
-		if (markerText _x != _uni && _veh == _ldr) then {_x setMarkerText _uni};
-		if (alive _ldr) then {_x setMarkerPos getPosASL _ldr};
+		private _veh = assignedVehicle _ldr;
+		private _txt = str (count units _grp) + "x";
+		private _pos = getPosASL _ldr;
+		if (isNull _veh == false) then {_txt = [configOf _veh] call BIS_fnc_displayName; if (count crew _veh > 0) then {_pos = getPosASL _veh}};
+		if (markerText _x != _txt) then {_x setMarkerText _txt};
+		if (alive _ldr) then {_x setMarkerPos _pos};
 		if (count units _grp == 0) then {
 			private _price = _grp getVariable "uRTS_PRICE";
 			if (side _grp == west) then {uRTS_DESTROY_EAST = uRTS_DESTROY_EAST + _price; publicVariable "uRTS_DESTROY_EAST"};

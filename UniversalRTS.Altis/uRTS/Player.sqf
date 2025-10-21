@@ -68,7 +68,6 @@ uRTS_PLAYER_GROUP = group player;
 			onMapSingleClick {
 				_side = str (playerSide);
 				if (uRTS_PLAYER_MODE == "SELECT") then {[_pos, _side] call uRTS_PLAYER_SELECT};
-				if (uRTS_PLAYER_MODE == "CANCEL") then {[_pos] call uRTS_PLAYER_RESUME};
 				if (uRTS_PLAYER_MODE == "POSITION") then {[_pos, _shift] call uRTS_PLAYER_POSITION};
 			};
 		};
@@ -143,7 +142,7 @@ uRTS_PLAYER_LIST = {
 	private _ord = [];
 	_mrk = (markertype _mrk) select [2, (count _mrk) - 2];
 	switch (_mrk) do {
-		case "recon": {_ord = ["MOVE", "STEALTH", "SWITCH", "CANCEL"]}; /// swtich to "stealth" mode?
+		case "recon": {_ord = ["MOVE", "SNEAK", "SWITCH", "CANCEL"]}; /// swtich to "stealth" mode?
 		case "inf": {_ord = ["MOVE", "GARRISON", "SWITCH", "CANCEL"]};
 		case "installation": {_ord = ["MOVE", "REPOS", "SWITCH", "CANCEL"]}; /// cannot repos if in combat!
 		case "unknown": {_ord = ["MOVE", "ATTACK", "SWITCH", "CANCEL"]};
@@ -169,23 +168,39 @@ uRTS_PLAYER_LIST = {
 };
 
 uRTS_PLAYER_ORDER = {
-	private _order = uRTS_PLAYER_COMMANDS select _this;
-	switch (_order) do {
-		case "MOVE": {0 call uRTS_PLAYER_POSITION};
-		case "SWITCH": {0 call uRTS_PLAYER_SWITCH};	
-		case "CANCEL": {0 call uRTS_PLAYER_CANCEL};
+	private _select = _this;
+	if (uRTS_PLAYER_MODE == "SWITCH") then {
+		private _old = player;
+		private _new = units uRTS_PLAYER_GROUP select _select;
+		selectPlayer _new;
+		_old enableAI "TeamSwitch";
+		openMap [false, false];
 	};
+
+	if (uRTS_PLAYER_MODE == "LIST") then {
+		private _order = uRTS_PLAYER_COMMANDS select _select;
+		switch (_order) do {
+			case "MOVE": {0 call uRTS_PLAYER_POSITION};
+			case "SWITCH": {0 call uRTS_PLAYER_SWITCH};	
+			case "CANCEL": {0 call uRTS_PLAYER_CANCEL};
+		}
+	}
 };
 
 uRTS_PLAYER_SWITCH = {
-	private _grp = uRTS_PLAYER_GROUP;
-	private _ldr = leader _grp;
-	if (alive _ldr) then {
-		_old = player;
-		selectPlayer _ldr;
-		_old enableAI "TeamSwitch";
-		openMap [false, false];
-	}
+	private _cmd = (findDisplay 1100) displayCtrl 1103;
+	private _units = units uRTS_PLAYER_GROUP;
+	lbClear _cmd;
+	private _pos = ctrlPosition _cmd;
+	_cmd ctrlSetPosition [_pos select 0, _pos select 1, 0.20, 0.20];
+	_cmd ctrlCommit 0;
+	
+	{
+		private _text = getText (configfile >> "CfgVehicles" >> typeOf _x >> "displayName");
+		_cmd lbAdd _text;
+	}forEach _units;
+	
+	uRTS_PLAYER_MODE = "SWITCH";
 };
 
 uRTS_PLAYER_CANCEL = {
@@ -196,10 +211,6 @@ uRTS_PLAYER_CANCEL = {
 	uRTS_PLAYER_COMMANDS = [];
 	uRTS_PLAYER_GROUP = group player;
 	uRTS_PLAYER_MODE = "CANCEL";
-};
-
-uRTS_PLAYER_RESUME = {
-	uRTS_PLAYER_MODE = "SELECT";
 };
 
 uRTS_PLAYER_POSITION = {

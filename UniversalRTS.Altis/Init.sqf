@@ -6,7 +6,8 @@ uRTS_FNC_JOIN = {
 	closeDialog 0;
 	call compile preprocessFile "uRTS\Player.sqf";
 	call compile preprocessFile "uRTS\Commands.sqf";
-	openMap [true, true];
+	openMap [true, false];
+/// openMap [true, true];
 	if (playerSide == west) then {mapAnimAdd [0, 0.33, getMarkerPos "respawn_west"]; mapAnimCommit; player setPos getMarkerPos "respawn_west"};
 	if (playerSide == east) then {mapAnimAdd [0, 0.33, getMarkerPos "respawn_east"]; mapAnimCommit; player setPos getMarkerPos "respawn_east"};
 	{_x = nil}forEach uRTS_CFG_ALL;

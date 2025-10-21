@@ -131,6 +131,7 @@ uRTS_FNC_SPAWN = {
 	private _side2 = civilian;
 	private _marker = _this select 1;
 	private _units = _this select 2;
+	private _count = count _units;
 	private _price = _this select 3;
 	private _base = getMarkerPos "respawn_west";
 	private _prefix = "b_";	
@@ -147,12 +148,6 @@ uRTS_FNC_SPAWN = {
 	
 	
 	private _pos = [_base, 0, 500, 10, 0, 0.5, 0, [], [_base]] call BIS_fnc_findsafepos;
-	private _relpos = [];
-	for "_i" from 0 to (count _units - 1) do {
-		_relpos pushBack [_i * 3, 0];
-	};
-	
-	/// make support, artillery and air units spawn at map HQ position!
 	
 	if (_marker in ["plane", "UAV", "air"]) then {
 		_pos = [[[_base, worldSize/3]], [[_base, worldSize/4]]] call BIS_fnc_randomPos;
@@ -161,23 +156,36 @@ uRTS_FNC_SPAWN = {
 	if (_marker in ["naval"]) then {
 		_pos = [[[_base, worldSize/4]], ["ground"]] call BIS_fnc_randomPos;
 	};
+
+	private _grp = createGroup [_side2, true];
+	private _ranks = ["CORPORAL", "PRIVATE"];
+	if (_count >= 6) then {_ranks = ["SERGEANT", "CORPORAL", "PRIVATE"];};
+	if (_count >= 12) then {_ranks = ["LIEUTENANT", "SERGEANT", "CORPORAL", "PRIVATE"];};	
 	
-	_marker = _prefix + _marker;
+	{
+		sleep 0.1;
+		private _rank = _ranks select (_forEachIndex min ((count _ranks) - 1));
+		if (_x iskindOf "man") then {
+			_x createUnit [_pos, _grp, "", 1, _rank]
+		} else {
+			[_pos, random 360, _x, _grp] call BIS_fnc_spawnVehicle;
+		};
+	}forEach _units;
 	
-	private _spawned = [_pos, _side2, _units, _relpos, [], [1, 1], [1, 1]] call BIS_fnc_spawnGroup; /// REPLACE WITH creatvehicle?
-	private _vehs = [_spawned, true] call BIS_fnc_groupVehicles;
+	private _vehs = [_grp, true] call BIS_fnc_groupVehicles;
 	
 	{
 		private _unit = _x;
 		if (count _vehs > 0) then {_unit moveInCargo (_vehs select 0)};
-	}forEach units _spawned;
+	}forEach units _grp;
 	
-    _spawned setVariable ["uRTS_PRICE", _price, true];
-	_spawned deleteGroupWhenEmpty true;
-	_grpMarker = createMarker ["uRTS_GRP_" + (netID _spawned), getPosASL leader _spawned];
+    _grp setVariable ["uRTS_PRICE", _price, true];
+	_grp deleteGroupWhenEmpty true;
+	_grpMarker = createMarker ["uRTS_GRP_" + (netID _grp), getPosASL leader _grp];
+	_marker = _prefix + _marker;
 	_grpMarker setMarkerType _marker;
 	_grpMarker setMarkerAlpha 0.5;
-	_spawned;
+	_grp;
 };
 
 uRTS_FNC_PURCHASE = {

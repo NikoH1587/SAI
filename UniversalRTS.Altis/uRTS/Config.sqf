@@ -178,8 +178,8 @@ private _mecICON = ["\A3\ui_f\data\map\markers\nato\b_mech_inf.paa", "\A3\ui_f\d
 				
 				if (_icon in _recICON && _inc && _vehs < 2 && _catName != "Support Infantry" && _catName != "Special Forces") then {uRTS_CFG_RECG append [[_faction,"recon", _name, _vehicles, (0.5 max _at) min 2]]};
 				if (_icon in _infICON && _inc && _vehs < 2 && _catName != "Support Infantry" && _catName != "Special Forces") then {uRTS_CFG_INFG append [[_faction,"inf", _name, _vehicles, (0.5 max _at) min 2]]};
-				if (_icon in _motICON && _inc && _vehs < 3) then {uRTS_CFG_MOTG append [[_faction,"motor_inf", _name, _vehicles, ((3 max _arm) min 4) + _big]]};
-				if (_icon in _mecICON && _inc && _vehs == 1) then {uRTS_CFG_MECG append [[_faction,"mech_inf", _name, _vehicles, (4 max _arm) min 5]]};
+				if (_icon in _motICON && _inc && _vehs < 2) then {uRTS_CFG_MOTG append [[_faction,"motor_inf", _name, _vehicles, ((3 max _arm) min 4) + _big]]};
+				if (_icon in _mecICON && _inc && _vehs < 2) then {uRTS_CFG_MECG append [[_faction,"mech_inf", _name, _vehicles, (4 max _arm) min 5]]};
 				if (_boat && _vehs == 1) then {uRTS_CFG_BOAT append [[_faction,"naval", _name, _vehicles, ((3 max _arm) min 4) + _big]]};				
 			}forEach _groups;
 		}forEach _categories;
