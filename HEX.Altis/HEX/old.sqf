@@ -59,3 +59,13 @@
 	_marker setMarkerSize [_size, _size];
 	_marker setMarkerColor _color;
 }forEach HEX_LOCS;
+
+	private _row = _x select 0;
+	private _col = _x select 1;
+	private _pos = _x select 2;
+	private _cfg = _x select 3;
+	private _sid = _x select 4;
+
+	_location = createLocation [_cfg, _pos, _row, _col];
+	_location setSide _sid;
+	HEX_LOCS pushback _location;
