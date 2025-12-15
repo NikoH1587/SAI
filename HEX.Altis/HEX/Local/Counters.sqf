@@ -1,19 +1,24 @@
+HEX_FOW = [];
+
 {
 	private _row = _x select 0;
 	private _col = _x select 1;
 	private _pos = _x select 2;
-	private _cfg = _x select 3;
-	private _sid = _x select 4;
+	private _locs = nearestLocations [_pos, [], HEX_SIDE*2];
+	private _hide = true;
+	{
+		if (side _x == side player) then {_hide = false};
+	}forEach _locs;
 	
-	private _name = format ["CFG_%1_%2", _row, _col];
-	if (_sid == side player) then {
+	if (_hide) then {
+		private _name = format ["FOW_%1_%2", _row, _col];
 		private _marker = createMarkerLocal [_name, _pos];
-		_marker setMarkerTypeLocal _cfg;
-	};
-	
-	if (_sid != side player && _sid == east) then {
-		private _marker = createMarkerLocal [_name, _pos];
-		_marker setMarkerTypeLocal "o_unknown";
+		_marker setMarkerShapeLocal "HEXAGON";
+		_marker setMarkerBrushLocal "SolidFull";
+		_marker setMarkerColorLocal "ColorGrey";
+		_marker setMarkerDirLocal 90;
+		_marker setMarkerSizeLocal [HEX_SIDE*0.99, HEX_SIDE*0.99];
+		HEX_FOW pushback _marker;
 	};
 }forEach HEX_GRID;
 
