@@ -17,4 +17,4 @@ HEX_FNC_NEAR = {
 	_near
 };
 
-///HEX_FNC_POS = {};
+/// if (_x inArea _grid) then {};

@@ -1,31 +1,38 @@
-LOC_MARKERS = [];
-
-/// Create markers for counter clientside
 {
 	private _hex = _x;
-	private _sid = _x select 4;
-	
-	if (_sid == side player) then {
-		private _near = _hex call HEX_FNC_NEAR;
-		{
-			private _hex2 = _x;
-			if (_hex2 in LOC_MARKERS == false) then {LOC_MARKERS pushback _hex2};
-		}forEach _near;
-	};
-}forEach HEX_GRID;
-
-{
 	private _row = _x select 0;
 	private _col = _x select 1;
 	private _pos = _x select 2;
 	private _cfg = _x select 3;
+	private _sid = _x select 4;
+	private _act = _x select 5;
+	private _max = 1;
+	if (_cfg in ["b_mech_inf", "b_armor","o_mech_inf", "o_armor"]) then {_max = 2};
+	if (_cfg in ["b_motor_inf", "b_recon","o_motor_inf", "o_recon"]) then {_max = 3};
 
-	private _name = format ["LOC_%1_%2", _row, _col];
-	private _marker = createMarkerLocal [_name, _pos];
-	if (_cfg != "hd_dot") then {
+	private _name = format ["CNT_%1_%2", _row, _col];
+	deleteMarkerLocal _name;
+
+	private _draw = false;
+	if (_sid == side player) then {_draw = true};
+	
+	private _near = _hex call HEX_FNC_NEAR;
+	{
+		private _sid2 = _x select 4;
+		if (_sid2 == side player) then {
+			_draw = true;
+		};
+	}forEach _near;
+	
+	if (_draw == true && _cfg != "hd_dot") then {
+		private _marker = createMarkerLocal [_name, _pos];
 		_marker setMarkerTypeLocal _cfg;
+		if (_sid == side player && _max > 0) then {
+			_marker setMarkerTextLocal ((str _act) + "/" + (str _max));			
+		};
 	};
-}forEach LOC_MARKERS;
+}forEach HEX_GRID;
+
 
 
 
