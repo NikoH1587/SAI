@@ -3,7 +3,8 @@ private _hexX = HEX_SIZE * 1.5;
 private _hexY = HEX_SIZE * sqrt 3;
 private _hexS = worldSize;
 private _count = ((count HEX_CFG_WEST) + (count HEX_CFG_EAST)) * 3;
-/// Grid config/save
+
+/// Grid feneration
 for "_col" from 0 to round(_hexS / _hexX) do {
     for "_row" from 0 to round(_hexS / _hexY) do {
 
@@ -24,7 +25,7 @@ for "_col" from 0 to round(_hexS / _hexX) do {
     };
 };
 
-/// Expand AO and assign grid;
+/// Select positon and restrict grid with fill;
 HEX_GRID = [selectRandom HEX_GRID, _count] call HEX_FNC_FILL;
 
 /// Place initial counters;
@@ -99,33 +100,8 @@ HEX_GRID = [selectRandom HEX_GRID, _count] call HEX_FNC_FILL;
 }forEach HEX_GRID;
 
 /// Zone of Control on grid
-{
-	private _hex = _x;
-	private _row = _x select 0;
-	private _col = _x select 1;
-	private _sid = _x select 4;
-	
-	private _near = _hex call HEX_FNC_NEAR;
-	private _sides = [_sid];
-	{
-		_sides pushback (_x select 4);
-	}forEach _near;
-	
-	private _color = "colorBLACK";
-	if (west in _sides) then {_color = "colorBLUFOR"};
-	if (east in _sides) then {_color = "colorOPFOR"};
-	if (west in _sides && east in _sides) then {_color = "ColorCIV"};
-	
-	private _marker = format ["HEX_%1_%2", _row, _col];
-	_marker setMarkerColor _color;
-	if (_color != "ColorBLACK") then {
-			_marker setMarkerAlpha 0.5;
-			_marker setMarkerBrush "SolidBorder";
-		} else {
-			_marker setMarkerBrush "Border";
-			_marker setMarkerAlpha 1;
-		};
-}forEach HEX_GRID;
+0 call HEX_FNC_ZOCO;
 
-publicVariable "HEX_GRID";
+/// Update counters on clients:
+remoteExec ["HEX_FNC_COTE", 0, false];
 copyToClipBoard str HEX_GRID;

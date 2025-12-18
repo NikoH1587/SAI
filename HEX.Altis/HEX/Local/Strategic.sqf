@@ -1,8 +1,7 @@
 openmap true;
-LOC_MODE = "SELECT"; /// "SELECT", "ORDERS", "COMMIT", "CANCEL";
+LOC_MODE = "SELECT"; /// "SELECT", "ORDER";
 LOC_ORDERS = [];
 LOC_SELECT = [];
-/// Get counter which can move
 
 LOC_FNC_SELECT = {
 	private _selectable = [];
@@ -20,35 +19,48 @@ LOC_FNC_SELECT = {
 	/// Select counter
 	{
 		private _hex = _x;
-		private _row = _x select 0;
-		private _col = _x select 1;
 		private _pos = _x select 2;
 		if (_pos distance _posCLICK < (HEX_SIZE/2)) then {
 			LOC_SELECT = _x;
 			LOC_MODE = "ORDER";
 			
-			private _name = format ["SEL_%1_%2", _row, _col];
-			private _marker = createMarkerLocal [_name, _pos];
+			private _marker = createMarkerLocal ["HEX_SELECT", _pos];
 			_marker setMarkerTypeLocal "Select";
 			_marker setMarkerSize [1.5, 1.5];
+			
 			/// Play sound 
 			0 spawn LOC_SOUND;
 			
-			/// Add all possible moves
+			/// Add all possible near moves
 			private _near = _hex call HEX_FNC_NEAR;
 			{
 				private _nearHEX = _x;
 				private _side = _x select 4;
-				if (_side != side player) then {
+				if (_side == civilian) then {
 					LOC_ORDERS pushback _nearHEX;
 				};
 			}forEach _near;		
 			
+			/// TBD: Road +1 move skip:
+			/// Origin (1st hex) has to have road hex
+			/// Middle (2nd hex w/HEX_FNC_NEAR) is civilian & Road
+			/// destination (3rd) is civilian & Road
+
+			/// Could also be done like this (would use flood as origin point, with enemy ZoC + max radius limiting it):
+			/// road tile + logi(support) = move another unit into road hex
+			/// friendly helo + airport = move another unit into hex
+			/// ship + harbor = move another unit into shore hex
+			/// HQ = Teleport in reserve/imaginary units?
+			
+			/// Aircraft carrier / etc ship = airport + harbor
+			/// this could make airdrops/shore landings possible
+			
+			/// Add move markers
 			{
-				private _row2 = _x select 0;
-				private _col2 = _x select 1;
+				private _row = _x select 0;
+				private _col = _x select 1;
 				private _pos2 = _x select 2;
-				private _name2 = format ["STR_%1_%2", _row2, _col2];
+				private _name2 = format ["ACT_%1_%2", _row, _col];
 				private _marker2 = createMarkerLocal [_name2, _pos2];
 				_marker2 setMarkerTypeLocal "Select";
 			}ForEach LOC_ORDERS;
@@ -56,34 +68,55 @@ LOC_FNC_SELECT = {
 	}forEach _selectable;
 };
 
-LOC_FNC_ORDERS = {
-	private _near = LOC_SELECT call HEX_FNC_NEAR;
+LOC_FNC_ORDER = {
+	private _posCLICK = _this;
+
+	/// Select move
 	{
 		private _hex = _x;
-		private _side = _x select 4;
-		if (side plyer != _side) then {
-			if (_side == "civilian") then {
-				LOC_MARCH pushBack _hex;
-			} else {
-				LOC_ATTACK pushBack _hex;			
-			};
-		};
-	}forEach _near;
-};
-
-LOC_FNC_COMMIT = {
-	/// Send order to host, update markers for all!
-	{
+		private _row = _x select 0;
+		private _col = _x select 1;
+		private _pos = _x select 2;
+		private _name = format ["ACT_%1_%2", _row, _col];
 		
-	}forEach LOC_MARKERS;
+		/// TODO:
+		/// Moving animation???
+		/// place marker in between destination and origin?
+		/// use static effect?
+		
+		if (_pos distance _posCLICK < (HEX_SIZE/2)) then {
+			
+			/// Send move to server
+			[LOC_SELECT, _hex] remoteExec ["HEX_FNC_MOVE", 0, false];
+
+			/// Update zone of control on server
+			remoteExec ["HEX_FNC_ZOCO", 2, false];
+
+			/// Update counters on clients
+			remoteExec ["HEX_FNC_COTE", 0, false];
+		};
+		
+		/// Remove order markers
+		deleteMarkerLocal _name;
+	}forEach LOC_ORDERS;
+	
+	/// Play sound
+	0 spawn LOC_SOUND;
+	
+	/// Remove selection
+	LOC_ORDERS = [];
+	LOC_SELECT = [];
+	LOC_MODE = "SELECT";
+	deleteMarkerLocal "HEX_SELECT";
 };
 
 onMapSingleClick {
 	if (LOC_MODE == "SELECT") then {
-		_pos call LOC_FNC_SELECT;
+		_pos spawn LOC_FNC_SELECT;
 	};
-	if (LOC_MODE == "ORDERS") then {
-		_pos call LOC_FNC_ORDERS;
+	
+	if (LOC_MODE == "ORDER") then {
+		_pos spawn LOC_FNC_ORDER;
 	};
 	true;
 };
@@ -96,6 +129,6 @@ LOC_SOUND = {
 		"a3\dubbing_radio_f\sfx\radionoise3.ogg"
 	];
 	private _sound = playSoundUI [_sounds select floor random 3, 1];
-	sleep 1.5;
+	sleep 1;
 	stopSound _sound;
 };
