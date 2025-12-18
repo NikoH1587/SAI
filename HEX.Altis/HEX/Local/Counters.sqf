@@ -27,14 +27,13 @@
 	if (_draw == true && _cfg != "hd_dot") then {
 		private _marker = createMarkerLocal [_name, _pos];
 		_marker setMarkerTypeLocal _cfg;
-		if (_sid == side player && _max > 0) then {
+		_sup = false;
+		if (_cfg in ["b_hq", "b_support", "b_air", "b_plane", "b_art", "o_hq", "o_support", "o_air", "o_plane", "o_art"]) then {_sup = true};
+		if (_sid == side player && _max > 0 && _sup == false) then {
 			_marker setMarkerTextLocal ((str _act) + "/" + (str _max));			
 		};
 	};
 }forEach HEX_GRID;
-
-
-
 
 ///     private _name = format ["HEX_%1_%2", _row, _col];
 /// HEX_GRID pushBack [_row, _col, [_x,_y], "hd_flag", "hd_flag", "hd_flag"];
