@@ -58,8 +58,52 @@ HEX_FNC_MOVE = {
 	_newEND = [_end select 0, _end select 1, _end select 2, _org select 3, _org select 4, (_org select 5) - 1];
 	HEX_GRID set [_indexEND, _newEND];
 	
-	/// Update grid information to clients
+	/// Update grid information globally
 	publicVariable "HEX_GRID";
+	
+	/// Update zone of control globally
+	private _zoco = 0 spawn HEX_FNC_ZOCO; 
+	waitUntil {scriptDone _zoco};
+
+	/// Update counters globally
+	remoteExec ["HEX_FNC_COTE", 0, false];
+};
+
+/// Clears markers and orders locally
+HEX_FNC_CLIC = {
+	/// Remove order markers
+	{
+		private _hex = _x;
+		private _row = _x select 0;
+		private _col = _x select 1;
+		private _pos = _x select 2;
+		private _name = format ["ACT_%1_%2", _row, _col];		
+		deleteMarkerLocal _name;
+	}forEach LOC_ORDERS;
+	
+	deleteMarkerLocal "HEX_SELECT";
+	
+	/// Reset local variables
+	if (isNil "LOC_ORDERS" == false) then {
+		LOC_ORDERS = [];
+	};
+	
+	if (isNil "LOC_SELECT" == false) then {
+		LOC_SELECT = [];
+	};
+	
+	if (isNil "LOC_MODE" == false) then {
+		LOC_MODE = "SELECT";
+	};	
+	
+	if (isNil "LOC_SOUND" == false) then {
+		stopSound LOC_SOUND;
+	};
+
+	/// Stop sound effect if exists
+	if (isNil "LOC_SOUND" == false) then {
+		stopSound LOC_SOUND;
+	};
 };
 
 /// Updates counter markers on client
@@ -94,7 +138,7 @@ HEX_FNC_COTE = {
 			private _marker = createMarkerLocal [_name, _pos];
 			_marker setMarkerTypeLocal _cfg;
 			private _sup = false;
-			if (_cfg in ["b_hq", "b_support", "b_air", "b_plane", "b_art", "o_hq", "o_support", "o_air", "o_plane", "o_art"]) then {_sup = true};
+			if (_cfg in ["b_hq", "b_air", "b_plane", "b_art", "o_hq", "o_air", "o_plane", "o_art"]) then {_sup = true};
 			if (_sid == side player && _max > 0 && _sup == false) then {
 				_marker setMarkerTextLocal ((str _act) + "/" + (str _max));			
 			};

@@ -29,7 +29,7 @@ LOC_FNC_SELECT = {
 			_marker setMarkerSize [1.5, 1.5];
 			
 			/// Play sound 
-			0 spawn LOC_SOUND;
+			0 spawn LOC_FNC_EFFECT;
 			
 			/// Add all possible near moves
 			private _near = _hex call HEX_FNC_NEAR;
@@ -39,21 +39,7 @@ LOC_FNC_SELECT = {
 				if (_side == civilian) then {
 					LOC_ORDERS pushback _nearHEX;
 				};
-			}forEach _near;		
-			
-			/// TBD: Road +1 move skip:
-			/// Origin (1st hex) has to have road hex
-			/// Middle (2nd hex w/HEX_FNC_NEAR) is civilian & Road
-			/// destination (3rd) is civilian & Road
-
-			/// Could also be done like this (would use flood as origin point, with enemy ZoC + max radius limiting it):
-			/// road tile + logi(support) = move another unit into road hex
-			/// friendly helo + airport = move another unit into hex
-			/// ship + harbor = move another unit into shore hex
-			/// HQ = Teleport in reserve/imaginary units?
-			
-			/// Aircraft carrier / etc ship = airport + harbor
-			/// this could make airdrops/shore landings possible
+			}forEach _near;
 			
 			/// Add move markers
 			{
@@ -74,40 +60,24 @@ LOC_FNC_ORDER = {
 	/// Select move
 	{
 		private _hex = _x;
-		private _row = _x select 0;
-		private _col = _x select 1;
 		private _pos = _x select 2;
-		private _name = format ["ACT_%1_%2", _row, _col];
-		
-		/// TODO:
-		/// Moving animation???
-		/// place marker in between destination and origin?
-		/// use static effect?
 		
 		if (_pos distance _posCLICK < (HEX_SIZE/2)) then {
+		
+			private _hex2 = LOC_SELECT;
+			private _row2 = _hex2 select 0;
+			private _col2 = _hex2 select 1;
+			
+			private _name2 = format ["LOC_%1_%2", _row2, _col2];
+			_name2 setMarkerPosLocal _pos;
 			
 			/// Send move to server
-			[LOC_SELECT, _hex] remoteExec ["HEX_FNC_MOVE", 0, false];
-
-			/// Update zone of control on server
-			remoteExec ["HEX_FNC_ZOCO", 2, false];
-
-			/// Update counters on clients
-			remoteExec ["HEX_FNC_COTE", 0, false];
+			[LOC_SELECT, _hex] remoteExec ["HEX_FNC_MOVE", 2, false];
 		};
-		
-		/// Remove order markers
-		deleteMarkerLocal _name;
 	}forEach LOC_ORDERS;
 	
-	/// Play sound
-	0 spawn LOC_SOUND;
-	
-	/// Remove selection
-	LOC_ORDERS = [];
-	LOC_SELECT = [];
-	LOC_MODE = "SELECT";
-	deleteMarkerLocal "HEX_SELECT";
+	/// Clear local orders, markers and sound
+	remoteExec ["HEX_FNC_CLIC", 0, false];
 };
 
 onMapSingleClick {
@@ -122,13 +92,30 @@ onMapSingleClick {
 };
 
 /// Sound effect
-LOC_SOUND = {
+LOC_FNC_EFFECT = {
 	private _sounds = [
 		"a3\dubbing_radio_f\sfx\radionoise1.ogg", 
 		"a3\dubbing_radio_f\sfx\radionoise2.ogg", 
 		"a3\dubbing_radio_f\sfx\radionoise3.ogg"
 	];
-	private _sound = playSoundUI [_sounds select floor random 3, 1];
-	sleep 1;
-	stopSound _sound;
+	
+	private _sound = _sounds select floor random count _sounds;
+	
+	private _pitch = random 1;
+	LOC_SOUND = playSoundUI [_sound, 2 - _pitch, _pitch];
+	hint str _sound;
 };
+
+/// TBD: Road +1 move skip:
+/// Origin (1st hex) has to have road hex
+/// Middle (2nd hex w/HEX_FNC_NEAR) is civilian & Road
+/// destination (3rd) is civilian & Road
+
+/// Could also be done like this (would use flood as origin point, with enemy ZoC + max radius limiting it):
+/// road tile + logi(support) = move another unit into road hex
+/// friendly helo + airport = move another unit into hex
+/// ship + harbor = move another unit into shore hex
+/// HQ = Teleport in reserve/imaginary units?
+			
+/// Aircraft carrier / etc ship = airport + harbor
+/// this could make airdrops/shore landings possible
