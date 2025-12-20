@@ -103,7 +103,6 @@ LOC_FNC_EFFECT = {
 	
 	private _pitch = random 1;
 	LOC_SOUND = playSoundUI [_sound, 2 - _pitch, _pitch];
-	hint str _sound;
 };
 
 /// TBD: Road +1 move skip:

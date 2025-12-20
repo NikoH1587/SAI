@@ -4,7 +4,7 @@ private _hexY = HEX_SIZE * sqrt 3;
 private _hexS = worldSize;
 private _count = ((count HEX_CFG_WEST) + (count HEX_CFG_EAST)) * 3;
 
-/// Grid feneration
+/// Grid generation
 for "_col" from 0 to round(_hexS / _hexX) do {
     for "_row" from 0 to round(_hexS / _hexY) do {
 
@@ -99,9 +99,11 @@ HEX_GRID = [selectRandom HEX_GRID, _count] call HEX_FNC_FILL;
 	_marker setMarkerSize [HEX_SIZE, HEX_SIZE];
 }forEach HEX_GRID;
 
+/// Globalize the grid
+publicVariable "HEX_GRID";
+
 /// Zone of Control on grid
 0 call HEX_FNC_ZOCO;
 
 /// Update counters on clients:
 remoteExec ["HEX_FNC_COTE", 0, false];
-copyToClipBoard str HEX_GRID;
